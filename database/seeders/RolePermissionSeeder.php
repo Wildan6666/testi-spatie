@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use App\Models\User; // <-- Tambahkan ini
 
 class RolePermissionSeeder extends Seeder
 {
@@ -14,32 +14,58 @@ class RolePermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        Permission::create(['name'=>'tambah-user']);
-        Permission::create(['name'=>'edit-user']);
-        Permission::create(['name'=>'hapus-user']);
-        Permission::create(['name'=>'lihat-user']);
+        // list semua permissions
+        $permissions = [
+            'manage users',
+            'manage roles',
+            'manage permissions',
+            'verify document',
+            'view report',
+            'upload document',
+            'view document',
+            'view public docs',
+        ];
 
-        Permission::create(['name'=>'tambah-tulisan']);
-        Permission::create(['name'=>'edit-tulisan']);
-        Permission::create(['name'=>'hapus-tulisan']);
-        Permission::create(['name'=>'lihat-tulisan']);
+        foreach ($permissions as $perm) {
+            Permission::firstOrCreate(['name' => $perm, 'guard_name' => 'web']);
+        }
 
-        Role::create(['name'=>'admin']);
-        Role::create(['name'=>'penulis']);
+        // buat roles
+        $roles = [
+            'superadmin',
+            'admin',
+            'verifikator',
+            'pimpinan',
+            'pegawai',
+            'mahasiswa',
+            'publik',
+        ];
 
-        $roleAdmin = Role::findByName('admin');
-        $roleAdmin ->givePermissionTo('tambah-user');
-        $roleAdmin ->givePermissionTo('edit-user');
-        $roleAdmin ->givePermissionTo('hapus-user');
-        $roleAdmin ->givePermissionTo('lihat-user');
+        foreach ($roles as $roleName) {
+            Role::firstOrCreate(['name' => $roleName, 'guard_name' => 'web']);
+        }
 
-        $rolePenulis = Role::findByName('penulis');
-        $rolePenulis->givePermissionTo('tambah-tulisan');
-        $rolePenulis->givePermissionTo('edit-tulisan');
-        $rolePenulis->givePermissionTo('hapus-tulisan');
-        $rolePenulis->givePermissionTo('lihat-tulisan');
+        // assign permissions ke masing-masing role
+        Role::where('name', 'superadmin')->first()
+            ->syncPermissions(Permission::all());
+
+        Role::where('name', 'admin')->first()
+            ->syncPermissions(['manage users', 'manage roles']);
+
+        Role::where('name', 'verifikator')->first()
+            ->syncPermissions(['verify document']);
+
+        Role::where('name', 'pimpinan')->first()
+            ->syncPermissions(['view report']);
+
+        Role::where('name', 'pegawai')->first()
+            ->syncPermissions(['upload document']);
+
+        Role::where('name', 'mahasiswa')->first()
+            ->syncPermissions(['view document']);
+
+        Role::where('name', 'publik')->first()
+            ->syncPermissions(['view public docs']);
     }
-}
-
-
+    }
 

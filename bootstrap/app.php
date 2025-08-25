@@ -3,6 +3,9 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Spatie\Permission\Exceptions\UnauthorizedException;
+use Inertia\Inertia;
+
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -19,10 +22,20 @@ return Application::configure(basePath: dirname(__DIR__))
 
       $middleware->alias([
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
-            //'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
-            //'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+            'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+            'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
         ]);
     })
+
+    
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        $exceptions->render(function (UnauthorizedException $e, $request) {
+    return Inertia::render('Errors/Error403', [
+        'status' => 403,
+        'message' => 'Anda tidak memiliki izin untuk mengakses resource ini.'
+    ])->toResponse($request)->setStatusCode(403);
+    });
+
     })->create();
+
+    
