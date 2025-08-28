@@ -49,6 +49,20 @@ export default function PermissionPage({ auth, users, permissions }) {
             u.email.toLowerCase().includes(query.toLowerCase())
         );
 
+  const handleDeletePermission = (permId) => {
+  const perm = permissions.find((p) => p.id === permId);
+  if (!perm) return;
+
+  if (!confirm(`Yakin ingin menghapus permission "${perm.name}"?`)) return;
+
+  Inertia.delete(`/konfigurasi/permissions/delete/${permId}`, {
+    onSuccess: () => {
+      // optional: refresh page atau filter state biar ilang dari UI
+    },
+  });
+};
+
+
   return (
     <AdminLayout user={auth.user}>
       <h1 className="text-2xl font-bold mb-6">⚙️ Pengaturan Permissions</h1>
@@ -110,19 +124,30 @@ export default function PermissionPage({ auth, users, permissions }) {
             </Combobox>
           </div>
 
-          {/* Daftar Permissions */}
+        {/* Daftar Permissions */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3 border p-4 rounded-xl bg-gray-50">
             {permissions.map((perm) => (
-              <label
+              <div
                 key={perm.id}
-                className="flex items-center space-x-2 cursor-pointer hover:bg-white px-2 py-1 rounded-md transition"
+                className="flex items-center justify-between px-2 py-1 rounded-md bg-white shadow-sm hover:shadow-md transition"
               >
-                <Checkbox
-                  checked={selected.includes(perm.id)}
-                  onCheckedChange={() => togglePermission(perm.id)}
-                />
-                <span className="text-sm font-medium">{perm.name}</span>
-              </label>
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <Checkbox
+                    checked={selected.includes(perm.id)}
+                    onCheckedChange={() => togglePermission(perm.id)}
+                  />
+                  <span className="text-sm font-medium">{perm.name}</span>
+                </label>
+
+                {/* Tombol hapus permission */}
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={() => handleDeletePermission(perm.id)}
+                >
+                  Hapus
+                </Button>
+              </div>
             ))}
           </div>
 

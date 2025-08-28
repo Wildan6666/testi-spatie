@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Navigation;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -23,19 +24,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Inertia::share([
-            'auth' => function () {
-                $user = Auth::user();
-
-                return [
-                    'user' => $user ? [
-                        'id'          => $user->id,
-                        'name'        => $user->name,
-                        'roles'       => $user->getRoleNames(), // requires Spatie\Permission
-                        'permissions' => $user->getAllPermissions()->pluck('name'),
-                    ] : null,
-                ];
-            },
-        ]);
+        Inertia::share('menus', function () {
+        return Navigation::whereNull('parent_id')
+            ->with(['children' => function ($q) {
+                $q->orderBy('sort');
+            }])
+            ->orderBy('sort')
+            ->get();
+    });
     }
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\MenuController;
+use App\Http\Controllers\Admin\NavigationController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -43,14 +44,20 @@ Route::prefix('konfigurasi')->middleware(['auth'])->name('admin.')->group(functi
     Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 
     // Roles
-    Route::get('roles', [RoleController::class, 'index'])->name('roles.index');
+    Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
+    Route::post('/roles', [RoleController::class, 'store'])->name('roles.store');
+    Route::delete('/roles/{role}', [RoleController::class, 'destroy'])->name('roles.destroy');
 
     // Permissions
     Route::get('permissions', [PermissionController::class, 'index'])->name('permissions.index');
     Route::post('permissions/{user}', [PermissionController::class, 'update'])->name('permissions.update');
-
+    Route::delete('permissions/delete/{id}', [PermissionController::class, 'destroyPermission'])
+    ->name('permissions.destroy');
+    
     // Menus
-    Route::get('menus', [MenuController::class, 'index'])->name('menus.index');
+    route::get('menus', [NavigationController::class, 'index'])->name('menus.index');
+    Route::post('menus', [MenuController::class, 'store'])->name('menus.store');
+
 });
 
 
