@@ -2,24 +2,23 @@ import React, { useState } from "react";
 import { Link, usePage } from "@inertiajs/react";
 import * as Icons from "lucide-react";
 
-
 export default function Sidebar() {
   const { url, props } = usePage();
-  const menus = props.menus || [];
+  const menus = (props.menus || []).slice().sort((a, b) => a.id - b.id); // urutkan by id
   const [openMenu, setOpenMenu] = useState(null);
 
   const getIcon = (iconName) => {
-  if (!iconName) return <Icons.Menu size={18} />;
+    if (!iconName) return <Icons.Menu size={18} />;
 
-  // Ubah lowercase/slug jadi PascalCase
-  const formatted = iconName
-    .split("-") // kalau ada nama dengan dash, misalnya "arrow-left"
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join("");
+    // Ubah lowercase/slug jadi PascalCase
+    const formatted = iconName
+      .split("-") // misal "arrow-left" jadi "ArrowLeft"
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join("");
 
-  const Icon = Icons[formatted] || Icons.Menu;
-  return <Icon size={18} />;
-};
+    const Icon = Icons[formatted] || Icons.Menu;
+    return <Icon size={18} />;
+  };
 
   return (
     <aside className="w-64 h-screen bg-gradient-to-b from-blue-50 to-white border-r shadow-lg flex flex-col">
@@ -44,7 +43,7 @@ export default function Sidebar() {
                     : "hover:bg-blue-50"
                 }`}
               >
-                {getIcon(menu.icon)} 
+                {getIcon(menu.icon)}
                 <span className="text-sm">{menu.name}</span>
               </Link>
             ) : (
@@ -63,7 +62,9 @@ export default function Sidebar() {
                     {getIcon(menu.icon)}
                     <span className="text-sm">{menu.name}</span>
                   </div>
-                  <span className="text-xs">{openMenu === menu.id ? "▲" : "▼"}</span>
+                  <span className="text-xs">
+                    {openMenu === menu.id ? "▲" : "▼"}
+                  </span>
                 </button>
 
                 <div
@@ -71,20 +72,23 @@ export default function Sidebar() {
                     openMenu === menu.id ? "max-h-60" : "max-h-0"
                   }`}
                 >
-                  {menu.children.map((child) => (
-                    <Link
-                      key={child.id}
-                      href={`/${child.url}`}
-                      className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-all ${
-                        url.startsWith(`/${child.url}`)
-                          ? "bg-blue-50 text-blue-600 font-semibold"
-                          : "hover:bg-gray-100"
-                      }`}
-                    >
-                      {getIcon(child.icon)}
-                      {child.name}
-                    </Link>
-                  ))}
+                  {menu.children
+                    .slice()
+                    .sort((a, b) => a.id - b.id) // anak juga diurutkan by id
+                    .map((child) => (
+                      <Link
+                        key={child.id}
+                        href={`/${child.url}`}
+                        className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-all ${
+                          url.startsWith(`/${child.url}`)
+                            ? "bg-blue-50 text-blue-600 font-semibold"
+                            : "hover:bg-gray-100"
+                        }`}
+                      >
+                        {getIcon(child.icon)}
+                        {child.name}
+                      </Link>
+                    ))}
                 </div>
               </div>
             )}

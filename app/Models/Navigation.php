@@ -19,6 +19,10 @@ class Navigation extends Model
     {
         return $this->belongsTo(Navigation::class, 'parent_id');
     }
+    public function permissions()
+    {
+        return $this->hasMany(\Spatie\Permission\Models\Permission::class, 'menu_id');
+    }
 
 }
 

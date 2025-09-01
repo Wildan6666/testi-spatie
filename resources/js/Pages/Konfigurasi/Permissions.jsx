@@ -3,13 +3,17 @@ import AdminLayout from "@/Layouts/AdminLayout";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { Combobox, Transition } from "@headlessui/react";
+import { Combobox, Transition, Dialog } from "@headlessui/react";
 import { Inertia } from "@inertiajs/inertia";
 
 export default function PermissionPage({ auth, users, permissions }) {
   const [selectedUser, setSelectedUser] = useState(users[0] || null);
   const [selected, setSelected] = useState([]);
   const [query, setQuery] = useState("");
+
+  // State untuk modal tambah permission
+  const [openModal, setOpenModal] = useState(false);
+  const [newPermission, setNewPermission] = useState("");
 
   // Set permissions awal saat user diganti
   useEffect(() => {
@@ -20,7 +24,7 @@ export default function PermissionPage({ auth, users, permissions }) {
           .map((p) => p.id)
       );
     }
-  }, [selectedUser,permissions]);
+  }, [selectedUser, permissions]);
 
   const togglePermission = (permId) => {
     setSelected((prev) =>
@@ -50,18 +54,26 @@ export default function PermissionPage({ auth, users, permissions }) {
         );
 
   const handleDeletePermission = (permId) => {
-  const perm = permissions.find((p) => p.id === permId);
-  if (!perm) return;
+    const perm = permissions.find((p) => p.id === permId);
+    if (!perm) return;
 
-  if (!confirm(`Yakin ingin menghapus permission "${perm.name}"?`)) return;
+    if (!confirm(`Yakin ingin menghapus permission "${perm.name}"?`)) return;
 
-  Inertia.delete(`/konfigurasi/permissions/delete/${permId}`, {
-    onSuccess: () => {
-      // optional: refresh page atau filter state biar ilang dari UI
-    },
-  });
-};
+    Inertia.delete(`/konfigurasi/permissions/delete/${permId}`);
+  };
 
+  const handleAddPermission = () => {
+    if (!newPermission.trim()) return;
+
+    Inertia.post("/konfigurasi/permissions/store", {
+      name: newPermission,
+    }, {
+      onSuccess: () => {
+        setNewPermission("");
+        setOpenModal(false);
+      },
+    });
+  };
 
   return (
     <AdminLayout user={auth.user}>
@@ -107,12 +119,18 @@ export default function PermissionPage({ auth, users, permissions }) {
                         value={user}
                         className={({ active }) =>
                           `cursor-pointer select-none px-4 py-2 ${
-                            active ? "bg-indigo-600 text-white" : "text-gray-900"
+                            active
+                              ? "bg-indigo-600 text-white"
+                              : "text-gray-900"
                           }`
                         }
                       >
                         {({ selected }) => (
-                          <span className={`block ${selected ? "font-bold" : ""}`}>
+                          <span
+                            className={`block ${
+                              selected ? "font-bold" : ""
+                            }`}
+                          >
                             {user.name} ({user.email})
                           </span>
                         )}
@@ -124,31 +142,67 @@ export default function PermissionPage({ auth, users, permissions }) {
             </Combobox>
           </div>
 
-        {/* Daftar Permissions */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 border p-4 rounded-xl bg-gray-50">
-            {permissions.map((perm) => (
-              <div
-                key={perm.id}
-                className="flex items-center justify-between px-2 py-1 rounded-md bg-white shadow-sm hover:shadow-md transition"
-              >
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <Checkbox
-                    checked={selected.includes(perm.id)}
-                    onCheckedChange={() => togglePermission(perm.id)}
-                  />
-                  <span className="text-sm font-medium">{perm.name}</span>
-                </label>
+          {/* Tombol Tambah Permission */}
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-md font-semibold">Daftar Permissions</h3>
+            <Button
+              onClick={() => setOpenModal(true)}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              ➕ Tambah Permission
+            </Button>
+          </div>
 
-                {/* Tombol hapus permission */}
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  onClick={() => handleDeletePermission(perm.id)}
-                >
-                  Hapus
-                </Button>
-              </div>
-            ))}
+          {/* Daftar Permissions dalam bentuk tabel */}
+          <div className="border rounded-xl overflow-hidden">
+            <table className="w-full border-collapse">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 border">
+                    #
+                  </th>
+                  <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 border">
+                    Permission Name
+                  </th>
+                  <th className="px-4 py-2 text-center text-sm font-semibold text-gray-700 border">
+                    Aktif
+                  </th>
+                  <th className="px-4 py-2 text-center text-sm font-semibold text-gray-700 border">
+                    Aksi
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {permissions.map((perm, index) => (
+                  <tr
+                    key={perm.id}
+                    className="hover:bg-gray-50 transition"
+                  >
+                    <td className="px-4 py-2 border text-sm text-gray-600">
+                      {index + 1}
+                    </td>
+                    <td className="px-4 py-2 border text-sm font-medium text-gray-900">
+                      {perm.name}
+                    </td>
+                    <td className="px-4 py-2 border text-center">
+                      <Checkbox
+                        checked={selected.includes(perm.id)}
+                        onCheckedChange={() => togglePermission(perm.id)}
+                      />
+                    </td>
+                    <td className="px-4 py-2 border text-center">
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => handleDeletePermission(perm.id)}
+                      >
+                        Hapus
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
 
           {/* Tombol Simpan */}
@@ -159,6 +213,64 @@ export default function PermissionPage({ auth, users, permissions }) {
           </div>
         </CardContent>
       </Card>
+
+      {/* Modal Tambah Permission */}
+      <Transition appear show={openModal} as={Fragment}>
+        <Dialog as="div" className="relative z-50" onClose={setOpenModal}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-200"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-150"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black bg-opacity-30" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 flex items-center justify-center p-4">
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-200"
+              enterFrom="opacity-0 scale-95"
+              enterTo="opacity-100 scale-100"
+              leave="ease-in duration-150"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-95"
+            >
+              <Dialog.Panel className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
+                <Dialog.Title className="text-lg font-semibold mb-4">
+                  Tambah Permission Baru
+                </Dialog.Title>
+
+                <input
+                  type="text"
+                  value={newPermission}
+                  onChange={(e) => setNewPermission(e.target.value)}
+                  placeholder="Masukkan nama permission"
+                  className="w-full border rounded-lg p-2 mb-4 focus:ring focus:ring-indigo-300"
+                />
+
+                <div className="flex justify-end gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => setOpenModal(false)}
+                  >
+                    Batal
+                  </Button>
+                  <Button
+                    onClick={handleAddPermission}
+                    className="bg-green-600 hover:bg-green-700"
+                  >
+                    Simpan
+                  </Button>
+                </div>
+              </Dialog.Panel>
+            </Transition.Child>
+          </div>
+        </Dialog>
+      </Transition>
     </AdminLayout>
   );
 }

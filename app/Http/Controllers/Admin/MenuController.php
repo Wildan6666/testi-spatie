@@ -9,7 +9,7 @@ use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use app\Models\User;
+use App\Models\User;
 
 
 class MenuController extends Controller
@@ -18,43 +18,37 @@ class MenuController extends Controller
     {
         $user = auth()->user();
 
-    // Ambil menu yang punya URL dan user punya permission read {url}
-    $menus = Navigation::with('children')
-        ->whereNull('parent_id')
-        ->orderBy('sort')
-        ->get()
-        ->filter(function ($menu) use ($user) {
-            // Jika menu utama tidak punya URL (hanya parent), biarkan
-            if (!$menu->url) return true;
+        $menus = Navigation::with('children')
+            ->whereNull('parent_id')
+            ->orderBy('sort')
+            ->get()
+            ->filter(function ($menu) use ($user) {
+                if (!$menu->url) return true; // menu tanpa URL (hanya parent)
+                return $user->can('read ' . ltrim($menu->url, '/'));
+            })
+            ->map(function ($menu) use ($user) {
+                $menu->children = $menu->children
+                    ->filter(function ($child) use ($user) {
+                        return !$child->url || $user->can('read ' . ltrim($child->url, '/'));
+                    })
+                    ->values();
+                return $menu;
+            })
+            ->values();
 
-            // Cek permission (misal read /konfigurasi/users)
-            return $user->can('read ' . ltrim($menu->url, '/'));
-        })
-        ->map(function ($menu) use ($user) {
-            $menu->children = $menu->children->filter(function ($child) use ($user) {
-                return $child->url && $user->can('read ' . ltrim($child->url, '/'));
-            });
-            return $menu;
-        });
-
-    return Inertia::render('Dashboard', [
-        'menus' => $menus
-    ]);
-
+        return Inertia::render('Dashboard', [
+            'menus' => $menus,
+            'auth'  => ['user' => $user],
+        ]);
     }
 
-    public function children()
-{
-    return $this->hasMany(Navigation::class, 'parent_id');
-}
 
     public function store(Request $request)
 {
     $request->validate([
         'name' => 'required|string',
-        'data_url' => 'required|string',
-        'main_menu' => 'nullable|integer',
-        'sub_menu' => 'nullable|integer',
+        'url' => 'required|string',
+        'parent_id' => 'nullable|integer',
         'icon' => 'nullable|string',
     ]);
 
@@ -62,9 +56,8 @@ class MenuController extends Controller
         // Simpan menu
         $navigasi = Navigation::create([
             'name' => $request->name,
-            'url' => $request->data_url,
-            'main_menu' => $request->main_menu,
-            'sub_menu' => $request->sub_menu,
+            'url' => $request->url,
+            'parent_id' => $request->parent_id,
             'icon' => $request->icon,
         ]);
 
@@ -83,7 +76,7 @@ class MenuController extends Controller
             $permissions = ['read', 'create', 'update', 'delete'];
 
             foreach ($permissions as $perm) {
-                $permName = $perm . ' ' . $request->data_url;
+                $permName = $perm . ' ' . $request->url;
                 $newPermission = Permission::create(['name' => $permName]);
                 $role->givePermissionTo($newPermission->name);
             }
