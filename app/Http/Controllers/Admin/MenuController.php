@@ -187,7 +187,7 @@ protected function removeRouteAndController($menuItem)
 {
     // Nama controller (PascalCase dari url)
     $controllerName = Str::studly($menuItem->url) . "Controller";
-    $controllerPath = app_path("Http/Controllers/{$controllerName}.php");
+    $controllerPath = app_path("Http/Controllers/Admin/{$controllerName}.php");
 
     // Hapus file controller jika ada
     if (file_exists($controllerPath)) {
@@ -196,7 +196,7 @@ protected function removeRouteAndController($menuItem)
 
     // 🔥 Hapus file view/page React (Inertia)
     $pageName = Str::studly($menuItem->url) . ".jsx";
-    $pagePath = resource_path("js/Pages/{$pageName}");
+    $pagePath = resource_path("js/Pages/Admin/{$pageName}");
     if (file_exists($pagePath)) {
         unlink($pagePath);
     }

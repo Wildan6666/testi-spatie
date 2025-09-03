@@ -5,8 +5,8 @@ export default function Index() {
     return (
         <AdminLayout>
             <div className="p-6 bg-white rounded shadow">
-                <h1 className="text-xl font-semibold">Halaman halamannn</h1>
-                <p className="text-gray-600">Ini halaman default setelah menu "halamannn" dibuat.</p>
+                <h1 className="text-xl font-semibold">Halaman testi</h1>
+                <p className="text-gray-600">Ini halaman default setelah menu "testi" dibuat.</p>
             </div>
         </AdminLayout>
     );
