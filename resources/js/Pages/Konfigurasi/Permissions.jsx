@@ -261,7 +261,7 @@ export default function PermissionPage({ auth, users, permissions }) {
                   </Button>
                   <Button
                     onClick={handleAddPermission}
-                    className="bg-green-600 hover:bg-green-700"
+                    className="bg-blue-600 hover:bg-blue-700"
                   >
                     Simpan
                   </Button>

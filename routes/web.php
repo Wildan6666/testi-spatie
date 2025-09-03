@@ -62,8 +62,8 @@ Route::prefix('konfigurasi')->middleware(['auth'])->name('admin.')->group(functi
     // Menus
     route::get('menus', [NavigationController::class, 'index'])->name('menus.index')
     ->middleware('permission:manage menus');
-
     Route::post('menus', [MenuController::class, 'store'])->name('menus.store');
+    Route::delete('menus/{id}', [MenuController::class, 'destroy'])->name('menus.destroy');
 
 });
 
