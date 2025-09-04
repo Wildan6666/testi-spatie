@@ -109,13 +109,25 @@ class MenuController extends Controller
         }
 
         // 4. Tambahkan Route
-        $routesFile = base_path("routes/web.php");
-        $routeDef = "Route::resource('{$request->url}', App\\Http\\Controllers\\Admin\\{$controllerName}::class);";
+$routesFile = base_path("routes/web.php");
 
-        $routesContent = File::get($routesFile);
-        if (strpos($routesContent, $routeDef) === false) {
-            File::append($routesFile, "\n" . $routeDef . "\n");
-        }
+if (!$request->parent_id) {
+    // parent hanya butuh read
+    $permName = "read menu:{$navigasi->id}";
+    $routeDef = "Route::resource('{$request->url}', App\\Http\\Controllers\\Admin\\{$controllerName}::class)"
+              . "->middleware('can:{$permName}');";
+} else {
+    // child bisa CRUD
+    $middleware = "'can:read menu:{$navigasi->id}'";
+    $routeDef = "Route::resource('{$request->url}', App\\Http\\Controllers\\Admin\\{$controllerName}::class)"
+              . "->middleware([{$middleware}]);";
+}
+
+$routesContent = File::get($routesFile);
+if (strpos($routesContent, $routeDef) === false) {
+    File::append($routesFile, "\n" . $routeDef . "\n");
+}
+
 
         // 5. Generate Inertia Page React
         $reactPath = resource_path("js/Pages/Admin/{$request->url}");
@@ -195,11 +207,10 @@ protected function removeRouteAndController($menuItem)
     }
 
     // 🔥 Hapus file view/page React (Inertia)
-    $pageName = Str::studly($menuItem->url) . ".jsx";
-    $pagePath = resource_path("js/Pages/Admin/{$pageName}");
-    if (file_exists($pagePath)) {
-        unlink($pagePath);
-    }
+    $reactDir = resource_path("js/Pages/Admin/{$menuItem->url}");
+if (File::isDirectory($reactDir)) {
+    File::deleteDirectory($reactDir);
+}
 
     // Hapus baris di routes/web.php
     $routeFile = base_path('routes/web.php');

@@ -72,7 +72,4 @@ Route::get('/Verifikasi', function () {
 })->middleware(['auth', 'verified','permission:verify document'])->name('Verifikasi');
 
 
-
-
-
 require __DIR__.'/auth.php';
