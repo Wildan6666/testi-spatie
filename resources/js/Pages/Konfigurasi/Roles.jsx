@@ -15,19 +15,25 @@ import {
   TabsTrigger,
   TabsContent,
 } from "@/components/ui/tabs";
+import { router } from "@inertiajs/react";
 
 export default function RolesPage({ roles = [], permissions = [] }) {
+  // Simpan permissions per role ke dalam state
   const { data, setData, post, processing } = useForm({
-    permissions: [],
+    rolePermissions: roles.reduce((acc, role) => {
+      acc[role.id] = role.permissions.map((p) => p.name); 
+      return acc;
+    }, {}),
   });
 
   const handleSubmit = (roleId) => {
-    post(route("roles.updatePermissions", roleId), {
-      onSuccess: () => {
-        console.log("Permissions updated!");
-      },
-    });
-  };
+  router.post(route("roles.updatePermissions", roleId), {
+    permissions: data.rolePermissions[roleId],
+  }, {
+    onSuccess: () => console.log("Permissions updated!"),
+    onError: (errors) => console.error(errors),
+  });
+};
 
   return (
     <AdminLayout>
@@ -50,10 +56,7 @@ export default function RolesPage({ roles = [], permissions = [] }) {
                 {/* Tab daftar role */}
                 <TabsList className="flex flex-wrap gap-2">
                   {roles.map((role) => (
-                    <TabsTrigger
-                      key={role.id}
-                      value={role.id.toString()}
-                    >
+                    <TabsTrigger key={role.id} value={role.id.toString()}>
                       {role.name}
                     </TabsTrigger>
                   ))}
@@ -73,25 +76,21 @@ export default function RolesPage({ roles = [], permissions = [] }) {
                           className="flex items-center space-x-2 border rounded-md p-2 hover:bg-gray-50"
                         >
                           <Checkbox
-                            checked={
-                              (role.permissions || []).some(
-                                (p) => p.id === perm.id
-                              )
-                            }
+                            checked={data.rolePermissions[role.id]?.includes(
+                              perm.name
+                            )}
                             onCheckedChange={(checked) => {
-                              if (checked) {
-                                setData("permissions", [
-                                  ...data.permissions,
-                                  perm.name,
-                                ]);
-                              } else {
-                                setData(
-                                  "permissions",
-                                  data.permissions.filter(
-                                    (p) => p !== perm.name
-                                  )
-                                );
-                              }
+                              setData("rolePermissions", {
+                                ...data.rolePermissions,
+                                [role.id]: checked
+                                  ? [
+                                      ...data.rolePermissions[role.id],
+                                      perm.name,
+                                    ]
+                                  : data.rolePermissions[role.id].filter(
+                                      (p) => p !== perm.name
+                                    ),
+                              });
                             }}
                           />
                           <span className="text-sm">{perm.name}</span>

@@ -11,43 +11,38 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
-
 
 class MenuController extends Controller
 {
-    public function index()
-    {
-        $user = auth()->user();
+public function index()
+{
+    $user = auth()->user();
 
-        $menus = Navigation::with('children')
-            ->whereNull('parent_id')
-            ->orderBy('sort')
-            ->get()
-            ->filter(function ($menu) use ($user) {
-                if (!$menu->url) return true; // parent menu tanpa URL
+    $menus = Navigation::with('children')
+        ->whereNull('parent_id')
+        ->orderBy('sort')
+        ->get()
+        ->filter(function ($menu) use ($user) {
+            // Kalau tidak ada permission → selalu tampil
+            return !$menu->permissions || $user->can($menu->permissions);
+        })
+        ->map(function ($menu) use ($user) {
+            $menu->children = $menu->children
+                ->filter(function ($child) use ($user) {
+                    return !$child->permissions || $user->can($child->permissions);
+                })
+                ->values();
 
-                $permission = "read menu:{$menu->id}";
-                return $user->can($permission);
-            })
-            ->map(function ($menu) use ($user) {
-                $menu->children = $menu->children
-                    ->filter(function ($child) use ($user) {
-                        if (!$child->url) return true;
+            return $menu;
+        })
+        ->values();
 
-                        $permission = "read menu:{$child->id}";
-                        return $user->can($permission);
-                    })
-                    ->values();
-                return $menu;
-            })
-            ->values();
+    return Inertia::render('Admin/Dashboard', [
+        'menus' => $menus,
+        'auth'  => ['user' => $user],
+    ]);
+}
 
-        return Inertia::render('Dashboard', [
-            'menus' => $menus,
-            'auth'  => ['user' => $user],
-        ]);
-    }
 
     public function store(Request $request)
 {
@@ -59,31 +54,42 @@ class MenuController extends Controller
     ]);
 
     DB::transaction(function () use ($request) {
-        // 1. Simpan menu ke DB
-        $navigasi = Navigation::create([
-            'name'      => $request->name,
-            'url'       => $request->url,
-            'parent_id' => $request->parent_id,
-            'icon'      => $request->icon,
-        ]);
+    // 1. Simpan menu
+    $navigasi = Navigation::create([
+        'name'      => $request->name,
+        'url'       => Str::slug($request->url, '-'), // url tetap slug
+        'parent_id' => $request->parent_id,
+        'icon'      => $request->icon,
+    ]);
 
-        // 2. Buat permission (sama seperti kode kamu sekarang)
-        $role = Role::firstOrCreate(['name' => 'superadmin']);
-        if (!$request->parent_id) {
-            $permName = "read menu:{$navigasi->id}";
-            $permission = Permission::firstOrCreate(['name' => $permName]);
-            $role->givePermissionTo($permission);
-        } else {
-            $permissions = ['read', 'create', 'update', 'delete'];
-            foreach ($permissions as $perm) {
-                $permName = "{$perm} menu:{$navigasi->id}";
-                $permission = Permission::firstOrCreate(['name' => $permName]);
-                $role->givePermissionTo($permission);
-            }
+    // 2. Permission (pakai name)
+   // Permission (pakai name)
+$role = Role::firstOrCreate(['name' => 'superadmin']);
+
+if (!$request->parent_id) {
+    // parent hanya butuh read
+    $permName = strtolower("read {$navigasi->name}");
+    $permission = Permission::firstOrCreate(['name' => $permName]);
+    $role->givePermissionTo($permission);
+
+    $navigasi->update(['permissions' => $permName]);
+} else {
+    // child menu cukup butuh read + manage
+    foreach (['read', 'manage'] as $perm) {
+        $permName = strtolower("{$perm} {$navigasi->name}");
+        $permission = Permission::firstOrCreate(['name' => $permName]);
+        $role->givePermissionTo($permission);
+
+        if ($perm === 'read') {
+            $navigasi->update(['permissions' => $permName]);
         }
+    }
+}
+
+
 
         // 3. Auto generate Controller
-        $controllerName = ucfirst($request->url) . 'Controller';
+        $controllerName = Str::studly($navigasi->url) . 'Controller';
         $controllerPath = app_path("Http/Controllers/Admin/{$controllerName}.php");
 
         if (!File::exists($controllerPath)) {
@@ -100,7 +106,7 @@ class MenuController extends Controller
             {
                 public function index()
                 {
-                    return Inertia::render("Admin/{$request->url}/Index");
+                    return Inertia::render("Admin/{$navigasi->url}/Index");
                 }
             }
             PHP;
@@ -109,28 +115,28 @@ class MenuController extends Controller
         }
 
         // 4. Tambahkan Route
-$routesFile = base_path("routes/web.php");
+        $routesFile = base_path("routes/web.php");
+$slug = $navigasi->url;             // produk-hukum → untuk route
+$permBase = strtolower($navigasi->name); // produk hukum → untuk permission
 
 if (!$request->parent_id) {
-    // parent hanya butuh read
-    $permName = "read menu:{$navigasi->id}";
-    $routeDef = "Route::resource('{$request->url}', App\\Http\\Controllers\\Admin\\{$controllerName}::class)"
+    $permName = "read {$permBase}";
+    $routeDef = "Route::resource('{$slug}', App\\Http\\Controllers\\Admin\\{$controllerName}::class)"
               . "->middleware('can:{$permName}');";
 } else {
-    // child bisa CRUD
-    $middleware = "'can:read menu:{$navigasi->id}'";
-    $routeDef = "Route::resource('{$request->url}', App\\Http\\Controllers\\Admin\\{$controllerName}::class)"
+    $middleware = "'can:read {$permBase}'";
+    $routeDef = "Route::resource('{$slug}', App\\Http\\Controllers\\Admin\\{$controllerName}::class)"
               . "->middleware([{$middleware}]);";
 }
 
-$routesContent = File::get($routesFile);
-if (strpos($routesContent, $routeDef) === false) {
-    File::append($routesFile, "\n" . $routeDef . "\n");
-}
 
+        $routesContent = File::get($routesFile);
+        if (strpos($routesContent, $routeDef) === false) {
+            File::append($routesFile, "\n" . $routeDef . "\n");
+        }
 
-        // 5. Generate Inertia Page React
-        $reactPath = resource_path("js/Pages/Admin/{$request->url}");
+        // 5. Generate Inertia Page
+        $reactPath = resource_path("js/Pages/Admin/{$navigasi->url}");
         if (!File::exists($reactPath)) {
             File::makeDirectory($reactPath, 0755, true);
         }
@@ -170,8 +176,16 @@ if (strpos($routesContent, $routeDef) === false) {
                 $deleteMenuRecursive($child);
             }
 
-            // 1. Hapus permission terkait
-            $permissions = Permission::where('name', 'like', "%menu:{$menuItem->id}%")->get();
+            // 1. Hapus permission terkait (hanya eksak match)
+            $actions = $menuItem->parent_id ? ['read', 'create', 'update', 'delete'] : ['read'];
+
+$names = array_map(function ($action) use ($menuItem) {
+    return strtolower("{$action} {$menuItem->name}");
+}, $actions);
+
+$permissions = Permission::whereIn('name', $names)->get();
+
+
             foreach ($permissions as $perm) {
                 foreach ($perm->roles as $role) {
                     $role->revokePermissionTo($perm);
@@ -185,7 +199,6 @@ if (strpos($routesContent, $routeDef) === false) {
             // 3. Hapus menu
             $menuItem->delete();
         };
-
         $deleteMenuRecursive($menu);
     });
 

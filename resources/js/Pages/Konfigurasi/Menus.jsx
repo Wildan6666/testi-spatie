@@ -36,6 +36,7 @@ export default function Menus() {
   "Tag",
   "Star",
   "Globe",
+  "Circle",
   "Download",];
 
 const filteredMenus = menus.filter(menu =>

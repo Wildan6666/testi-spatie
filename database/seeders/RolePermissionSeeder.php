@@ -38,7 +38,6 @@ class RolePermissionSeeder extends Seeder
             'pimpinan',
             'pegawai',
             'mahasiswa',
-            'publik',
         ];
 
         foreach ($roles as $roleName) {
