@@ -11,6 +11,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Check } from "lucide-react";
 
 export default function UserManagement({ users, roles, permissions }) {
   const { data, setData,post, put, delete: destroy } = useForm();
@@ -172,7 +173,8 @@ export default function UserManagement({ users, roles, permissions }) {
           size="sm"
           variant="secondary"
           onClick={() => handleEdit(u)}
-        >
+          
+        ><Check size={18}></Check>
           Edit
         </Button>
 
@@ -227,7 +229,7 @@ export default function UserManagement({ users, roles, permissions }) {
               {r.name}
               <button
                 onClick={() => handleRevokeRole(selectedUser.id, r.name)}
-                className="text-red-500 hover:text-red-700 text-xs"
+                className="text-red-500 hover:text-red-700 text-xs hover:bg-red-100 px-1 rounded-full"
               >
                 ✕
               </button>
@@ -255,17 +257,16 @@ export default function UserManagement({ users, roles, permissions }) {
       </select>
     </div>
 
-    <DialogFooter className="mt-4">
-      <Button variant="secondary" onClick={() => setOpen(false)}>
-        Tutup
-      </Button>
-      <Button onClick={confirmAssignRole}>Assign Role</Button>
-    </DialogFooter>
-  </DialogContent>
-</Dialog>
+              <DialogFooter className="mt-4">
+                <Button variant="secondary" onClick={() => setOpen(false)}>
+                  Tutup
+                </Button>
+                <Button onClick={confirmAssignRole}>Assign Role</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
 
       
-
       {/* Modal Edit */}
       {editUser && (
         <Dialog open={!!editUser} onOpenChange={() => setEditUser(null)}>
