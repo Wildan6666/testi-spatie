@@ -4,9 +4,6 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
-use Inertia\Inertia;
-use Illuminate\Support\Facades\Auth;
-
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,19 +20,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Inertia::share([
-            'auth' => function () {
-                $user = Auth::user();
-
-                return [
-                    'user' => $user ? [
-                        'id'          => $user->id,
-                        'name'        => $user->name,
-                        'roles'       => $user->getRoleNames(), // requires Spatie\Permission
-                        'permissions' => $user->getAllPermissions()->pluck('name'),
-                    ] : null,
-                ];
-            },
-        ]);
+        Vite::prefetch(concurrency: 3);
     }
 }

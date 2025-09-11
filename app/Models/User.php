@@ -11,6 +11,10 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
+
+    use HasRoles;
+    protected $with = ['roles']; // biar role ikut di-load otomatis
+
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles;
 

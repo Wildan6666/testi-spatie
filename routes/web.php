@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\MenuController;
+use App\Http\Controllers\Admin\NavigationController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -19,7 +20,7 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    return Inertia::render('DashboardUser');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -35,7 +36,9 @@ Route::get('/admin', [DashboardController::class, 'index'])
 
 Route::prefix('konfigurasi')->middleware(['auth'])->name('admin.')->group(function () {
     // Users
-    Route::get('users', [UserController::class, 'index'])->name('users.index');
+    Route::get('users', [UserController::class, 'index'])->name('users.index')
+    ->middleware('permission:manage users');
+
     Route::post('users/assign-role', [UserController::class, 'assignRole'])->name('users.assignRole');
     Route::post('users/revoke-role', [UserController::class, 'revokeRole'])->name('users.revokeRole');
     Route::post('users/give-permission', [UserController::class, 'givePermissionTo'])->name('users.givePermissionTo');
@@ -43,18 +46,48 @@ Route::prefix('konfigurasi')->middleware(['auth'])->name('admin.')->group(functi
     Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 
     // Roles
-    Route::get('roles', [RoleController::class, 'index'])->name('roles.index');
+    Route::get('/roles', [RoleController::class, 'index'])->name('roles.index')
+     ->middleware('permission:manage roles');
+    Route::post('/roles', [RoleController::class, 'store'])->name('roles.store');
+    Route::delete('/roles/{role}', [RoleController::class, 'destroy'])->name('roles.destroy');
 
     // Permissions
-    Route::get('permissions', [PermissionController::class, 'index'])->name('permissions.index');
-    Route::post('permissions/{user}', [PermissionController::class, 'update'])->name('permissions.update');
+    Route::get('permissions', [PermissionController::class, 'index'])->name('permissions.index')
+    ->middleware('permission:manage permissions');
 
+    Route::post('permissions/{user}', [PermissionController::class, 'update'])->name('permissions.update');
+    Route::delete('permissions/delete/{id}', [PermissionController::class, 'destroyPermission'])
+    ->name('permissions.destroy');
+    
     // Menus
-    Route::get('menus', [MenuController::class, 'index'])->name('menus.index');
+    route::get('menus', [NavigationController::class, 'index'])->name('menus.index')
+    ->middleware('permission:manage menus');
+
+    Route::post('menus', [MenuController::class, 'store'])->name('menus.store');
+
 });
 
+Route::get('/Verifikasi', function () {
+    return Inertia::render('Admin/Verifikasi');
+})->middleware(['auth', 'verified','permission:verify document'])->name('Verifikasi');
 
 
+// web.php
+Route::get('/dokumen', function () {
+    return Inertia::render('Dokumen'); // pastikan Dokumen.jsx ada di resources/js/Pages/
+})->middleware(['auth', 'verified'])->name('dokumen');
 
+Route::get('/detaildokumen/{id}', function ($id) {
+    return Inertia::render('detailDokumen', [
+        'id' => $id]);
+})->middleware(['auth', 'verified'])->name('detailDokumen');
+
+Route::get('/Berita', function () {
+    return Inertia::render('Berita'); // pastikan Dokumen.jsx ada di resources/js/Pages/
+})->middleware(['auth', 'verified'])->name('Berita');
+
+Route::get('/tentang', function () {
+    return Inertia::render('tentang'); // pastikan Dokumen.jsx ada di resources/js/Pages/
+})->middleware(['auth', 'verified'])->name('Tentang Kami');
 
 require __DIR__.'/auth.php';

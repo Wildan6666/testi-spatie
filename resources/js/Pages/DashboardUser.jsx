@@ -5,21 +5,16 @@ import '../../css/LandingPage.css';
 import { Inertia } from '@inertiajs/inertia';
 import { ChevronDown } from "lucide-react";
 import { Eye, Download } from "lucide-react";
-import { terbaruData, populerData, beritaTerkini, yearlyData, monthlyData, pieData } from "./dummy";
+import { terbaruData, populerData, beritaTerkini, yearlyData,monthlyData, pieData } from "./dummy";
 import { Facebook, Twitter, Youtube, Instagram, Linkedin } from "lucide-react";
-
 
 export default function LandingPage() {
 
   const COLORS = ['#ffffff', '#fed7aa', '#fdba74'];
 
-// --- Tabs Produk Hukum ---
-const [activeTab, setActiveTab] = useState("terbaru");
-const displayedData = activeTab === "terbaru" ? terbaruData : populerData;
-
-// --- Slider Berita Terkini ---
-const [currentSlide, setCurrentSlide] = useState(0);
-const [itemsPerView, setItemsPerView] = useState(3);
+  // State untuk slide
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [itemsPerView, setItemsPerView] = useState(3);
 
   // Update items per view berdasarkan ukuran layar
   useEffect(() => {
@@ -52,20 +47,24 @@ const [itemsPerView, setItemsPerView] = useState(3);
     setCurrentSlide(Math.min(index, maxSlides));
   };
 
+  const [activeTab, setActiveTab] = useState("terbaru");
+
+
+  const displayedData = activeTab === "terbaru" ? terbaruData : populerData;
+
+  // Auto slide setiap 5 detik
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev >= maxSlides ? 0 : prev + 1));
+      setCurrentSlide(prev => (prev >= maxSlides ? 0 : prev + 1));
     }, 5000);
 
     return () => clearInterval(interval);
   }, [maxSlides]);
-  
-
   return (
     <div className="landing-container">
-   {/* Navbar */}
-  <header className="navbar">
+      {/* Navbar */}
+      <header className="navbar">
         <div className="navbar-content">
           <div className="logo-container">
             <img 
@@ -73,7 +72,7 @@ const [itemsPerView, setItemsPerView] = useState(3);
               alt="Logo jdih" 
               className="logo"
             />
-<Link href="/">
+<Link href="/dashboard">
   <img 
     src="https://th.bing.com/th/id/R.86dce44d0b6ed1a54adf1f31f0670e91?rik=2DeJsiiVWkapnA&riu=http%3a%2f%2fagribisnis.unja.ac.id%2fwp-content%2fuploads%2f2019%2f11%2fcropped-Logo-UNJA.png&ehk=DYTHw8EoXNZdJLcttayfQVg0mX13Cu37ohMIJRTg8gw%3d&risl=&pid=ImgRaw&r=0" 
     alt="Logo unja" 
@@ -84,22 +83,24 @@ const [itemsPerView, setItemsPerView] = useState(3);
 
           {/* Menu */}
           <nav className="navigation">
-            <a href="/" className="nav-link">Beranda</a>
-            <a href="#" className="nav-link">Tentang Kami</a>
-            <a href="#" className="nav-link">Dokumen Hukum</a>
-            <a href="#" className="nav-link">Portal JDIHN</a>
-            <Link
-              href={route('login')}
-              className="login-button"
-              >
-              Masuk
-              </Link>
+            <a href="/dashboard" className="nav-link">Beranda</a>
+            <a href="/tentang" className="nav-link">Tentang Kami</a>
+            <a href="/dokumen" className="nav-link">Dokumen Hukum</a>
+        <Link
+          href="/logout"
+          method="post"
+          as="button"
+          className="login-button"
+        >
+          <span>Logout</span>
+        </Link>
+        
           </nav>
         </div>
-  </header>
+      </header>
 
-    {/* Hero Section */}
-    <section className="hero-section">
+      {/* Hero Section */}
+      <section className="hero-section">
         {/* Overlay putih transparan */}
         <div className="hero-overlay"></div>
 
@@ -153,7 +154,7 @@ const [itemsPerView, setItemsPerView] = useState(3);
                 <select className="custom-select">
                   <option value="">Status</option>
                   <option value="berlaku">Berlaku</option>
-                  <option value="dicabut">Dicabut</option>
+                  <option value="dicabut">Tidak Berlaku</option>
                   <option value="dicabut">Revisi</option>
                 </select>
               </div>
@@ -162,9 +163,12 @@ const [itemsPerView, setItemsPerView] = useState(3);
               <div className="filter-input">
                 <select className="custom-select">
                   <option value="">Pilih Jenis Dokumen</option>
-                  <option value="peraturan">Peraturan Rektor</option>
-                  <option value="keputusan">Keputusan Rektor</option>
-                  <option value="surat-edaran">Surat Edaran</option>
+                  <option value="peraturan">Keputusan Rektor</option>
+                  <option value="keputusan">Keputusan Senat</option>
+                  <option value="surat-edaran">Peraturan Rektor</option>
+                  <option value="surat-edaran">Peraturan Senat</option>
+                  <option value="surat-edaran">Jurnal</option>
+                  <option value="surat-edaran">Buku Hukum</option>
                 </select>
               </div>
 
@@ -172,9 +176,13 @@ const [itemsPerView, setItemsPerView] = useState(3);
               <div className="filter-input">
                 <select className="custom-select">
                   <option value="">Pilih Tipe Dokumen</option>
-                  <option value="akademik">Akademik</option>
+                  <option value="akademik">Kepegawaian</option>
+                  <option value="akademik">Tata Laksana</option>
+                  <option value="akademik">Keuangan</option>
                   <option value="keuangan">Keuangan</option>
-                  <option value="kepegawaian">Kepegawaian</option>
+                  <option value="kepegawaian">Perencanaan</option>
+                  <option value="kepegawaian">Kemahasiswaan</option>
+                  <option value="kepegawaian">Akademik</option>
                 </select>
               </div>
             </div>
@@ -185,7 +193,7 @@ const [itemsPerView, setItemsPerView] = useState(3);
             </button>
           </div>
         </div>
-    </section>
+      </section>
 
 {/* Daftar Produk Hukum */}
 <section className="section-gradient">
@@ -213,10 +221,11 @@ const [itemsPerView, setItemsPerView] = useState(3);
     {/* Grid Cards */}
     <div className="grid-3-cols">
       {displayedData.map((item) => (
-<Link
-  href={route("detailDokumen", { id: item.id })}
-  className="product-card block cursor-pointer hover:shadow-lg transition"
->
+        <Link
+          key={item.id} // ✅ tambahkan key
+          href={route("detailDokumen", { id: item.id })} // ✅ lebih aman pakai route() Laravel Inertia
+          className="product-card block cursor-pointer hover:shadow-lg transition"
+        >
           <span className="product-tag">{item.kategori}</span>
           <h3 className="product-title">{item.judul}</h3>
           <p className="product-desc">{item.deskripsi}</p>
@@ -234,8 +243,6 @@ const [itemsPerView, setItemsPerView] = useState(3);
     </div>
   </div>
 </section>
-
-
 
 {/*Berita terkini*/}
     <section className="section-gradient">
@@ -364,7 +371,7 @@ const [itemsPerView, setItemsPerView] = useState(3);
         }
       `}</style>
     </section>
-
+    
     {/* Statistik Section dengan Charts */}
     <section className="section-statistik">
         <div className="stats-container">
