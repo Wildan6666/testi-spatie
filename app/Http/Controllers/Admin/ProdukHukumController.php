@@ -51,20 +51,101 @@ class ProdukHukumController extends Controller
         $validated['status_id'] = $pendingStatus ? $pendingStatus->id : null;
 
         // Simpan file jika ada
-        if ($request->hasFile('berkas')) {
-            $file = $request->file('berkas');
-            $filename = time().'_'.preg_replace('/[^a-zA-Z0-9_\.-]/','_',$file->getClientOriginalName());
-            $validated['berkas'] = $file->storeAs('produk_hukum', $filename, 'public');
-        }
-
-        try {
-            ProdukHukum::create($validated);
-        } catch (\Exception $e) {
-            Log::error('DB Error: ' . $e->getMessage());
-            return back()->withErrors(['db_error' => 'Gagal menyimpan data: '.$e->getMessage()]);
-        }
-
-        return redirect()->route('produk-hukum.index')
-                         ->with('success', 'Produk hukum berhasil ditambahkan.');
+       if ($request->hasFile('berkas')) {
+        $file = $request->file('berkas');
+        $filename = time().'_'.preg_replace('/[^a-zA-Z0-9_\.-]/','_',$file->getClientOriginalName());
+        $validated['berkas'] = $file->storeAs('produk_hukum', $filename, 'public');
     }
+
+    try {
+        ProdukHukum::create($validated);
+    } catch (\Exception $e) {
+        Log::error('DB Error: ' . $e->getMessage());
+        return back()->withErrors(['db_error' => 'Gagal menyimpan data: '.$e->getMessage()]);
+    }
+
+    return redirect()->route('produk-hukum.index')
+                     ->with('success', 'Produk hukum berhasil ditambahkan.');
+}
+
+public function edit($id)
+{
+    $produkHukum = ProdukHukum::findOrFail($id);
+
+    return Inertia::render('Admin/produk-hukum/Edit', [
+        'produkHukum' => $produkHukum,
+        'instansis' => Instansi::all(),
+        'statusPeraturans' => StatusPeraturan::all(),
+        'tipeDokumens' => TipeDokumen::all(),
+        'jenisHukums' => JenisHukum::all(),
+    ]);
+}
+
+public function update(Request $request, $id)
+{
+    $produkHukum = ProdukHukum::findOrFail($id);
+
+    $validated = $request->validate([
+        'judul' => 'required|string|max:255',
+        'nomor' => 'nullable|string|max:100',
+        'tahun' => 'nullable|digits:4|integer',
+        'ringkasan' => 'nullable|string',
+        'subjek' => 'nullable|string|max:150',
+        'tanggal_penetapan' => 'nullable|date',
+        'kata_kunci' => 'nullable|string',
+        'instansi_id' => 'required|exists:instansi,id',
+        'status_peraturan_id' => 'required|exists:status_peraturan,id',
+        'tipe_dokumen_id' => 'required|exists:tipe_dokumen,id',
+        'jenis_hukum_id' => 'required|exists:jenis_hukum,id',
+        'berkas' => 'nullable|file|mimes:pdf,png|max:2048',
+    ]);
+
+    // status_id tetap pending (atau tetap nilai sebelumnya kalau mau)
+    $pendingStatus = StatusVerifikasi::where('nama_status', 'Pending')->first();
+    $validated['status_id'] = $pendingStatus ? $pendingStatus->id : $produkHukum->status_id;
+
+    // update file kalau ada upload baru
+    if ($request->hasFile('berkas')) {
+        // hapus file lama kalau ada
+        if ($produkHukum->berkas && Storage::disk('public')->exists($produkHukum->berkas)) {
+            Storage::disk('public')->delete($produkHukum->berkas);
+        }
+
+        $file = $request->file('berkas');
+        $filename = time().'_'.preg_replace('/[^a-zA-Z0-9_\.-]/','_',$file->getClientOriginalName());
+        $validated['berkas'] = $file->storeAs('produk_hukum', $filename, 'public');
+    }
+
+    try {
+        $produkHukum->update($validated);
+    } catch (\Exception $e) {
+        Log::error('DB Error: ' . $e->getMessage());
+        return back()->withErrors(['db_error' => 'Gagal update data: '.$e->getMessage()]);
+    }
+
+    return redirect()->route('produk-hukum.index')
+                     ->with('success', 'Produk hukum berhasil diperbarui.');
+}
+
+public function destroy($id)
+{
+    $produkHukum = ProdukHukum::findOrFail($id);
+
+    // hapus file jika ada
+    if ($produkHukum->berkas && Storage::disk('public')->exists($produkHukum->berkas)) {
+        Storage::disk('public')->delete($produkHukum->berkas);
+    }
+
+    try {
+        $produkHukum->delete();
+    } catch (\Exception $e) {
+        Log::error('DB Error: ' . $e->getMessage());
+        return back()->withErrors(['db_error' => 'Gagal hapus data: '.$e->getMessage()]);
+    }
+
+    return redirect()->route('produk-hukum.index')
+                     ->with('success', 'Produk hukum berhasil dihapus.');
+}
+
+
 }
