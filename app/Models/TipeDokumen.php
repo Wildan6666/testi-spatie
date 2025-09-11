@@ -5,17 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class StatusVerifikasi extends Model
+class TipeDokumen extends Model
 {
-    use HasFactory;
+     use HasFactory;
 
-        protected $table = 'masterstatus';
-        protected $fillable = [
+      protected $table = 'Tipe_Dokumen';
+
+       protected $fillable = [
             
-        'nama_status',
+        'nama',
         'deskripsi',
         'kode',
-        'color'
-    ];
+        ];
 
 }

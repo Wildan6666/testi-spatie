@@ -1,52 +1,15 @@
-// resources/js/Pages/Master/ProdukHukum.jsx
 import { useState } from "react";
+import { Link, usePage } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Eye, Pencil, Trash2, Plus, X } from "lucide-react";
 import SearchFilter from "@/Components/SearchFilter";
 
-const data = [
-  {
-    id: 1,
-    judul: "Peraturan Rektor No. 12 Tahun 2024 tentang Tata Tertib Mahasiswa",
-    nomor: "12/2024",
-    tahun: 2024,
-    ringkasan: "Mengatur tata tertib mahasiswa di lingkungan kampus.",
-    subjek: "Mahasiswa",
-    tanggal_penetapan: "2024-02-10",
-    kata_kunci: "tata tertib, mahasiswa",
-    instansi: "Universitas Jambi",
-    status_verifikasi: "Terverifikasi",
-    status_peraturan: "Berlaku",
-    tipe_dokumen: "Peraturan",
-    jenis_dokumen: "Peraturan Rektor",
-    berkas: "dokumen/peraturan-12-2024.pdf",
-  },
-  {
-    id: 2,
-    judul: "Keputusan Rektor No. 05 Tahun 2023 tentang Beasiswa Mahasiswa",
-    nomor: "05/2023",
-    tahun: 2023,
-    ringkasan: "Ketentuan beasiswa bagi mahasiswa berprestasi.",
-    subjek: "Beasiswa",
-    tanggal_penetapan: "2023-01-20",
-    kata_kunci: "beasiswa, mahasiswa",
-    instansi: "Universitas Jambi",
-    status_verifikasi: "Terverifikasi",
-    status_peraturan: "Berlaku",
-    tipe_dokumen: "Keputusan",
-    jenis_dokumen: "Keputusan Rektor",
-    berkas: "dokumen/keputusan-05-2023.pdf",
-  },
-];
-
 export default function ProdukHukumPage() {
+  const { props } = usePage();
+  const data = props.produkHukums || [];
+
   const [selected, setSelected] = useState(null);
   const [filteredData, setFilteredData] = useState(data);
 
@@ -54,8 +17,8 @@ export default function ProdukHukumPage() {
     setFilteredData(
       data.filter(
         (item) =>
-          item.judul.toLowerCase().includes(query.toLowerCase()) ||
-          item.kata_kunci.toLowerCase().includes(query.toLowerCase())
+          item.judul?.toLowerCase().includes(query.toLowerCase()) ||
+          item.kata_kunci?.toLowerCase().includes(query.toLowerCase())
       )
     );
   };
@@ -64,7 +27,7 @@ export default function ProdukHukumPage() {
     setFilteredData(
       data.filter((item) => {
         const matchTahun = tahun ? item.tahun == tahun : true;
-        const matchTipe = tipe ? item.tipe_dokumen === tipe : true;
+        const matchTipe = tipe ? item.tipe_dokumen?.nama === tipe : true;
         return matchTahun && matchTipe;
       })
     );
@@ -81,29 +44,29 @@ export default function ProdukHukumPage() {
           <h1 className="text-2xl font-bold text-gray-800">
             Manajemen Produk Hukum
           </h1>
-
         </div>
 
         {/* Header + Search & Filter */}
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                {/* Search & Filter */}
-                <div className="flex-1">
-                  <SearchFilter onSearch={handleSearch} onFilter={handleFilter} />
-                </div>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              {/* Search & Filter */}
+              <div className="flex-1">
+                <SearchFilter onSearch={handleSearch} onFilter={handleFilter} />
+              </div>
 
-                {/* Tombol Tambah */}
+              {/* Tombol Tambah */}
+              <Link href={route("produk-hukum.create")}>
                 <Button className="ml-4 flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white">
                   <Plus className="w-4 h-4" />
                   Tambah Produk Hukum
                 </Button>
-              </div>
-            </CardContent>
-          </Card>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
 
-
-        {/* Tabel Ringkas */}
+        {/* Tabel */}
         <Card className="shadow-md">
           <CardHeader>
             <CardTitle>Daftar Produk Hukum</CardTitle>
@@ -133,7 +96,9 @@ export default function ProdukHukumPage() {
                       <td className="border px-3 py-2">{item.judul}</td>
                       <td className="border px-3 py-2 text-center">{item.nomor}</td>
                       <td className="border px-3 py-2 text-center">{item.tahun}</td>
-                      <td className="border px-3 py-2 text-center">{item.status_peraturan}</td>
+                      <td className="border px-3 py-2 text-center">
+                        {item.status_peraturan?.nama}
+                      </td>
                       <td className="border px-3 py-2 flex justify-center gap-2">
                         <Button
                           size="sm"
@@ -165,14 +130,12 @@ export default function ProdukHukumPage() {
               </table>
             </div>
           </CardContent>
-          
         </Card>
 
         {/* Modal Detail */}
         {selected && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
             <div className="bg-white rounded-xl shadow-xl w-[700px] relative p-6 max-h-[90vh] overflow-y-auto">
-              {/* Tombol close */}
               <button
                 onClick={handleClose}
                 className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
@@ -185,16 +148,15 @@ export default function ProdukHukumPage() {
               </h2>
 
               <div className="grid grid-cols-2 gap-4 text-sm text-gray-700">
-                <p><span className="font-medium">ID:</span> {selected.id}</p>
                 <p><span className="font-medium">Nomor:</span> {selected.nomor}</p>
                 <p><span className="font-medium">Tahun:</span> {selected.tahun}</p>
                 <p><span className="font-medium">Tanggal Penetapan:</span> {selected.tanggal_penetapan}</p>
                 <p><span className="font-medium">Subjek:</span> {selected.subjek}</p>
-                <p><span className="font-medium">Instansi:</span> {selected.instansi}</p>
-                <p><span className="font-medium">Status Verifikasi:</span> {selected.status_verifikasi}</p>
-                <p><span className="font-medium">Status Peraturan:</span> {selected.status_peraturan}</p>
-                <p><span className="font-medium">Tipe Dokumen:</span> {selected.tipe_dokumen}</p>
-                <p><span className="font-medium">Jenis Dokumen:</span> {selected.jenis_dokumen}</p>
+                <p><span className="font-medium">Instansi:</span> {selected.instansi?.nama}</p>
+                <p><span className="font-medium">Status Verifikasi:</span> {selected.status_verifikasi?.nama_status}</p>
+                <p><span className="font-medium">Status Peraturan:</span> {selected.status_peraturan?.nama}</p>
+                <p><span className="font-medium">Tipe Dokumen:</span> {selected.tipe_dokumen?.nama}</p>
+                <p><span className="font-medium">Jenis Dokumen:</span> {selected.jenis_hukum?.nama}</p>
               </div>
 
               <div className="mt-4">
@@ -209,14 +171,16 @@ export default function ProdukHukumPage() {
 
               <div className="mt-4">
                 <p className="font-medium mb-1">Berkas:</p>
-                <a
-                  href={`/${selected.berkas}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 underline"
-                >
-                  {selected.berkas}
-                </a>
+                {selected.berkas && (
+                  <a
+                    href={`/storage/${selected.berkas}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline"
+                  >
+                    Lihat Berkas
+                  </a>
+                )}
               </div>
             </div>
           </div>

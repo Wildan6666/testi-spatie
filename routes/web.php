@@ -36,7 +36,7 @@ Route::get('/admin', [MenuController::class, 'index'])
 Route::prefix('konfigurasi')->middleware(['auth'])->name('admin.')->group(function () {
     // Users
     Route::get('users', [UserController::class, 'index'])->name('users.index')
-    ->middleware('can:read users');
+    ;
     Route::post('users/assign-role', [UserController::class, 'assignRole'])->name('users.assignRole');
     Route::post('users/revoke-role', [UserController::class, 'revokeRole'])->name('users.revokeRole');
     Route::post('users/give-permission', [UserController::class, 'givePermissionTo'])->name('users.givePermissionTo');

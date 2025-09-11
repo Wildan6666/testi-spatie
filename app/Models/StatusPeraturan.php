@@ -14,6 +14,6 @@ class StatusPeraturan extends Model
     protected $fillable = [
         'nama',
         'keterangan',
-        'warna',
+        'color',
     ];
 }

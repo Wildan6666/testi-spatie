@@ -11,7 +11,7 @@ export default function Dashboard({ auth }) {
 
       {/* Debug tampilkan user full */}
       <pre className="mt-4 bg-gray-100 p-4 rounded text-sm">
-        {JSON.stringify(auth.user, null, 2)}
+        {/* {JSON.stringify(auth.user, null, 2)} */}
       </pre>
     </AdminLayout>
   );
