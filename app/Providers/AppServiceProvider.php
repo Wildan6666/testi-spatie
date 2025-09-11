@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate; // 👈 tambahkan ini
 use App\Models\Navigation;
 
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -24,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Vite::prefetch(concurrency: 3);
         // Bypass permission untuk super-admin
         Gate::before(function ($user, $ability) {
             if ($user->hasRole('super-admin')) {
@@ -31,7 +33,6 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
-        // Share menus ke semua view inertia
         Inertia::share('menus', function () {
             return Navigation::whereNull('parent_id')
                 ->with(['children' => function ($q) {

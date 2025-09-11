@@ -58,9 +58,24 @@ Route::prefix('konfigurasi')->middleware(['auth'])->name('admin.')->group(functi
 
 });
 
+// web.php
+Route::get('/dokumen', function () {
+    return Inertia::render('Dokumen'); // pastikan Dokumen.jsx ada di resources/js/Pages/
+})->middleware(['auth', 'verified'])->name('dokumen');
 
+Route::get('/detaildokumen/{id}', function ($id) {
+    return Inertia::render('detailDokumen', [
+        'id' => $id]);
+})->middleware(['auth', 'verified'])->name('detailDokumen');
+
+Route::get('/Berita', function () {
+    return Inertia::render('Berita'); // pastikan Dokumen.jsx ada di resources/js/Pages/
+})->middleware(['auth', 'verified'])->name('Berita');
+
+Route::get('/tentang', function () {
+    return Inertia::render('tentang'); // pastikan Dokumen.jsx ada di resources/js/Pages/
+})->middleware(['auth', 'verified'])->name('Tentang Kami');
 require __DIR__.'/auth.php';
-
 
 // halaman roles
 Route::get('/konfigurasi/roles', [RoleController::class, 'index'])->name('roles.index');
