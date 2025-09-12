@@ -41,9 +41,10 @@ export default function Sidebar() {
           return (
             <div key={menu.id}>
               {menu.children.length === 0 ? (
+                // Menu tanpa anak
                 <Link
                   href={`/${menu.url}`}
-                  className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 ${
+                  className={`flex items-center gap-3 px-4 py-2 transition-all duration-200 rounded-md ${
                     activeParent
                       ? "bg-blue-50 text-blue-700 font-semibold border-l-4 border-blue-600"
                       : "hover:bg-gray-50"
@@ -53,12 +54,13 @@ export default function Sidebar() {
                   <span className="text-sm">{menu.name}</span>
                 </Link>
               ) : (
+                // Menu dengan anak
                 <div>
                   <button
                     onClick={() =>
                       setOpenMenu(openMenu === menu.id ? null : menu.id)
                     }
-                    className={`w-full flex items-center justify-between px-4 py-2 rounded-lg transition-all duration-200 ${
+                    className={`w-full flex items-center justify-between px-4 py-2 transition-all duration-200 rounded-md ${
                       activeParent
                         ? "bg-blue-50 text-blue-700 font-semibold border-l-4 border-blue-600"
                         : "hover:bg-gray-50"
@@ -88,7 +90,7 @@ export default function Sidebar() {
                         <Link
                           key={child.id}
                           href={`/${child.url}`}
-                          className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-all ${
+                          className={`flex items-center gap-2 px-3 py-2 text-sm transition-all rounded-md ${
                             url.startsWith(`/${child.url}`)
                               ? "bg-blue-100 text-blue-700 font-semibold"
                               : "hover:bg-gray-100"
@@ -110,7 +112,7 @@ export default function Sidebar() {
           href="/logout"
           method="post"
           as="button"
-          className="flex items-center gap-3 px-4 py-2 rounded-lg text-red-600 hover:bg-red-50 transition-all font-medium"
+          className="flex items-center gap-3 px-4 py-2 rounded-md text-red-600 hover:bg-red-50 transition-all font-medium"
         >
           <Icons.LogOut size={18} />
           <span className="text-sm">Logout</span>
