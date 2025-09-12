@@ -1,10 +1,8 @@
 import { useState } from "react";
 import { Link, usePage, router } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Eye, Pencil, Trash2, Plus, X } from "lucide-react";
-import SearchFilter from "@/Components/SearchFilter";
+import { FiEdit2, FiTrash2, FiPlus, FiSearch } from "react-icons/fi";
+import { BsArrowUp, BsArrowDown } from "react-icons/bs";
 import DetailModal from "./DetailModal";
 import EditModal from "./EditModal";
 
@@ -12,165 +10,191 @@ export default function ProdukHukumPage() {
   const { props } = usePage();
   const data = props.produkHukums || [];
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "ascending" });
   const [selected, setSelected] = useState(null);
-  const [filteredData, setFilteredData] = useState(data);
   const [editItem, setEditItem] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
 
-  // 🔍 Pencarian
-  const handleSearch = (query) => {
-    setFilteredData(
-      data.filter(
-        (item) =>
-          item.judul?.toLowerCase().includes(query.toLowerCase()) ||
-          item.kata_kunci?.toLowerCase().includes(query.toLowerCase())
-      )
-    );
+  // 🔍 Sorting
+  const handleSort = (key) => {
+    let direction = "ascending";
+    if (sortConfig.key === key && sortConfig.direction === "ascending") {
+      direction = "descending";
+    }
+    setSortConfig({ key, direction });
   };
 
-  // 🏷️ Filter tahun & tipe
-  const handleFilter = ({ tahun, tipe }) => {
-    setFilteredData(
-      data.filter((item) => {
-        const matchTahun = tahun ? item.tahun == tahun : true;
-        const matchTipe = tipe ? item.tipe_dokumen?.nama === tipe : true;
-        return matchTahun && matchTipe;
-      })
-    );
-  };
+  const sortedData = [...data].sort((a, b) => {
+    if (!sortConfig.key) return 0;
+    const aValue = a[sortConfig.key];
+    const bValue = b[sortConfig.key];
+    if (sortConfig.direction === "ascending") {
+      return aValue > bValue ? 1 : -1;
+    } else {
+      return aValue < bValue ? 1 : -1;
+    }
+  });
 
-  // 👁️ Detail
+  // 🔍 Filtering
+  const filteredData = sortedData.filter(
+    (item) =>
+      item.judul?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.kata_kunci?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // 📑 Pagination
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+  // 👁️ Preview
   const handlePreview = (item) => setSelected(item);
-  const handleClose = () => setSelected(null);
 
-  // ✏️ Edit
-  const handleEdit = (id) => {
-    router.visit(route("produk-hukum.edit", id));
+  // 🗑️ Delete
+  const handleDelete = (id) => {
+    if (confirm("Yakin ingin menghapus data ini?")) {
+      router.delete(route("produk-hukum.destroy", id), {
+        onSuccess: () => {
+          setSelected(null);
+        },
+      });
+    }
   };
-
-  // 🗑️ Hapus
-const handleDelete = (id) => {
-  if (confirm("Yakin ingin menghapus data ini?")) {
-    router.delete(route("produk-hukum.destroy", id), {
-      onSuccess: () => {
-        setSelected(null); // Tutup modal jika terbuka
-        setFilteredData((prev) => prev.filter((item) => item.id !== id));
-      },
-    });
-  }
-};
-
 
   return (
     <AdminLayout>
-      <div className="max-w-7xl mx-auto space-y-6">
+      <div className="p-6 max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-800">
             Manajemen Produk Hukum
           </h1>
+          <Link href={route("produk-hukum.create")}>
+            <button className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg flex items-center gap-2 shadow-md transition">
+              <FiPlus className="w-5 h-5" /> Tambah Produk Hukum
+            </button>
+          </Link>
         </div>
 
-        {/* Header + Search & Filter */}
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              {/* Search & Filter */}
-              <div className="flex-1">
-                <SearchFilter onSearch={handleSearch} onFilter={handleFilter} />
-              </div>
+        {/* Search */}
+        <div className="mb-4">
+          <div className="relative w-full md:w-1/3">
+            <input
+              type="text"
+              placeholder="Cari produk hukum..."
+              className="w-full px-4 py-2 border rounded-lg bg-white text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <FiSearch className="absolute right-3 top-3 text-gray-400" />
+          </div>
+        </div>
 
-              {/* Tombol Tambah */}
-              <Link href={route("produk-hukum.create")}>
-                <Button className="ml-4 flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white">
-                  <Plus className="w-4 h-4" />
-                  Tambah Produk Hukum
-                </Button>
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Tabel */}
-        <Card className="shadow-md">
-          <CardHeader>
-            <CardTitle>Daftar Produk Hukum</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto rounded-lg border">
-              <table className="w-full text-sm">
-                <thead className="bg-gray-100 text-gray-700">
-                  <tr>
-                    <th className="border px-3 py-2 text-left">ID</th>
-                    <th className="border px-3 py-2 text-left">Judul</th>
-                    <th className="border px-3 py-2 text-center">Nomor</th>
-                    <th className="border px-3 py-2 text-center">Tahun</th>
-                    <th className="border px-3 py-2 text-center">Status</th>
-                    <th className="border px-3 py-2 text-center">Aksi</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredData.map((item, idx) => (
-                    <tr
-                      key={item.id}
-                      className={`${
-                        idx % 2 === 0 ? "bg-white" : "bg-gray-50"
-                      } hover:bg-gray-100 transition`}
-                    >
-                      <td className="border px-3 py-2">{item.id}</td>
-                      <td className="border px-3 py-2">{item.judul}</td>
-                      <td className="border px-3 py-2 text-center">
-                        {item.nomor}
-                      </td>
-                      <td className="border px-3 py-2 text-center">
-                        {item.tahun}
-                      </td>
-                      <td className="border px-3 py-2 text-center">
+        {/* Table */}
+        <div className="overflow-x-auto rounded-lg shadow border border-gray-200">
+          <table className="w-full table-auto border-collapse">
+            <thead className="bg-gray-100">
+              <tr>
+                {["id", "judul", "nomor", "tahun", "status_peraturan"].map((column) => (
+                  <th
+                    key={column}
+                    onClick={() => handleSort(column)}
+                    className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-200"
+                  >
+                    <div className="flex items-center gap-2">
+                      {column === "status_peraturan" ? "Status" : column.charAt(0).toUpperCase() + column.slice(1)}
+                      {sortConfig.key === column &&
+                        (sortConfig.direction === "ascending" ? (
+                          <BsArrowUp className="w-4 h-4" />
+                        ) : (
+                          <BsArrowDown className="w-4 h-4" />
+                        ))}
+                    </div>
+                  </th>
+                ))}
+                <th className="px-6 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                  Aksi
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentItems.length > 0 ? (
+                currentItems.map((item, index) => (
+                  <tr
+                    key={item.id}
+                    className={`hover:bg-blue-50 transition-colors ${
+                      index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                    }`}
+                  >
+                    <td className="px-6 py-4 text-sm text-gray-700">{item.id}</td>
+                    <td className="px-6 py-4 text-sm font-medium text-gray-900">{item.judul}</td>
+                    <td className="px-6 py-4 text-sm text-gray-700 text-center">{item.nomor}</td>
+                    <td className="px-6 py-4 text-sm text-gray-700 text-center">{item.tahun}</td>
+                    <td className="px-6 py-4 text-sm text-center">
+                      <span className="px-2 py-1 inline-flex text-xs font-semibold rounded-full bg-gray-200 text-gray-800">
                         {item.status_peraturan?.nama}
-                      </td>
-                      <td className="border px-3 py-2 flex justify-center gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="flex items-center gap-1"
-                          onClick={() => handlePreview(item)}
-                        >
-                          <Eye className="w-4 h-4" />
-                          Detail
-                        </Button>
-                        <Button
-                          size="sm"
-                          className="flex items-center gap-1 bg-yellow-500 hover:bg-yellow-600 text-white"
-                          onClick={() => setEditItem(item)}
-                        >
-                          <Pencil className="w-4 h-4" />
-                          Edit
-                        </Button>
-                        <Button
-                          size="sm"
-                          className="flex items-center gap-1 bg-red-600 hover:bg-red-700 text-white"
-                          onClick={() => handleDelete(item.id)}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                          Hapus
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-sm flex gap-3">
+                      <button
+                        onClick={() => handlePreview(item)}
+                        className="text-blue-600 hover:text-blue-800 font-medium"
+                      >
+                        Detail
+                      </button>
+                      <button
+                        onClick={() => setEditItem(item)}
+                        className="text-yellow-500 hover:text-yellow-600"
+                      >
+                        <FiEdit2 className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(item.id)}
+                        className="text-red-500 hover:text-red-600"
+                      >
+                        <FiTrash2 className="w-5 h-5" />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6" className="px-6 py-4 text-center text-gray-500">
+                    Tidak ada data
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
 
-       {/* Modal Detail */}
-      {selected && (
-        <DetailModal data={selected} onClose={() => setSelected(null)} />
-      )}
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex justify-center mt-4 gap-2">
+            {Array.from({ length: totalPages }).map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentPage(index + 1)}
+                className={`px-3 py-1 rounded ${
+                  currentPage === index + 1
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-200 text-gray-700"
+                } hover:bg-blue-500 hover:text-white transition`}
+              >
+                {index + 1}
+              </button>
+            ))}
+          </div>
+        )}
 
-      {/* Modal Edit */}
-      {editItem && (
-        <EditModal data={editItem} onClose={() => setEditItem(null)} />
-      )}
+        {/* Modal Detail */}
+        {selected && <DetailModal data={selected} onClose={() => setSelected(null)} />}
+
+        {/* Modal Edit */}
+        {editItem && <EditModal data={editItem} onClose={() => setEditItem(null)} />}
       </div>
     </AdminLayout>
   );

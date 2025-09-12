@@ -21,7 +21,7 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    return Inertia::render('DashboardUser');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -91,7 +91,7 @@ Route::post('/konfigurasi/roles/{role}/permissions', [RoleController::class, 'up
     ->name('roles.updatePermissions');
 
 
-Route::resource('dokumen', App\Http\Controllers\Admin\DokumenController::class)->middleware('can:read dokumen');
+Route::resource('dokumen/admin', App\Http\Controllers\Admin\DokumenController::class)->middleware('can:read dokumen');
 
 Route::resource('jenis-hukum', App\Http\Controllers\Admin\JenisHukumController::class)->middleware(['can:read jenis hukum']);
 
