@@ -17,4 +17,22 @@ class Instansi extends Model
         'alamat',
         'kontak',
     ];
+
+public function verifikatorUsers()
+{
+    return $this->belongsToMany(
+        \App\Models\User::class,
+        'verifikator_instansi',
+        'instansi_id',   // FK di pivot ke instansi
+        'user_id'        // FK di pivot ke users
+    )->withPivot('role');
+}
+
+public function userRoles()
+{
+    return $this->belongsToMany(User::class, 'verifikator_instansi', 'instansi_id', 'user_id')
+                ->withPivot('role')
+                ->withTimestamps();
+}
+
 }

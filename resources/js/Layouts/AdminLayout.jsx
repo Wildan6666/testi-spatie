@@ -1,16 +1,21 @@
 // resources/js/Layouts/AdminLayout.jsx
+import { useState } from "react";
 import Sidebar from "@/Components/Sidebar";
 
 export default function AdminLayout({ children, user }) {
+  const [collapsed, setCollapsed] = useState(false);
+
   return (
-    <div className="flex h-screen overflow-hidden"> {/* Body wrapper */}
-      {/* Sidebar fixed di kiri */}
-      <aside className="fixed top-0 left-0 h-screen w-64 bg-white shadow-lg">
-        <Sidebar user={user} />
-      </aside>
+    <div className="flex h-screen overflow-hidden">
+      {/* Sidebar */}
+      <Sidebar
+        user={user}
+        collapsed={collapsed}
+        setCollapsed={setCollapsed}
+      />
 
       {/* Main content */}
-      <main className="ml-64 flex-1 h-screen overflow-y-auto p-6 bg-gray-100">
+      <main className="flex-1 bg-gray-100 p-6 overflow-y-auto transition-all duration-300">
         {children}
       </main>
     </div>

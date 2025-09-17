@@ -24,6 +24,7 @@ class ProdukHukum extends Model
         'status_peraturan_id',
         'tipe_dokumen_id',
         'jenis_hukum_id',
+        'kategori_akses_id',
         'berkas',
     ];
 
@@ -57,4 +58,16 @@ class ProdukHukum extends Model
     {
         return $this->belongsTo(JenisHukum::class);
     }
+    // app/Models/ProdukHukum.php
+public function verifikator()
+{
+    return $this->belongsTo(User::class, 'verified_by');
 }
+public function riwayatVerifikasi()
+{
+    return $this->hasMany(RiwayatVerifikasi::class, 'produk_hukum_id');
+}
+
+}
+
+

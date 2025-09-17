@@ -47,4 +47,32 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    // app/Models/User.php
+// app/Models/User.php
+public function verifikatorInstansi()
+{
+    return $this->belongsToMany(
+        \App\Models\Instansi::class,   // model tujuan
+        'verifikator_instansi',        // nama tabel pivot
+        'user_id',                     // FK di pivot ke users
+        'instansi_id'                  // FK di pivot ke instansi
+    )->withPivot('role','verifikator');
+}
+public function instansiRoles()
+{
+    return $this->belongsToMany(Instansi::class, 'verifikator_instansi', 'user_id', 'instansi_id')
+                ->withPivot('role')
+                ->withTimestamps();
+}
+
+// Ambil hanya instansi di mana user adalah verifikator
+
+// Ambil hanya instansi di mana user adalah viewer
+public function viewerInstansi()
+{
+    return $this->instansiRoles()->wherePivot('role', 'viewer');
+}
+
+
 }

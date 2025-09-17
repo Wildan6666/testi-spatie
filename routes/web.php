@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\NavigationController;
+use App\Http\Controllers\Admin\VerifikasiDataController;
 use Spatie\Permission\Models\Role;
 
 Route::get('/', function () {
@@ -89,8 +90,16 @@ Route::resource('produk-hukum', App\Http\Controllers\Admin\ProdukHukumController
 Route::resource('instansi', App\Http\Controllers\Admin\InstansiController::class)->middleware(['can:read instansi']);
 
 Route::resource('tipe-dokumen', App\Http\Controllers\Admin\TipeDokumenController::class)->middleware(['can:read tipe dokumen']);
+
 Route::resource('verifikasi-data', App\Http\Controllers\Admin\VerifikasiDataController::class)->middleware('can:read verifikasi data');
+Route::get('/verifikasi-data/{id}', [VerifikasiDataController::class, 'show'])
+    ->name('verifikasi-data.show');
 
 Route::resource('validasi-dokumen', App\Http\Controllers\Admin\ValidasiDokumenController::class)->middleware(['can:read validasi dokumen']);
 
 Route::resource('master-status', App\Http\Controllers\Admin\MasterStatusController::class)->middleware(['can:read master status']);
+
+Route::resource('riwayat-verifikasi', App\Http\Controllers\Admin\RiwayatVerifikasiController::class,)->middleware(['can:read riwayat verifikasi']);
+Route::get('/riwayat-verifikasi', [\App\Http\Controllers\Admin\RiwayatVerifikasiController::class, 'index'])
+    ->name('riwayat.index');
+

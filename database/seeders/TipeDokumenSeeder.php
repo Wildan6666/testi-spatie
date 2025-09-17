@@ -3,52 +3,48 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\TipeDokumen;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class TipeDokumenSeeder extends Seeder
 {
-    public function run(): void
+    public function run()
     {
-        TipeDokumen::insert([
+        DB::table('tipe_dokumen')->insert([
             [
-                'nama' => 'Surat Menteri',
-                'kode' => 'SM',
-                'deskripsi' => 'Surat resmi yang dikeluarkan oleh Menteri',
-                'kategori_akses_id' => 1, // Publik
-                'created_at' => now(),
-                'updated_at' => now(),
+                'nama' => 'Kepegawaian',
+                'kode' => 'KEP',
+                'deskripsi' => 'Dokumen yang berhubungan dengan data dan administrasi pegawai',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [
-                'nama' => 'Surat Rektor',
-                'kode' => 'SR',
-                'deskripsi' => 'Surat resmi yang dikeluarkan oleh Rektor',
-                'kategori_akses_id' => 2, // Internal
-                'created_at' => now(),
-                'updated_at' => now(),
+                'nama' => 'Keuangan',
+                'kode' => 'KEU',
+                'deskripsi' => 'Dokumen yang berhubungan dengan laporan, anggaran, dan transaksi keuangan',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [
-                'nama' => 'Peraturan Menteri',
-                'kode' => 'PERMEN',
-                'deskripsi' => 'Peraturan yang dikeluarkan oleh Menteri',
-                'kategori_akses_id' => 1, // Publik
-                'created_at' => now(),
-                'updated_at' => now(),
+                'nama' => 'Kepanitiaan',
+                'kode' => 'PAN',
+                'deskripsi' => 'Dokumen yang berhubungan dengan kepanitiaan kegiatan dan organisasi',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [
-                'nama' => 'Keputusan Rektor',
-                'kode' => 'KEPREK',
-                'deskripsi' => 'Keputusan resmi yang dikeluarkan oleh Rektor',
-                'kategori_akses_id' => 2, // Internal
-                'created_at' => now(),
-                'updated_at' => now(),
+                'nama' => 'Akademik',
+                'kode' => 'AKD',
+                'deskripsi' => 'Dokumen yang berhubungan dengan kegiatan akademik, kurikulum, dan pendidikan',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [
-                'nama' => 'Instruksi Menteri',
-                'kode' => 'INSMEN',
-                'deskripsi' => 'Instruksi resmi dari Menteri',
-                'kategori_akses_id' => 3, // Rahasia
-                'created_at' => now(),
-                'updated_at' => now(),
+                'nama' => 'Umum',
+                'kode' => 'UMM',
+                'deskripsi' => 'Dokumen umum yang tidak termasuk kategori khusus',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
         ]);
     }
