@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -31,7 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/admin', [MenuController::class, 'index'])
+Route::get('/admin', [AdminDashboardController::class, 'index'])
 ->middleware(['auth', 'verified','can:read dashboard']);
 
 Route::prefix('konfigurasi')->middleware(['auth'])->name('admin.')->group(function () {
