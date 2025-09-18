@@ -23,13 +23,13 @@ public function index()
         ->orderBy('sort')
         ->get()
         ->filter(function ($menu) use ($user) {
-            // Kalau tidak ada permission → selalu tampil
-            return !$menu->permissions || $user->can($menu->permissions);
+            // menu hanya tampil kalau ada permission dan user bisa
+            return $menu->permissions && $user->can($menu->permissions);
         })
         ->map(function ($menu) use ($user) {
             $menu->children = $menu->children
                 ->filter(function ($child) use ($user) {
-                    return !$child->permissions || $user->can($child->permissions);
+                    return $child->permissions && $user->can($child->permissions);
                 })
                 ->values();
 
@@ -39,7 +39,10 @@ public function index()
 
     return Inertia::render('Admin/Dashboard', [
         'menus' => $menus,
-        'auth'  => ['user' => $user],
+        'auth'  => [
+            'user' => $user,
+            'permissions' => $user->getAllPermissions()->pluck('name'), // 👈 kirim permission ke frontend
+        ],
     ]);
 }
 
