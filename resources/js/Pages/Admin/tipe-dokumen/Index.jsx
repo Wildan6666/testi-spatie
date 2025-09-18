@@ -1,48 +1,79 @@
 import AdminLayout from "@/Layouts/AdminLayout";
 import { useState } from "react";
-import { Plus, Pencil, Trash2, X } from "lucide-react";
+import { useForm, router, usePage } from "@inertiajs/react";
+import { Plus, Pencil, Trash2, X, Search } from "lucide-react";
 
 export default function TipeDokumenPage() {
-  // Dummy data
-  const [documentTypes] = useState([
-    { id: 1, nama: "Kepegawaian" },
-    { id: 2, nama: "Akademik" },
-    { id: 3, nama: "Keuangan" },
-  ]);
+  const { props } = usePage();
+  const documentTypes = props.tipeDokumens || []; // 👉 ambil dari database
 
-  // State modal
   const [showModal, setShowModal] = useState(false);
-  const [modalType, setModalType] = useState(""); // "edit" | "delete"
+  const [modalType, setModalType] = useState(""); // "create" | "edit" | "delete"
   const [selected, setSelected] = useState(null);
+  const [search, setSearch] = useState("");
 
-  const handleOpenModal = (type, item) => {
+  const { data, setData, post, put, delete: destroy, reset } = useForm({
+    nama: "",
+  });
+
+  const handleOpenModal = (type, item = null) => {
     setModalType(type);
     setSelected(item);
+    setData({ nama: item?.nama || "" });
     setShowModal(true);
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
     setSelected(null);
+    reset("nama");
   };
+
+  const handleSubmit = () => {
+    if (modalType === "create") {
+      post(route("tipe-dokumen.store"), { onSuccess: handleCloseModal });
+    } else if (modalType === "edit") {
+      put(route("tipe-dokumen.update", selected.id), { onSuccess: handleCloseModal });
+    } else if (modalType === "delete") {
+      destroy(route("tipe-dokumen.destroy", selected.id), { onSuccess: handleCloseModal });
+    }
+  };
+
+  // Filter data by search
+  const filteredData = documentTypes.filter((t) =>
+    t.nama.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <AdminLayout>
       <div className="max-w-5xl mx-auto space-y-6">
-        {/* Card */}
+        {/* Header Card */}
         <div className="bg-white rounded-xl shadow border border-gray-200">
-          {/* Header Card */}
-          <div className="flex items-center justify-between p-6 border-b">
-            <h1 className="text-xl font-bold text-gray-800">
-              Daftar Tipe Dokumen
-            </h1>
-            <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow transition">
-              <Plus className="w-4 h-4" />
-              Tambah
-            </button>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 p-6 border-b">
+            <h1 className="text-xl font-bold text-gray-800">Daftar Tipe Dokumen</h1>
+            <div className="flex items-center gap-2 w-full md:w-auto">
+              {/* Search Bar */}
+              <div className="relative w-full md:w-64">
+                <Search className="absolute left-3 top-2.5 text-gray-400 w-4 h-4" />
+                <input
+                  type="text"
+                  placeholder="Cari tipe dokumen..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full border rounded-lg pl-9 pr-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                />
+              </div>
+              <button
+                onClick={() => handleOpenModal("create")}
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow transition"
+              >
+                <Plus className="w-4 h-4" />
+                Tambah
+              </button>
+            </div>
           </div>
 
-          {/* Tabel */}
+          {/* Table */}
           <div className="overflow-hidden">
             <table className="w-full text-sm">
               <thead className="bg-gray-100 text-gray-700">
@@ -53,30 +84,40 @@ export default function TipeDokumenPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {documentTypes.map((type) => (
-                  <tr key={type.id} className="hover:bg-gray-50 transition">
-                    <td className="px-6 py-3">{type.id}</td>
-                    <td className="px-6 py-3">{type.nama}</td>
-                    <td className="px-6 py-3">
-                      <div className="flex justify-center gap-2">
-                        <button
-                          onClick={() => handleOpenModal("edit", type)}
-                          className="flex items-center gap-1 bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md shadow-sm transition"
-                        >
-                          <Pencil className="w-4 h-4" />
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleOpenModal("delete", type)}
-                          className="flex items-center gap-1 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md shadow-sm transition"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                          Hapus
-                        </button>
-                      </div>
+                {filteredData.length > 0 ? (
+                  filteredData.map((type) => (
+                    <tr key={type.id} className="hover:bg-gray-50 transition">
+                      <td className="px-6 py-3">{type.id}</td>
+                      <td className="px-6 py-3">{type.nama}</td>
+                      <td className="px-6 py-3 text-center">
+                        <div className="flex justify-center gap-2">
+                          {/* Edit */}
+                          <button
+                            onClick={() => handleOpenModal("edit", type)}
+                            className="p-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition"
+                            title="Edit"
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </button>
+                          {/* Delete */}
+                          <button
+                            onClick={() => handleOpenModal("delete", type)}
+                            className="p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition"
+                            title="Hapus"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="3" className="px-6 py-4 text-center text-gray-500">
+                      Tidak ada tipe dokumen
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
@@ -86,7 +127,6 @@ export default function TipeDokumenPage() {
         {showModal && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
             <div className="bg-white rounded-xl shadow-xl w-96 relative p-6">
-              {/* Tombol close */}
               <button
                 onClick={handleCloseModal}
                 className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
@@ -95,23 +135,26 @@ export default function TipeDokumenPage() {
               </button>
 
               <h2 className="text-xl font-semibold mb-4 text-gray-800">
-                {modalType === "edit" ? "Edit Tipe Dokumen" : "Hapus Tipe Dokumen"}
+                {modalType === "create"
+                  ? "Tambah Tipe Dokumen"
+                  : modalType === "edit"
+                  ? "Edit Tipe Dokumen"
+                  : "Hapus Tipe Dokumen"}
               </h2>
 
-              {modalType === "edit" && (
+              {modalType === "create" || modalType === "edit" ? (
                 <div>
                   <label className="block mb-2 text-sm font-medium text-gray-600">
                     Nama Dokumen
                   </label>
                   <input
                     type="text"
-                    defaultValue={selected?.nama}
+                    value={data.nama}
+                    onChange={(e) => setData("nama", e.target.value)}
                     className="w-full border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
                   />
                 </div>
-              )}
-
-              {modalType === "delete" && (
+              ) : (
                 <p className="text-gray-700">
                   Apakah yakin ingin menghapus{" "}
                   <span className="font-semibold">{selected?.nama}</span>?
@@ -126,14 +169,18 @@ export default function TipeDokumenPage() {
                   Batal
                 </button>
                 <button
-                  onClick={handleCloseModal}
+                  onClick={handleSubmit}
                   className={`px-4 py-2 rounded-lg text-white shadow transition ${
-                    modalType === "edit"
+                    modalType === "edit" || modalType === "create"
                       ? "bg-blue-600 hover:bg-blue-700"
                       : "bg-red-600 hover:bg-red-700"
                   }`}
                 >
-                  {modalType === "edit" ? "Simpan" : "Hapus"}
+                  {modalType === "edit"
+                    ? "Simpan"
+                    : modalType === "create"
+                    ? "Tambah"
+                    : "Hapus"}
                 </button>
               </div>
             </div>

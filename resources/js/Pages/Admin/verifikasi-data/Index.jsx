@@ -7,7 +7,11 @@ import { Button } from "@/components/ui/button";
 
 export default function VerifikasiIndex() {
   const { props } = usePage();
-  const data = props.produkHukums || [];
+  // Ambil data array dari pagination (Laravel paginate)
+  const data = Array.isArray(props.produkHukums)
+    ? props.produkHukums
+    : props.produkHukums?.data || [];
+
   const filters = props.filters || {};
   const instansis = props.instansis || [];
 
@@ -22,10 +26,10 @@ export default function VerifikasiIndex() {
   // Ambil daftar tahun unik dari data
   const tahunOptions = useMemo(() => {
     const years = [...new Set(data.map((item) => item.tahun).filter(Boolean))];
-    return years.sort((a, b) => b - a); // urutkan dari terbaru
+    return years.sort((a, b) => b - a);
   }, [data]);
 
-  // Fungsi render badge status
+  // Render badge status
   const renderStatus = (nama) => {
     if (nama === "Approved")
       return (
@@ -52,7 +56,7 @@ export default function VerifikasiIndex() {
     );
   };
 
-  // Filter data berdasarkan search + status + instansi + tahun
+  // Filter data
   const filteredData = data.filter((item) => {
     const searchMatch = item.judul
       ?.toLowerCase()
@@ -73,7 +77,7 @@ export default function VerifikasiIndex() {
     return searchMatch && statusMatch && instansiMatch && tahunMatch;
   });
 
-  // Definisi kolom untuk DataTable
+  // Kolom tabel
   const columns = [
     {
       name: "ID",
@@ -126,7 +130,7 @@ export default function VerifikasiIndex() {
     },
   ];
 
-  // Chips untuk filter aktif
+  // Chips filter aktif
   const FilterChips = () => {
     const chips = [];
     if (selectedFilters.status_id) {

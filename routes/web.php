@@ -104,3 +104,5 @@ Route::resource('riwayat-verifikasi', App\Http\Controllers\Admin\RiwayatVerifika
 Route::get('/riwayat-verifikasi', [\App\Http\Controllers\Admin\RiwayatVerifikasiController::class, 'index'])
     ->name('riwayat.index');
 
+
+Route::resource('verifikator-instansi', App\Http\Controllers\Admin\VerifikatorInstansiController::class)->middleware(['can:read verifikator instansi']);
