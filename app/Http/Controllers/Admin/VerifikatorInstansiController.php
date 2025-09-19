@@ -26,11 +26,21 @@ class VerifikatorInstansiController extends Controller
             )
             ->get();
 
+        // ambil role verifikator (id 3 atau name=verifikator)
+        $verifikatorRoleId = Role::where('name', 'verifikator')->value('id') ?? 3;
+
+        // hanya user yang punya role verifikator
+        $users = User::whereHas('roles', function ($q) use ($verifikatorRoleId) {
+            $q->where('id', $verifikatorRoleId);
+        })->select('id', 'name', 'email')->get();
+
+        $instansis = Instansi::select('id', 'nama')->get();
+
         return Inertia::render('Admin/verifikator-instansi/Index', [
             'data' => $data,
-            'users' => User::select('id', 'name')->get(),
-            'instansis' => Instansi::select('id', 'nama')->get(),
-            'roles' => Role::select('id', 'name')->get(),
+            'users' => $users,
+            'instansis' => $instansis,
+            'verifikatorRoleId' => $verifikatorRoleId, // biar tau ID role nya
         ]);
     }
 
@@ -39,14 +49,15 @@ class VerifikatorInstansiController extends Controller
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
             'instansi_id' => 'required|exists:instansi,id',
-            'role_id' => 'required|exists:roles,id',
         ]);
 
-        // attach ke pivot
+        $verifikatorRoleId = Role::where('name', 'verifikator')->value('id') ?? 3;
+
+        // attach ke pivot (role_id fixed ke verifikator)
         $user = User::findOrFail($validated['user_id']);
         $user->instansis()->attach(
             $validated['instansi_id'],
-            ['role_id' => $validated['role_id']]
+            ['role_id' => $verifikatorRoleId]
         );
 
         return redirect()->back()->with('success', 'Verifikator berhasil ditambahkan.');
