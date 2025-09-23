@@ -60,7 +60,7 @@ Route::prefix('konfigurasi')->middleware(['auth'])->name('admin.')->group(functi
 
 // web.php
 Route::get('/dokumen', function () {
-    return Inertia::render('Dokumen'); // pastikan Dokumen.jsx ada di resources/js/Pages/
+    return Inertia::render('Dokumen'); 
 })->middleware(['auth', 'verified'])->name('dokumen');
 
 Route::get('/detaildokumen/{id}', function ($id) {
@@ -69,12 +69,12 @@ Route::get('/detaildokumen/{id}', function ($id) {
 })->middleware(['auth', 'verified'])->name('detailDokumen');
 
 Route::get('/Berita', function () {
-    return Inertia::render('Berita'); // pastikan Dokumen.jsx ada di resources/js/Pages/
+    return Inertia::render('Berita'); 
 })->middleware(['auth', 'verified'])->name('Berita');
 
-Route::get('/tentang', function () {
-    return Inertia::render('tentang'); // pastikan Dokumen.jsx ada di resources/js/Pages/
-})->middleware(['auth', 'verified'])->name('Tentang Kami');
+Route::get('/VisiMisi', function () {
+    return Inertia::render('VisiMisi'); 
+})->middleware(['auth', 'verified'])->name('VisiMisi');
 require __DIR__.'/auth.php';
 
 // halaman roles

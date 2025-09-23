@@ -63,8 +63,7 @@ class RolePermissionSeeder extends Seeder
         Role::where('name', 'mahasiswa')->first()
             ->syncPermissions(['view document']);
 
-        Role::where('name', 'publik')->first()
-            ->syncPermissions(['view public docs']);
+  
     }
     }
 

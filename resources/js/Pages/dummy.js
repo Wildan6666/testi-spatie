@@ -257,7 +257,7 @@ export const beritaTerkini= [
 ];
 
 export  const pieData = [
-    { name: 'Peraturan Rektor', value: 856, color: '#E65100' },
+    { name: 'Peraturan Rektor', value: 500, color: '#E65100' },
     { name: 'Keputusan Rektor', value: 391, color: '#FF9800' },
     { name: 'Surat Edaran', value: 124, color: '#FFE5B4' },
   ];
@@ -341,67 +341,51 @@ export const popularNews = [
   ];
 
     // Sample document data
-export  const documents = [
-    {
-      id: 1,
-      kategori:"Peraturan Mentri",
-      title: "Peraturan Menteri tentang Standar Operasional Universitas",
-      date: "24 Juli 2025",
-      type: "/assets/dokumen/SK-Kalender-Akademik.pdf",
-      description: "Exercitation et consectetur nostrud non ea velit ex enim. Culpa occaecat pariatur pariatur qui tempor et. Esse aute ut ea duis sit voluptate aliqua. Et non ullamco nisi nostrud nulla tempor eu nulla et. Magna cupidatat elit enim nostrud eiusmod commodo elit. Dolore reprehenderit mollit aliquip laboris aliqua dolor aliquip excepteur in ad non anim. Magna proident veniam consectetur ex duis.",
-      status:"Berlaku",
-      unduh:"10",
-      lihat:"17"
-    },
-    {
-      id: 2,
-      kategori:"Akademik",
-      title: "Panduan Akademik Tahun 2025/2026 - Fakultas Hukum",
-      date: "20 Juli 2025", 
-      type: "PDF",
-      description: "Exercitation et consectetur nostrud non ea velit ex enim. Culpa occaecat pariatur pariatur qui tempor et. Esse aute ut ea duis sit voluptate aliqua. Et non ullamco nisi nostrud nulla tempor eu nulla et. Magna cupidatat elit enim nostrud eiusmod commodo elit. Dolore reprehenderit mollit aliquip laboris aliqua dolor aliquip excepteur in ad non anim. Magna proident veniam consectetur ex duis.",
-      status:"Tidak Berlaku",
-      unduh:"17",
-      lihat:"246"
+export const documents = Array.from({ length: 100 }, (_, i) => {
+  const year = 2020 + (i % 6);
+  const month = String((i % 12) + 1).padStart(2, "0");
+  const day1 = String(((i * 3) % 28) + 1).padStart(2, "0");
+  const day2 = String(((i * 5) % 28) + 1).padStart(2, "0");
 
-    },
-    {
-      id: 3,
-      kategori:"Peraturna Rektor",
-      title: "Surat Keputusan Rektor tentang Penerimaan Mahasiswa Baru",
-      date: "18 Juli 2025",
-      type: "PDF",
-      description: "Exercitation et consectetur nostrud non ea velit ex enim. Culpa occaecat pariatur pariatur qui tempor et. Esse aute ut ea duis sit voluptate aliqua. Et non ullamco nisi nostrud nulla tempor eu nulla et. Magna cupidatat elit enim nostrud eiusmod commodo elit. Dolore reprehenderit mollit aliquip laboris aliqua dolor aliquip excepteur in ad non anim. Magna proident veniam consectetur ex duis.",
-      status:"Berlaku",
-      unduh:"13",
-      lihat:"26"
-
-    },
-    {
-      id: 4,
-      kategori:"Panduan",
-      title: "Pedoman Penulisan Skripsi dan Tugas Akhir 2025",
-      date: "15 Juli 2025",
-      type: "PDF",
-      description: "Exercitation et consectetur nostrud non ea velit ex enim. Culpa occaecat pariatur pariatur qui tempor et. Esse aute ut ea duis sit voluptate aliqua. Et non ullamco nisi nostrud nulla tempor eu nulla et. Magna cupidatat elit enim nostrud eiusmod commodo elit. Dolore reprehenderit mollit aliquip laboris aliqua dolor aliquip excepteur in ad non anim. Magna proident veniam consectetur ex duis.",
-      status:"Tidak Berlaku",
-      unduh:"17",
-      lihat:"24"
-
-    },
-    {
-      id: 5,
-      kategori:"Peraturan Keuangan",
-      title: "Peraturan Keuangan dan Beasiswa Universitas Jambi",
-      date: "12 Juli 2025",
-      type: "PDF",
-      description: "Exercitation et consectetur nostrud non ea velit ex enim. Culpa occaecat pariatur pariatur qui tempor et. Esse aute ut ea duis sit voluptate aliqua. Et non ullamco nisi nostrud nulla tempor eu nulla et. Magna cupidatat elit enim nostrud eiusmod commodo elit. Dolore reprehenderit mollit aliquip laboris aliqua dolor aliquip excepteur in ad non anim. Magna proident veniam consectetur ex duis.",
-      status:"Berlaku",
-      unduh:"17",
-      lihat:"246"
-
-    }
+  const tipeOptions = [
+    "Kepegawaian",
+    "Tata Laksana",
+    "Keuangan",
+    "Perencanaan",
+    "Kemahasiswaan",
+    "Akademik"
   ];
+
+  return {
+    id: i + 1,
+    kategori: [
+      "Akademik",
+      "Peraturan Menteri",
+      "Peraturan Rektor",
+      "Panduan",
+      "Surat Edaran",
+      "Peraturan Senat",
+      "Peraturan Keuangan"
+    ][i % 7],
+    title: `Dokumen Contoh ${i + 1} - ${
+      ["Akademik", "Peraturan", "Panduan", "Surat Edaran"][i % 4]
+    }`,
+    date: `${year}-${month}-${day1}`,
+    type: tipeOptions[i % tipeOptions.length], // ✅ type sekarang isi Tipe Dokumen
+    description: `Deskripsi singkat untuk dokumen contoh nomor ${i + 1}.`,
+    status: i % 2 === 0 ? "Berlaku" : "Tidak Berlaku",
+    unduh: (Math.floor(Math.random() * 200) + 10).toString(),
+    lihat: (Math.floor(Math.random() * 800) + 50).toString(),
+    published: `${year}-${month}-${day2}`,
+    nomor: `Nomor ${(i + 1).toString().padStart(3, "0")}/UNJA/${
+      2020 + (i % 6)
+    }`,
+    file: `/assets/dokumen/SK-Kalender-Akademik.pdf`
+  };
+});
+
+
+
 
 export  const sidebarCategories = [
     "Peraturan Universitas",
