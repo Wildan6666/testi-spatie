@@ -36,7 +36,7 @@ class VerifikatorInstansiController extends Controller
 
         $instansis = Instansi::select('id', 'nama')->get();
 
-        return Inertia::render('Admin/verifikator-instansi/Index', [
+        return Inertia::render('Admin/Konfigurasi/verifikator-instansi/Index', [
             'data' => $data,
             'users' => $users,
             'instansis' => $instansis,

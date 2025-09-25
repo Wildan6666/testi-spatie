@@ -24,7 +24,7 @@ class PermissionController extends Controller
             ];
         });
 
-        return Inertia::render('Konfigurasi/Permissions', [
+        return Inertia::render('Admin/Konfigurasi/Permissions', [
             'permissions' => $permissions,
             'users' => $users,
             'auth' => auth()->user(),

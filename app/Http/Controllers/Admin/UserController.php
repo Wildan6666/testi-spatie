@@ -13,7 +13,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Konfigurasi/Users', [
+        return Inertia::render('Admin/Konfigurasi/Users', [
             
             'users' => User::with('roles')->get()->map(function ($user) {
                 return [

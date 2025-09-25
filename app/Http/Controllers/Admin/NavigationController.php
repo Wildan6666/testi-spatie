@@ -20,7 +20,7 @@ class NavigationController extends Controller
             ->orderBy('sort', 'asc')
             ->get();
 
-        return inertia('Konfigurasi/Menus', [
+        return inertia('Admin/Konfigurasi/Menus', [
             'menus' => $menus
         ]);
     }
