@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\KelolaBeritaController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -106,3 +107,18 @@ Route::get('/riwayat-verifikasi', [\App\Http\Controllers\Admin\RiwayatVerifikasi
 
 
 Route::resource('verifikator-instansi', App\Http\Controllers\Admin\VerifikatorInstansiController::class)->middleware(['can:read verifikator instansi']);
+
+Route::resource('kelola-berita', KelolaBeritaController::class)
+    ->parameters(['kelola-berita' => 'berita'])   // ✅ parameter jadi {berita}
+    ->middleware('can:read kelola berita');
+Route::get('/berita/create', [KelolaBeritaController::class, 'create'])->name('berita.create');
+Route::post('/berita', [KelolaBeritaController::class, 'store'])->name('berita.store');
+
+
+use App\Http\Controllers\User\BeritaController;
+
+// Halaman daftar berita untuk publik
+Route::get('/berita', [BeritaController::class, 'index'])->name('berita.public.index');
+
+// Halaman detail berita (baca selengkapnya)
+Route::get('/berita/{berita}', [BeritaController::class, 'show'])->name('berita.public.show');
