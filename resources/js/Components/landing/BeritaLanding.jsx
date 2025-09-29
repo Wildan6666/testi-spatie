@@ -45,7 +45,7 @@ export default function BeritaTerkini() {
 
       <div className="container mx-auto px-4 relative z-10">
         <h2
-          className="text-4xl font-bold text-center mb-12 text-orange-600 line"
+          className="font-inter font-bold text-[48px] leading-[58px] text-center text-orange-500"
           data-aos="fade-up"
         >
           Berita Terkini

@@ -3,10 +3,9 @@ import { Calendar, User, ChevronRight } from "lucide-react";
 import { Facebook, Twitter, Youtube, Instagram, Linkedin } from "lucide-react";
 import { mainNews, popularNews } from "./dummy";
 import "../../css/berita.css";
-import "../../css/header.css";
-import { Link } from "@inertiajs/react";
 import Footer from "@/Components/landing/footer";
 import Navbar from "@/Components/landing/Navbar";
+import ScrollTop from "@/Components/landing/ScrollTop";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
@@ -105,7 +104,7 @@ const NewsWebsite = () => {
           </div>
         </div>
       </div>
-
+      <ScrollTop/>
       {/* ✅ Footer */}
       <Footer />
     </div>

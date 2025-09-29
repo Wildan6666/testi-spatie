@@ -24,7 +24,7 @@ export default function Footer() {
         {/* Tengah: Map + Deskripsi Samping */}
         <div className="flex flex-col md:flex-row items-center md:items-start gap-4 max-w-xl">
           {/* Map */}
-          <div className="w-full md:w-48 h-28 rounded-lg overflow-hidden shadow-md">
+          <div className="w-full md:w-40 h-16 rounded-lg overflow-hidden shadow-md">
             <iframe
               src="https://www.google.com/maps?q=-1.613127,103.537514&hl=id&z=15&output=embed"
               width="100%"

@@ -1,4 +1,6 @@
-/* ============================   Enhanced Interactive Header / Navbar    ============================ */
+/* ============================   
+   Enhanced Interactive Header / Navbar    
+   ============================ */
 
 .navbar {
   background: linear-gradient(135deg, 
@@ -10,9 +12,14 @@
   -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08),
               0 1px 3px rgba(0, 0, 0, 0.1);
-  position: sticky;
+
+  /* 🔥 fixed supaya tetap di atas */
+  position: fixed;
   top: 0;
-  z-index: 50;
+  left: 0;
+  right: 0;
+
+  z-index: 1000;
   border-bottom: 1px solid rgba(234, 88, 12, 0.1);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -180,7 +187,7 @@
               0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Mobile Menu Toggle (if needed) */
+/* Mobile Menu Toggle */
 .mobile-menu-toggle {
   display: none;
   flex-direction: column;
@@ -278,24 +285,25 @@
     left: 0;
     height: 100vh;
     width: 260px;
-    background: linear-gradient(135deg,       rgba(255, 255, 255, 0.98) 0%,       rgba(245, 245, 245, 0.98) 100%    );
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(245, 245, 245, 0.98) 100%);
     padding: 24px 16px;
     box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
     z-index: 200;
     animation: slideInLeft 0.3s ease forwards;
     -webkit-animation: slideInLeft 0.3s ease forwards;
-}
-}
-  @keyframes slideInLeft {
-    from {
-      transform: translateX(-100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
   }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
 
 /* Scroll Effect */
 .navbar.scrolled {
@@ -315,7 +323,7 @@
   height: 48px;
 }
 
-/* Additional Interactive Elements */
+/* Tooltip */
 .nav-link-tooltip {
   position: absolute;
   bottom: -40px;
@@ -348,7 +356,7 @@
   transform: translateX(-50%) translateY(0);
 }
 
-/* Pulse animation for important elements */
+/* Pulse animation */
 @keyframes pulse-glow {
   0%, 100% {
     box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
@@ -362,9 +370,7 @@
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
-
 /* ======================= Google Translate ======================= */
-/* Dropdown Bahasa */
 .language-dropdown {
   position: absolute;
   top: 100%;
@@ -393,4 +399,11 @@
 .language-option .flag {
   margin-right: 10px;
   font-size: 16px;
+}
+
+/* ============================  
+   Konten utama biar tidak ketiban navbar 
+   ============================ */
+.main-content {
+  padding-top: 80px; /* ✅ tinggi navbar */
 }

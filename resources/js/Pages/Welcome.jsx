@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { Inertia } from '@inertiajs/inertia';
 import '../../css/LandingPage.css';
-import '../../css/header.css';
+import '../../css/Navbar.css';
 import { ChevronDown } from "lucide-react";
 import { Eye, Download, LogIn } from "lucide-react";
 import { terbaruData, populerData, beritaTerkini, yearlyData, monthlyData, pieData } from "./dummy";

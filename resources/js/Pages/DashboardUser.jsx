@@ -4,13 +4,14 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { ChevronDown, Search, RotateCcw } from "lucide-react"
 import "../../css/LandingPage.css";
-import "../../css/header.css";
 
 import Navbar from "@/Components/landing/Navbar";
 import Footer from "@/Components/landing/Footer";
 import Statistik from "@/Components/landing/Statistik";
 import ProdukHukum from "@/Components/landing/ProdukHukum";
 import BeritaLanding from "@/Components/landing/BeritaLanding";
+import ScrollTop from "@/Components/landing/ScrollTop";
+import AccessibilityMenu from "@/Components/landing/AccessibilityMenu";
 
 export default function LandingPage() {
   // filter states
@@ -57,7 +58,7 @@ export default function LandingPage() {
 
   return (
     <div className="landing-container">
-      <Navbar />
+  <Navbar/>
 
       {/* Hero Section */}
       <section className="hero-section">
@@ -188,9 +189,11 @@ export default function LandingPage() {
       </section>
 
       {/* Komponen lain */}
+      <AccessibilityMenu/>
       <ProdukHukum />
       <BeritaLanding />
       <Statistik />
+      <ScrollTop/>
       <Footer />
     </div>
   );

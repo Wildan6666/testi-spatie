@@ -6,6 +6,9 @@
   font-family: "Inter", sans-serif;
 }
 
+html, body {
+  overflow-x: hidden;
+}
 /* Container */
 .dm-container {
   background: #f8fafc;

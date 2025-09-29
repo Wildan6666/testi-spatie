@@ -1,7 +1,5 @@
 import React from "react";
 import { Link } from "@inertiajs/react";
-import '../../css/header.css';
-import '../../css/footer.css';
 import { motion } from "framer-motion";
 import { Facebook, Twitter, Youtube, Instagram, Linkedin, LogOut } from "lucide-react";
 

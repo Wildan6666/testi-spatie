@@ -1,22 +1,37 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "@inertiajs/react";
 import { LogOut, Languages } from "lucide-react";
-import '../../../css/header.css';
+import "../../../css/Navbar.css";
 import "flag-icons/css/flag-icons.min.css";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false); // 👉 state untuk efek scroll
 
   const languages = [
     { code: "id", name: "Indonesia", flag: "fi fi-id" },
-    { code: "en", name: "English", flag: "fi fi-gb" }, // UK
+    { code: "en", name: "English", flag: "fi fi-gb" },
     { code: "zh-CN", name: "中文 (Chinese)", flag: "fi fi-cn" },
-    { code: "ar", name: "العربية (Arabic)", flag: "fi fi-sa" }, // Saudi Arabia
+    { code: "ar", name: "العربية (Arabic)", flag: "fi fi-sa" },
     { code: "ja", name: "日本語 (Japanese)", flag: "fi fi-jp" },
-    { code: "jw", name: "Basa Jawa", flag: "fi fi-id" }, // fallback Indonesia
-    { code: "su", name: "Basa Sunda", flag: "fi fi-id" }, // fallback Indonesia
+    { code: "jw", name: "Basa Jawa", flag: "fi fi-id" },
+    { code: "su", name: "Basa Sunda", flag: "fi fi-id" },
   ];
 
+  // 🟠 Tambahkan event listener scroll untuk toggle class .scrolled
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // 🟠 Load Google Translate
   useEffect(() => {
     if (document.getElementById("google-translate-script")) return;
 
@@ -27,14 +42,16 @@ export default function Navbar() {
     document.body.appendChild(script);
 
     window.googleTranslateElementInit = () => {
-      new window.google.translate.TranslateElement(
-        {
-          pageLanguage: "id",
-          includedLanguages: "id,en,zh-CN,ar,ja,jw,su",
-          layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
-        },
-        "google_translate_element"
-      );
+      if (window.google && window.google.translate) {
+        new window.google.translate.TranslateElement(
+          {
+            pageLanguage: "id",
+            includedLanguages: "id,en,zh-CN,ar,ja,jw,su",
+            layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+          },
+          "google_translate_element"
+        );
+      }
     };
   }, []);
 
@@ -44,11 +61,13 @@ export default function Navbar() {
   };
 
   return (
-    <header className="navbar">
+    <header className={`navbar ${scrolled ? "scrolled" : ""}`}>
       <div className="navbar-content">
+        {/* Mobile Menu Toggle */}
         <button
           className="mobile-menu-toggle"
           onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle Menu"
         >
           <span></span>
           <span></span>
@@ -71,6 +90,7 @@ export default function Navbar() {
           </Link>
         </div>
 
+        {/* Navigation */}
         <nav className={`navigation ${menuOpen ? "mobile-active" : ""}`}>
           <a href="/dashboard" className="nav-link">
             Beranda
@@ -82,19 +102,34 @@ export default function Navbar() {
               Tentang Kami
             </button>
             <div className="absolute left-0 mt-0 w-56 bg-white shadow-xl rounded-xl text-gray-800 z-50 hidden group-hover:block">
-              <a href="/tentang/sekilas-sejarah" className="block px-4 py-2 hover:bg-gray-100 rounded-t-xl">
+              <a
+                href="/tentang/sekilas-sejarah"
+                className="block px-4 py-2 hover:bg-gray-100 rounded-t-xl"
+              >
                 Sekilas Sejarah
               </a>
-              <a href="/tentang/dasar-hukum" className="block px-4 py-2 hover:bg-gray-100">
+              <a
+                href="/tentang/dasar-hukum"
+                className="block px-4 py-2 hover:bg-gray-100"
+              >
                 Dasar Hukum
               </a>
-              <a href="/VisiMisi" className="block px-4 py-2 hover:bg-gray-100">
+              <a
+                href="/VisiMisi"
+                className="block px-4 py-2 hover:bg-gray-100"
+              >
                 Visi Misi
               </a>
-              <a href="/tentang/struktur-organisasi" className="block px-4 py-2 hover:bg-gray-100">
+              <a
+                href="/tentang/struktur-organisasi"
+                className="block px-4 py-2 hover:bg-gray-100"
+              >
                 Struktur Organisasi
               </a>
-              <a href="/tentang/prosedur-operasional" className="block px-4 py-2 hover:bg-gray-100 rounded-b-xl">
+              <a
+                href="/tentang/prosedur-operasional"
+                className="block px-4 py-2 hover:bg-gray-100 rounded-b-xl"
+              >
                 Prosedur Operasional Standar
               </a>
             </div>
@@ -104,13 +139,24 @@ export default function Navbar() {
             Dokumen Hukum
           </a>
 
-          {/* Widget Google Translate (disembunyikan) */}
+          {/* Logout */}
+          <Link
+            href="/logout"
+            method="post"
+            as="button"
+            className="login-button flex items-center gap-2"
+          >
+            <LogOut size={18} />
+            <span>Logout</span>
+          </Link>
+
+          {/* Google Translate (hidden widget) */}
           <div id="google_translate_element" style={{ display: "none" }}></div>
 
           {/* Dropdown Bahasa */}
           <div className="relative inline-block group">
             <button className="nav-link px-4 py-2 flex items-center gap-2 hover:text-gray-300">
-              <Languages size={20} /> Bahasa
+              <Languages size={20} />
             </button>
             <div className="absolute right-0 mt-0 w-56 bg-white shadow-xl rounded-xl text-gray-800 z-50 hidden group-hover:block">
               {languages.map((lang, index) => (
@@ -121,23 +167,12 @@ export default function Navbar() {
                     ${index === 0 ? "rounded-t-xl" : ""}
                     ${index === languages.length - 1 ? "rounded-b-xl" : ""}`}
                 >
-                  {/* pakai className untuk bendera */}
                   <span className={`${lang.flag} fis text-lg`}></span>
                   <span>{lang.name}</span>
                 </div>
               ))}
             </div>
           </div>
-
-          <Link
-            href="/logout"
-            method="post"
-            as="button"
-            className="login-button flex items-center gap-2"
-          >
-            <LogOut size={18} />
-            <span>Logout</span>
-          </Link>
         </nav>
       </div>
     </header>

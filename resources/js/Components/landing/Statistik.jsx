@@ -9,7 +9,7 @@ export default function Statistik() {
   return (
     <section className="section-statistik">
       <div className="stats-container">
-        <h2 className="section-title" data-aos="fade-up">Statistik JDIH</h2>
+        <h2 className="font-inter font-bold text-[48px] leading-[58px] text-center text-orange-500" data-aos="fade-up">Statistik JDIH</h2>
         <p className="stats-subtitle" data-aos="fade-up" data-aos-delay="200">
           Data visualisasi dokumentasi dan informasi hukum yang tersedia di sistem kami
         </p>

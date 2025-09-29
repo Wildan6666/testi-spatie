@@ -4,11 +4,16 @@
 
 /* Container Utama */
 .landing-container {
-  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
+
 }
 
+html, body {
+  overflow-x: hidden;
+}
 /* ============================
    Hero Section
    ============================ */
@@ -35,24 +40,25 @@
   padding: 0 4px;
 }
 
-.hero-title {
+.hero-title { 
   font-family: 'Inter', sans-serif;
-  font-size: 2.25rem;
-  font-weight: 600;
-  color: #f97316;
-  margin-bottom: 8px;
-  text-align: center;
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif,;
-
+  font-size: 32px;       
+  font-weight: 700;      
+  color: #ff4500;         
+  text-align: center;  
+  font-weight: 800;  
 }
+
+
+
 
 .hero-description {
   font-family: 'Inter', sans-serif;
   margin-top: 16px;
-  font-size: 1.125rem;
-  color: rgb(10, 10, 10);
-  line-height: 1.6;
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-size: 20px;
+  color: rgb(10, 13, 18, 1);
+  line-height: 24px;
+  font-weight: 550;
 }
 
 /* ============================
@@ -117,11 +123,12 @@
   padding-right: 2rem; /* ruang untuk icon */
   border: 1px solid #d1d5db;
   border-radius: 6px;
-  color: #374151;
+  color: rgba(164, 167, 174, 1);
   background-color: white;
   appearance: none;
   outline: none;
   transition: all 0.2s ease;
+  font-family: 'Inter', sans-serif;
 }
 
 .custom-select:focus {
@@ -269,8 +276,8 @@ Sections
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  flex: 0 0 calc(33.33% - 20px);  /* 3 kolom di desktop */
-  max-width: calc(33.33% - 20px);
+  flex: 0 0 calc(33.33% - 20px);
+  /*3kolomdidesktop*/max-width: calc(33.33% - 20px);
   margin: 0 10px;
   box-sizing: border-box;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -279,6 +286,10 @@ Sections
 .news-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  -webkit-transform: translateY(-4px);
+  -moz-transform: translateY(-4px);
+  -ms-transform: translateY(-4px);
+  -o-transform: translateY(-4px);
 }
 
 .news-image-wrapper {
@@ -482,11 +493,14 @@ Sections
 }
 
 .stats-subtitle {
-  text-align: center;
-  font-size: 1.125rem;
-  opacity: 0.9;
-  max-width: 600px;
-  margin: 0 auto 40px;
+  font-family: 'Inter', sans-serif;
+  margin-top: 16px;
+  font-size: 20px;
+  color: rgb(10, 13, 18, 1);
+  line-height: 24px;
+  font-weight: 550;
+text-align: center;
+padding-bottom: 15px;
 }
 
 .charts-grid {
@@ -714,7 +728,7 @@ Sections
 /* slider*/
 .slider-container {
   position: relative;
-  max-width: 1280px;
+  max-width: 100%;
   margin: 0 auto;
   overflow: hidden; /* penting supaya card tidak keluar */
 }
@@ -851,10 +865,10 @@ Sections
   cursor: not-allowed;
 }
 .nav-btn.left {
-  left: -35px;
+  left: -22px;
 }
 .nav-btn.right {
-  right: -35px;
+  right: -22px;
 }
 
 .indicators {
@@ -876,4 +890,12 @@ Sections
 .dot.active {
   background: #ea580c; /* orange-600 */
   transform: scale(1.1);
+}
+
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('https://cdn.jsdelivr.net/gh/antijingoist/open-dyslexic/otf/OpenDyslexic-Regular.otf');
 }

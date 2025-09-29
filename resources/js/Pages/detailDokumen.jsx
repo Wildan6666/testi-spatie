@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, router } from "@inertiajs/react";
 import "../../css/LandingPage.css";
-import "../../css/header.css";
 import {
   Search,
   Download,
@@ -14,6 +13,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import Footer from "@/Components/landing/footer";
 import Navbar from "@/Components/landing/Navbar";
+import ScrollTop from "@/Components/landing/ScrollTop";
 import Pratinjau from "@/Components/Dokumen/Pratinjau";
 
 export default function DetailDokumen({ id }) {
@@ -119,12 +119,13 @@ export default function DetailDokumen({ id }) {
                 }}
                 className="flex items-center justify-center gap-2 w-full bg-orange-500 hover:bg-orange-600 text-white py-2.5 px-4 rounded-lg font-medium transition-colors"
               >
-                <Search size={16} /> Cari
+              <Search size={16} /> Cari
               </button>
             </div>
           </aside>
         </div>
               <Pratinjau file={doc.file} title={doc.title}/>
+        <ScrollTop/>
         <Footer/>
       </div>
     </div>

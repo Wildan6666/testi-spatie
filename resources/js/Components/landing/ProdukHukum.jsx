@@ -19,7 +19,7 @@ export default function ProdukHukum() {
       <div className="section-container max-w-7xl mx-auto px-6">
         {/* Judul */}
         <h2
-          className="section-title text-2xl font-bold text-gray-800 mb-6"
+          className="font-inter font-bold text-[48px] leading-[58px] text-center text-orange-500"
           data-aos="fade-up"
         >
           Daftar Produk Hukum
@@ -50,7 +50,7 @@ export default function ProdukHukum() {
               key={item.id}
               href={`/detaildokumen/${item.id}`} // sesuaikan dengan route detail dokumenmu
               className="product-card block bg-white rounded-xl border border-orange-400 shadow-sm hover:shadow-lg transition overflow-hidden"
-              data-aos="flip-left"
+              data-aos="fade-up"
               data-aos-delay={i * 100}
             >
               {/* Badge */}
