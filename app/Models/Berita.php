@@ -14,7 +14,10 @@ class Berita extends Model
         'content',
         'image',
         'author',
-        'published_at',
         'status',
     ];
+
+    protected $casts = [
+    'published_at' => 'datetime',
+];
 }

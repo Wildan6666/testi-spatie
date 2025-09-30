@@ -1,18 +1,18 @@
 import { useState } from "react";
-import { Link } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import { Eye, Download } from "lucide-react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { documents } from "../../Pages/dummy";
 
 export default function ProdukHukum() {
+  const { props } = usePage();
+  const terbaruData = props.terbaruData || [];
+  const populerData = props.populerData || [];
+
   const [activeTab, setActiveTab] = useState("terbaru");
 
-  // Filter data berdasarkan tab
-  const displayedData =
-    activeTab === "terbaru"
-      ? [...documents].sort((a, b) => new Date(b.date) - new Date(a.date))
-      : [...documents].sort((a, b) => b.lihat - a.lihat);
+  // Pilih data berdasarkan tab
+  const displayedData = activeTab === "terbaru" ? terbaruData : populerData;
 
   return (
     <section className="section-gradient py-10" data-aos="fade-up">
@@ -48,7 +48,7 @@ export default function ProdukHukum() {
           {displayedData.slice(0, 6).map((item, i) => (
             <Link
               key={item.id}
-              href={`/detaildokumen/${item.id}`} // sesuaikan dengan route detail dokumenmu
+              href={route("produkhukum.show", item.id)} // pakai route Laravel
               className="product-card block bg-white rounded-xl border border-orange-400 shadow-sm hover:shadow-lg transition overflow-hidden"
               data-aos="fade-up"
               data-aos-delay={i * 100}
@@ -61,19 +61,19 @@ export default function ProdukHukum() {
               {/* Content */}
               <div className="p-4">
                 <h3 className="product-title text-lg font-semibold text-gray-800 mb-2">
-                  {item.title}
+                  {item.judul}
                 </h3>
                 <p className="product-desc text-sm text-gray-600 mb-4 line-clamp-2">
-                  {item.description}
+                  {item.deskripsi}
                 </p>
 
                 {/* Stats */}
-                <div className="product-stats flex items-center  text-sm text-gray-500">
+                <div className="product-stats flex items-center text-sm text-gray-500 gap-4">
                   <div className="stat-item flex items-center gap-1">
-                    <Eye size={16} /> <span>{item.lihat}</span>
+                    <Eye size={16} /> <span>{item.views ?? 0}</span>
                   </div>
                   <div className="stat-item flex items-center gap-1">
-                    <Download size={16} /> <span>{item.unduh}</span>
+                    <Download size={16} /> <span>{item.downloads ?? 0}</span>
                   </div>
                 </div>
               </div>

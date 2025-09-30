@@ -21,15 +21,22 @@ class BeritaController extends Controller
             ->get();
 
         return Inertia::render('User/Berita', [
-            'mainNews' => $mainNews,
+            'mainNews'    => $mainNews,
             'popularNews' => $popularNews,
         ]);
     }
 
     public function show(Berita $berita)
     {
-        return Inertia::render('User/Berita', [
-            'berita' => $berita,
+        $popularNews = Berita::where('status', 'published')
+            ->orderByDesc('published_at')
+            ->where('id', '!=', $berita->id)
+            ->take(5)
+            ->get();
+
+        return Inertia::render('User/DetailBerita', [
+            'mainNews'    => $berita,
+            'popularNews' => $popularNews,
         ]);
     }
 }

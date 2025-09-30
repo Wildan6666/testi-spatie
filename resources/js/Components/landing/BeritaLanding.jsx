@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
+import { usePage } from "@inertiajs/react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { beritaTerkini } from "../../Pages/dummy";
 
 export default function BeritaTerkini() {
+  const { props } = usePage();
+  const beritaTerkini = props.beritaTerkini || []; // ✅ ambil dari backend
+
   const [currentSlide, setCurrentSlide] = useState(0);
   const [itemsPerView, setItemsPerView] = useState(3);
 
@@ -23,8 +26,9 @@ export default function BeritaTerkini() {
     return () => window.removeEventListener("resize", updateItemsPerView);
   }, []);
 
-  // auto slide tiap 5 detik
   const maxSlides = Math.max(0, beritaTerkini.length - itemsPerView);
+
+  // auto slide tiap 5 detik
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev >= maxSlides ? 0 : prev + 1));
@@ -71,25 +75,18 @@ export default function BeritaTerkini() {
                   data-aos="fade-up"
                   data-aos-delay={index * 50}
                 >
-                  <div className="card ">
+                  <div className="card">
                     <div className="card-image">
                       <img src={news.image} alt={news.title} />
                       <div className="card-overlay"></div>
                     </div>
                     <div className="card-content">
                       <div className="card-date">
-                        <svg className="icon" fill="currentColor" viewBox="0 0 20 20">
-                          <path
-                            fillRule="evenodd"
-                            d="M6 2a1 1 0 0 0-1 1v18l7-3 7 3V3a1 1 0 0 0-1-1H6z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
                         <p>{news.date}</p>
                       </div>
                       <h3 className="card-title">{news.title}</h3>
                       <p className="card-desc">{news.description}</p>
-                      <a href="/Berita" className="card-link">
+                      <a href={`/berita/${news.id}`} className="card-link">
                         Baca Selengkapnya
                         <svg
                           className="icon ml"
@@ -145,7 +142,10 @@ export default function BeritaTerkini() {
           data-aos="fade-left"
         >
           <svg className="icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            <path strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7" />
           </svg>
         </button>
       </div>

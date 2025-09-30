@@ -1,9 +1,15 @@
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts';
+import { usePage } from "@inertiajs/react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { yearlyData, monthlyData, pieData } from "../../Pages/dummy";
 
 export default function Statistik() {
+  const { props } = usePage();
+  const yearlyData = props.yearlyData || [];
+  const monthlyData = props.monthlyData || [];
+  const pieData = props.pieData || [];
+  const totalDocs = props.stats?.total ?? props.total ?? 0; // total bisa dari dashboard
+
   const COLORS = ['#ffffff', '#fed7aa', '#fdba74'];
 
   return (
@@ -69,7 +75,7 @@ export default function Statistik() {
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={yearlyData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="grey" />
-                <XAxis dataKey="year" tick={{ fill: 'grey' }} axisLine={{ stroke: 'grey' }} />
+                <XAxis dataKey="tahun" tick={{ fill: 'grey' }} axisLine={{ stroke: 'grey' }} />
                 <YAxis tick={{ fill: 'grey' }} axisLine={{ stroke: 'grey' }} />
                 <Tooltip
                   contentStyle={{
@@ -118,21 +124,10 @@ export default function Statistik() {
         {/* Summary Stats */}
         <div className="stats-summary" data-aos="fade-up" data-aos-delay="100">
           <div className="summary-item">
-            <div className="summary-number">1,371</div>
+            <div className="summary-number">{totalDocs}</div>
             <div className="summary-label">Total Dokumen</div>
           </div>
-          <div className="summary-item">
-            <div className="summary-number">89%</div>
-            <div className="summary-label">Dokumen Aktif</div>
-          </div>
-          <div className="summary-item">
-            <div className="summary-number">42</div>
-            <div className="summary-label">Dokumen Bulan Ini</div>
-          </div>
-          <div className="summary-item">
-            <div className="summary-number">2025</div>
-            <div className="summary-label">Tahun Terbaru</div>
-          </div>
+          {/* kalau mau tambahkan summary lain, bisa ambil dari props juga */}
         </div>
       </div>
     </section>

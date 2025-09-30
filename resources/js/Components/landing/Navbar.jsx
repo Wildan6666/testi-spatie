@@ -135,7 +135,7 @@ export default function Navbar() {
             </div>
           </div>
 
-          <a href="/dokumen" className="nav-link">
+          <a href="/produkhukum" className="nav-link">
             Dokumen Hukum
           </a>
 

@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\NavigationController;
 use App\Http\Controllers\Admin\VerifikasiDataController;
 use Spatie\Permission\Models\Role;
+use App\Http\Controllers\BerandaController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -23,9 +24,9 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [BerandaController::class, 'dashboard'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -79,7 +80,7 @@ Route::post('/konfigurasi/roles/{role}/permissions', [RoleController::class, 'up
     ->name('roles.updatePermissions');
 
 
-Route::resource('dokumen', App\Http\Controllers\Admin\DokumenController::class)->middleware('can:read dokumen');
+//Route::resource('dokumen', App\Http\Controllers\Admin\DokumenController::class)->middleware('can:read dokumen');
 
 Route::resource('jenis-hukum', App\Http\Controllers\Admin\JenisHukumController::class)->middleware(['can:read jenis hukum']);
 
@@ -116,9 +117,19 @@ Route::post('/berita', [KelolaBeritaController::class, 'store'])->name('berita.s
 
 
 use App\Http\Controllers\User\BeritaController;
+use App\Http\Controllers\User\UserProdukHukumController;
 
 // Halaman daftar berita untuk publik
 Route::get('/berita', [BeritaController::class, 'index'])->name('berita.public.index');
 
 // Halaman detail berita (baca selengkapnya)
 Route::get('/berita/{berita}', [BeritaController::class, 'show'])->name('berita.public.show');
+
+Route::get('/produkhukum', [UserProdukHukumController::class, 'index'])->name('produkhukum.index');
+Route::get('/produkhukum/{id}', [UserProdukHukumController::class, 'show'])->name('produkhukum.show');
+
+
+
+
+Route::get('/', [BerandaController::class, 'index'])->name('welcome');
+Route::get('/beranda', [BerandaController::class, 'index'])->name('beranda');
