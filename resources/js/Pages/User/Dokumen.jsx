@@ -18,15 +18,15 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 ).toString();
 
 export default function Dokumen() {
-  const { props, url } = usePage();
+  const { props } = usePage();
   const dokumen = props.dokumen ?? {};
   const filters = props.filters ?? {};
 
-  // Ambil state dari props/URL
+  // --- State Filter ---
   const [searchTerm, setSearchTerm] = useState(filters.search || "");
   const [filterState, setFilterState] = useState({
-    jenisDocument: filters.jenis || "",
-    typeDocument: filters.tipe || "",
+    jenis: filters.jenis || "",
+    tipe: filters.tipe || "",
     tahun: filters.tahun || "",
     nomor: filters.nomor || "",
   });
@@ -39,50 +39,60 @@ export default function Dokumen() {
   const startIndex = (currentPage - 1) * perPage;
   const endIndex = startIndex + rows.length;
 
-  // --- Handlers ---
+  // --- Handler perubahan filter ---
   const handleFilterChange = (field, value) => {
-    const next = { ...filterState, [field]: value };
-    setFilterState(next);
+    setFilterState((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSearch = () => {
+  // --- Fungsi untuk trigger pencarian ---
+  const performSearch = () => {
     router.get(
-      route("dokumen.index"),
+      route("produkhukum.index"),
       {
         search: searchTerm,
         nomor: filterState.nomor,
         tahun: filterState.tahun,
-        jenis: filterState.jenisDocument,
-        tipe: filterState.typeDocument,
+        jenis: filterState.jenis,
+        tipe: filterState.tipe,
         page: 1,
       },
       { preserveState: true, replace: true }
     );
   };
 
+  // --- Debounce: tunggu 500ms setelah user berhenti mengetik ---
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      performSearch();
+    }, 1500); // 0.5 detik
+
+    return () => clearTimeout(timeout); // batalkan timer kalau user masih mengetik
+  }, [searchTerm, filterState]); // jalankan ulang kalau ada perubahan di filter
+
+  // --- Tombol Reset ---
   const resetFilters = () => {
     setSearchTerm("");
-    const next = { jenisDocument: "", typeDocument: "", tahun: "", nomor: "" };
-    setFilterState(next);
-
-    router.get(route("dokumen.index"), { page: 1 }, { preserveState: true, replace: true });
+    setFilterState({ jenis: "", tipe: "", tahun: "", nomor: "" });
+    router.get(route("produkhukum.index"), { page: 1 }, { preserveState: true, replace: true });
   };
 
+  // --- Pagination ---
   const handlePageChange = (page) => {
     router.get(
-      route("dokumen.index"),
+      route("produkhukum.index"),
       {
         search: searchTerm,
         nomor: filterState.nomor,
         tahun: filterState.tahun,
-        jenis: filterState.jenisDocument,
-        tipe: filterState.typeDocument,
+        jenis: filterState.jenis,
+        tipe: filterState.tipe,
         page,
       },
       { preserveState: true, replace: true }
     );
   };
 
+  // --- Download File ---
   const handleDownload = (file, title) => {
     const link = document.createElement("a");
     link.href = file;
@@ -92,23 +102,17 @@ export default function Dokumen() {
     document.body.removeChild(link);
   };
 
-  // Init AOS animasi
+  // --- Init AOS Animasi ---
   useEffect(() => {
-    AOS.init({
-      duration: 1000,
-      once: false,
-      easing: "ease-in-out",
-    });
+    AOS.init({ duration: 1000, once: false, easing: "ease-in-out" });
   }, []);
 
   return (
     <div className="landing-container">
       <Navbar />
 
-      {/* Main Content */}
       <div className="flex-1 flex max-w-7xl mx-auto gap-6 p-6" data-aos="fade-down">
-        
-        {/* Content Area */}
+        {/* Konten Dokumen */}
         <div className="flex-1 space-y-6">
           <MainDoc
             currentDocuments={rows}
@@ -132,8 +136,10 @@ export default function Dokumen() {
           setSearchTerm={setSearchTerm}
           filters={filterState}
           handleFilterChange={handleFilterChange}
-          handleSearch={handleSearch}
+          handleSearch={performSearch} // masih bisa dipakai manual
           resetFilters={resetFilters}
+          jenisOptions={props.jenisOptions || []}
+          tipeOptions={props.tipeOptions || []}
         />
       </div>
 

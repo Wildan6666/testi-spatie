@@ -37,6 +37,9 @@ Route::middleware('auth')->group(function () {
 Route::get('/admin', [AdminDashboardController::class, 'index'])
 ->middleware(['auth', 'verified','can:read dashboard']);
 
+
+
+Route::post('konfigurasi/permissions/store', [PermissionController::class, 'store'])->name('permissions.store');
 Route::prefix('konfigurasi')->middleware(['auth'])->name('admin.')->group(function () {
     // Users
     Route::get('users', [UserController::class, 'index'])->name('users.index')
@@ -53,6 +56,7 @@ Route::prefix('konfigurasi')->middleware(['auth'])->name('admin.')->group(functi
     Route::post('permissions/{user}', [PermissionController::class, 'update'])->name('permissions.update');
     Route::delete('permissions/delete/{id}', [PermissionController::class, 'destroyPermission'])
     ->name('permissions.destroy');
+  
     
     // Menus
     route::get('menus', [NavigationController::class, 'index'])->name('menus.index')
@@ -127,9 +131,11 @@ Route::get('/berita/{berita}', [BeritaController::class, 'show'])->name('berita.
 
 Route::get('/produkhukum', [UserProdukHukumController::class, 'index'])->name('produkhukum.index');
 Route::get('/produkhukum/{id}', [UserProdukHukumController::class, 'show'])->name('produkhukum.show');
-
+Route::get('/produkhukum/{id}/download', [UserProdukHukumController::class, 'download'])->name('produkhukum.download');
 
 
 
 Route::get('/', [BerandaController::class, 'index'])->name('welcome');
 Route::get('/beranda', [BerandaController::class, 'index'])->name('beranda');
+
+

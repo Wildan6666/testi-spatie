@@ -26,6 +26,8 @@ class ProdukHukum extends Model
         'jenis_hukum_id',
         'kategori_akses_id',
         'berkas',
+        'views',
+        'downloads',
     ];
 
     // Relasi ke instansi
@@ -68,6 +70,13 @@ public function riwayatVerifikasi()
     return $this->hasMany(RiwayatVerifikasi::class, 'produk_hukum_id');
 }
 
+public function kategoriAkses()
+{
+    return $this->belongsTo(\App\Models\KategoriAkses::class, 'kategori_akses_id');
 }
+
+}
+
+
 
 

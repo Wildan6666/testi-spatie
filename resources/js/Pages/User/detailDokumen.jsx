@@ -111,12 +111,10 @@ export default function DetailDokumen() {
             {/* Statistik */}
             <div className="mt-6 flex items-center gap-6 text-sm text-gray-600">
               <div className="flex items-center gap-1">
-                <Eye size={16} className="text-gray-500" />
-                <span>0 kali dilihat</span>
+                 <Eye size={16} /> <span>{doc.views ?? 0}</span>
               </div>
               <div className="flex items-center gap-1">
-                <Download size={16} className="text-gray-500" />
-                <span>0 kali diunduh</span>
+                  <Download size={16} /> <span>{doc.downloads ?? 0}</span>
               </div>
             </div>
 

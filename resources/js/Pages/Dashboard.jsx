@@ -52,10 +52,10 @@ export default function DashboardUser() {
   };
 
   
-
   useEffect(() => {
     AOS.init({ duration: 1000, once: false, easing: "ease-in-out" });
   }, []);
+  
 
   return (
     <div className="landing-container">

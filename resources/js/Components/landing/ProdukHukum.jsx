@@ -6,13 +6,14 @@ import "aos/dist/aos.css";
 
 export default function ProdukHukum() {
   const { props } = usePage();
+   const doc = props.doc;
   const terbaruData = props.terbaruData || [];
   const populerData = props.populerData || [];
 
   const [activeTab, setActiveTab] = useState("terbaru");
 
   // Pilih data berdasarkan tab
-  const displayedData = activeTab === "terbaru" ? terbaruData : populerData;
+const displayedData = activeTab === "terbaru" ? terbaruData : populerData;
 
   return (
     <section className="section-gradient py-10" data-aos="fade-up">
@@ -45,35 +46,35 @@ export default function ProdukHukum() {
 
         {/* Grid Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-          {displayedData.slice(0, 6).map((item, i) => (
+          {displayedData.slice(0, 6).map((doc, i) => (
             <Link
-              key={item.id}
-              href={route("produkhukum.show", item.id)} // pakai route Laravel
+              key={doc.id}
+              href={route("produkhukum.show", doc.id)} // pakai route Laravel
               className="product-card block bg-white rounded-xl border border-orange-400 shadow-sm hover:shadow-lg transition overflow-hidden"
               data-aos="fade-up"
               data-aos-delay={i * 100}
             >
               {/* Badge */}
               <span className="product-tag inline-block bg-orange-500 text-white text-xs px-3 py-1 rounded-br-lg">
-                {item.kategori}
+                {doc.kategori}
               </span>
 
               {/* Content */}
               <div className="p-4">
                 <h3 className="product-title text-lg font-semibold text-gray-800 mb-2">
-                  {item.judul}
+                  {doc.judul}
                 </h3>
                 <p className="product-desc text-sm text-gray-600 mb-4 line-clamp-2">
-                  {item.deskripsi}
+                  {doc.deskripsi}
                 </p>
 
                 {/* Stats */}
                 <div className="product-stats flex items-center text-sm text-gray-500 gap-4">
                   <div className="stat-item flex items-center gap-1">
-                    <Eye size={16} /> <span>{item.views ?? 0}</span>
+                    <Eye size={16} /> <span>{doc.views ?? 0}</span>
                   </div>
                   <div className="stat-item flex items-center gap-1">
-                    <Download size={16} /> <span>{item.downloads ?? 0}</span>
+                    <Download size={16} /> <span>{doc.downloads ?? 0}</span>
                   </div>
                 </div>
               </div>

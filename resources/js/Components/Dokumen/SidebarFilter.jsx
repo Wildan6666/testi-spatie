@@ -8,11 +8,12 @@ export default function SidebarFilter({
   handleSearch,
   resetFilters,
   setCurrentPage,
+  jenisOptions = [],
+  tipeOptions = [],
 }) {
   return (
     <aside className="w-80 space-y-4" data-aos="fade-left">
       <div className="bg-white rounded-xl p-6 shadow-md border relative">
-        {/* Header */}
         <div className="absolute top-0 left-0 w-full h-1 bg-orange-500 rounded-t-xl"></div>
         <h3 className="font-semibold text-lg text-gray-800 mb-6 flex items-center gap-2">
           <Filter size={20} className="text-orange-500" /> Cari Peraturan
@@ -20,9 +21,7 @@ export default function SidebarFilter({
 
         {/* Search */}
         <div className="space-y-2 mb-4">
-          <label className="text-sm font-semibold text-gray-700">
-            Kata Kunci :
-          </label>
+          <label className="text-sm font-semibold text-gray-700">Kata Kunci :</label>
           <input
             type="text"
             placeholder="Contoh : Keputusan Rektor"
@@ -37,51 +36,41 @@ export default function SidebarFilter({
 
         {/* Jenis Dokumen */}
         <div className="space-y-2 mb-4">
-          <label className="text-sm font-semibold text-gray-700">
-            Jenis Dokumen :
-          </label>
+          <label className="text-sm font-semibold text-gray-700">Jenis Dokumen :</label>
           <select
-            value={filters.jenisDocument}
-            onChange={(e) =>
-              handleFilterChange("jenisDocument", e.target.value)
-            }
+            value={filters.jenis}
+            onChange={(e) => handleFilterChange("jenis", e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 text-sm text-gray-600"
           >
             <option value="">Pilih Jenis Dokumen</option>
-            <option value="Peraturan Rektor">Peraturan Rektor</option>
-            <option value="Keputusan Rektor">Keputusan Rektor</option>
-            <option value="Surat Edaran">Surat Edaran</option>
-            <option value="Instruksi">Instruksi</option>
+            {jenisOptions.map((jenis) => (
+              <option key={jenis.id} value={jenis.nama}>
+                {jenis.nama}
+              </option>
+            ))}
           </select>
         </div>
 
         {/* Tipe Dokumen */}
         <div className="space-y-2 mb-4">
-          <label className="text-sm font-semibold text-gray-700">
-            Tipe Dokumen :
-          </label>
+          <label className="text-sm font-semibold text-gray-700">Tipe Dokumen :</label>
           <select
-            value={filters.typeDocument}
-            onChange={(e) =>
-              handleFilterChange("typeDocument", e.target.value)
-            }
+            value={filters.tipe}
+            onChange={(e) => handleFilterChange("tipe", e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 text-sm text-gray-600"
           >
             <option value="">Pilih Tipe Dokumen</option>
-            <option value="Kepegawaian">Kepegawaian</option>
-            <option value="Tata Laksana">Tata Laksana</option>
-            <option value="Keuangan">Keuangan</option>
-            <option value="Perencanaan">Perencanaan</option>
-            <option value="Kemahasiswaan">Kemahasiswaan</option>
-            <option value="Akademik">Akademik</option>
+            {tipeOptions.map((tipe) => (
+              <option key={tipe.id} value={tipe.nama}>
+                {tipe.nama}
+              </option>
+            ))}
           </select>
         </div>
 
         {/* Tahun */}
         <div className="space-y-2 mb-4">
-          <label className="text-sm font-semibold text-gray-700">
-            Tahun :
-          </label>
+          <label className="text-sm font-semibold text-gray-700">Tahun :</label>
           <input
             type="number"
             placeholder="Tahun"
@@ -95,9 +84,7 @@ export default function SidebarFilter({
 
         {/* Nomor */}
         <div className="space-y-2 mb-6">
-          <label className="text-sm font-semibold text-gray-700">
-            Nomor :
-          </label>
+          <label className="text-sm font-semibold text-gray-700">Nomor :</label>
           <input
             type="text"
             placeholder="Nomor dokumen"
@@ -107,15 +94,18 @@ export default function SidebarFilter({
           />
         </div>
 
-        {/* Actions */}
+        {/* Tombol Manual */}
         <div className="space-y-3">
           <button
+            type="button"
             onClick={handleSearch}
             className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg transition flex items-center justify-center gap-2"
           >
             <Search size={18} /> Cari
           </button>
+
           <button
+            type="button"
             onClick={resetFilters}
             className="w-full bg-gray-400 hover:bg-gray-500 text-white font-semibold py-3 rounded-lg transition flex items-center justify-center gap-2"
           >

@@ -34,6 +34,21 @@ class PermissionController extends Controller
         ]);
     }
 
+       // 🔹 Tambah permission baru
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|unique:permissions,name|max:255',
+        ]);
+
+        Permission::create([
+            'name' => $request->name,
+            'guard_name' => 'web', // default guard
+        ]);
+
+        return redirect()->back()->with('success', 'Permission baru berhasil ditambahkan.');
+    }
+
     public function destroyPermission($id)
 {
     $permission = Permission::findOrFail($id);
