@@ -18,6 +18,7 @@ import {
   Scale,
   File as FileIcon,
   Image as ImageIcon,
+  GitBranch,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -40,6 +41,9 @@ export default function Create() {
     tipe_dokumen_id: "",
     jenis_hukum_id: "",
     berkas: null,
+
+    // ✅ Tambahan field parent_id
+    parent_id: "",
   });
 
   const handleFileChange = (e) => {
@@ -82,6 +86,7 @@ export default function Create() {
               Tambah Produk Hukum
             </CardTitle>
           </CardHeader>
+
           <CardContent className="p-6 space-y-10">
             <form onSubmit={handleSubmit} className="space-y-12">
               {/* --- Informasi Dasar --- */}
@@ -128,6 +133,7 @@ export default function Create() {
                     </div>
                   </div>
                 </div>
+
                 <div className="mt-4">
                   <Label htmlFor="ringkasan">Ringkasan</Label>
                   <Textarea
@@ -166,19 +172,14 @@ export default function Create() {
                     />
                   </div>
                   <div>
-                    <Label
-                      htmlFor="tanggal_penetapan"
-                      className="flex items-center gap-1"
-                    >
+                    <Label htmlFor="tanggal_penetapan" className="flex items-center gap-1">
                       <Calendar className="w-4 h-4" /> Tanggal Penetapan
                     </Label>
                     <Input
                       type="date"
                       id="tanggal_penetapan"
                       value={data.tanggal_penetapan}
-                      onChange={(e) =>
-                        setData("tanggal_penetapan", e.target.value)
-                      }
+                      onChange={(e) => setData("tanggal_penetapan", e.target.value)}
                       className="mt-1"
                     />
                   </div>
@@ -192,6 +193,27 @@ export default function Create() {
                   Klasifikasi
                 </h2>
                 <div className="grid grid-cols-2 gap-6">
+
+                  {/* ✅ Produk Hukum Induk */}
+                  <div>
+                    <Label htmlFor="parent_id" className="flex items-center gap-1">
+                      <GitBranch className="w-4 h-4" /> Produk Hukum Induk
+                    </Label>
+                    <select
+                      id="parent_id"
+                      value={data.parent_id || ""}
+                      onChange={(e) => setData("parent_id", e.target.value)}
+                      className="w-full border rounded-lg p-2 mt-1"
+                    >
+                      <option value="">-- Tidak Ada (Dokumen Utama) --</option>
+                      {props.produkIndukList?.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.judul}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
                   {/* Instansi */}
                   <div>
                     <Label htmlFor="instansi_id" className="flex items-center gap-1">
@@ -218,9 +240,7 @@ export default function Create() {
                     <select
                       id="status_peraturan_id"
                       value={data.status_peraturan_id}
-                      onChange={(e) =>
-                        setData("status_peraturan_id", e.target.value)
-                      }
+                      onChange={(e) => setData("status_peraturan_id", e.target.value)}
                       className="w-full border rounded-lg p-2 mt-1"
                     >
                       <option value="">-- Pilih Status Peraturan --</option>
@@ -257,9 +277,7 @@ export default function Create() {
                       <select
                         id="kategori_akses_id"
                         value={data.kategori_akses_id}
-                        onChange={(e) =>
-                          setData("kategori_akses_id", e.target.value)
-                        }
+                        onChange={(e) => setData("kategori_akses_id", e.target.value)}
                         className="w-full border rounded-lg p-2 mt-1"
                       >
                         <option value="">-- Pilih Sifat Dokumen --</option>
@@ -312,7 +330,6 @@ export default function Create() {
                     Format: PDF/PNG, Max 2MB
                   </p>
 
-                  {/* Preview */}
                   {filePreview && (
                     <div className="mt-4 w-full">
                       {filePreview.type === "image" ? (

@@ -28,6 +28,7 @@ class ProdukHukum extends Model
         'berkas',
         'views',
         'downloads',
+        'parent_id',
     ];
 
     // Relasi ke instansi
@@ -74,6 +75,17 @@ public function kategoriAkses()
 {
     return $this->belongsTo(\App\Models\KategoriAkses::class, 'kategori_akses_id');
 }
+
+ public function parent()
+    {
+        return $this->belongsTo(ProdukHukum::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(ProdukHukum::class, 'parent_id');
+    }
+
 
 }
 

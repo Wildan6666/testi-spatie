@@ -335,61 +335,160 @@ export default function ProdukHukumPage() {
           </div>
         )}
 
-        {/* Modal Detail */}
-        {selected && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-            <div className="bg-white rounded-xl shadow-2xl w-[750px] relative p-6 max-h-[90vh] overflow-y-auto">
-              <button
-                onClick={() => setSelected(null)}
-                className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
-              >
-                <X className="w-6 h-6" />
-              </button>
+       {/* Modal Detail */}
+{selected && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+    <div className="bg-white rounded-xl shadow-2xl w-[750px] relative p-6 max-h-[90vh] overflow-y-auto">
+      <button
+        onClick={() => setSelected(null)}
+        className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+      >
+        <X className="w-6 h-6" />
+      </button>
 
-              <h2 className="text-2xl font-bold mb-6 text-gray-800 border-b pb-3">
-                {selected.judul}
-              </h2>
+      {/* Judul Dokumen */}
+      <h2 className="text-2xl font-bold mb-4 text-gray-800 border-b pb-3">
+        {selected.judul}
+      </h2>
 
-              <div className="grid grid-cols-2 gap-4 text-sm text-gray-700">
-                <p><span className="font-medium">Nomor:</span> {selected.nomor}</p>
-                <p><span className="font-medium">Tahun:</span> {selected.tahun}</p>
-                <p><span className="font-medium">Tanggal Penetapan:</span> {selected.tanggal_penetapan}</p>
-                <p><span className="font-medium">Subjek:</span> {selected.subjek}</p>
-                <p><span className="font-medium">Instansi:</span> {selected.instansi?.nama}</p>
-                <p><span className="font-medium">Status Verifikasi:</span> {selected.status_verifikasi?.nama_status}</p>
-                <p><span className="font-medium">Status Peraturan:</span> {selected.status_peraturan?.nama}</p>
-                <p><span className="font-medium">Tipe Dokumen:</span> {selected.tipe_dokumen?.nama}</p>
-                <p><span className="font-medium">Jenis Dokumen:</span> {selected.jenis_hukum?.nama}</p>
-              </div>
-
-              <div className="mt-6">
-                <p className="font-medium mb-1">Ringkasan:</p>
-                <p className="text-justify bg-gray-50 p-3 rounded-lg">{selected.ringkasan}</p>
-              </div>
-
-              <div className="mt-4">
-                <p className="font-medium mb-1">Kata Kunci:</p>
-                <p className="bg-gray-50 p-2 rounded-lg">{selected.kata_kunci}</p>
-              </div>
-
-              <div className="mt-4">
-                <p className="font-medium mb-1">Berkas:</p>
-                {selected.berkas ? (
-                  <a
-                    href={`/storage/${selected.berkas}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 underline"
+      {/* 🔗 Hierarki Induk Dokumen */}
+      {selected.parent_chain && selected.parent_chain.length > 0 ? (
+        <div className="mb-6 text-sm text-gray-700 bg-gray-50 p-3 rounded-lg border">
+          <p className="font-medium mb-1 text-gray-800">
+            Dokumen ini merupakan bagian dari:
+          </p>
+          <p className="flex flex-wrap items-center gap-1">
+            {selected.parent_chain.map((parent, index) => (
+              <span key={parent.id} className="flex items-center gap-1">
+                <a
+                  href={`/produkhukum/${parent.id}`}
+                  className="text-blue-600 hover:underline flex items-center gap-1"
+                  target="_blank"
+                >
+                  {parent.judul}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    className="w-3 h-3"
                   >
-                    Lihat Berkas
-                  </a>
-                ) : (
-                  <span className="text-gray-500">Tidak ada berkas</span>
+                    <path
+                      fillRule="evenodd"
+                      d="M12.293 2.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414L12 13.414a1 1 0 11-1.414-1.414L14.586 7H7a1 1 0 110-2h7a1 1 0 01.707.293zM3 5a1 1 0 000 2h3v10a1 1 0 102 0V7h3a1 1 0 100-2H3z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </a>
+                {index < selected.parent_chain.length - 1 && (
+                  <span className="text-gray-400">→</span>
                 )}
-              </div>
-            </div>
-          </div>
+              </span>
+            ))}
+          </p>
+        </div>
+      ) : (
+        <div className="mb-6 text-sm text-gray-700 bg-gray-50 p-3 rounded-lg border">
+          <p className="font-medium text-gray-800">
+            📜 Dokumen ini merupakan dokumen utama.
+          </p>
+        </div>
+      )}
+
+      {/* Detail Dokumen */}
+      <div className="grid grid-cols-2 gap-4 text-sm text-gray-700">
+        <p>
+          <span className="font-medium">Nomor:</span> {selected.nomor}
+        </p>
+        <p>
+          <span className="font-medium">Tahun:</span> {selected.tahun}
+        </p>
+        <p>
+          <span className="font-medium">Tanggal Penetapan:</span>{" "}
+          {selected.tanggal_penetapan}
+        </p>
+        <p>
+          <span className="font-medium">Subjek:</span> {selected.subjek}
+        </p>
+        <p>
+          <span className="font-medium">Instansi:</span>{" "}
+          {selected.instansi?.nama}
+        </p>
+        <p>
+          <span className="font-medium">Status Verifikasi:</span>{" "}
+          {selected.status_verifikasi?.nama_status}
+        </p>
+        <p>
+          <span className="font-medium">Status Peraturan:</span>{" "}
+          {selected.status_peraturan?.nama}
+        </p>
+        <p>
+          <span className="font-medium">Tipe Dokumen:</span>{" "}
+          {selected.tipe_dokumen?.nama}
+        </p>
+        <p>
+          <span className="font-medium">Jenis Dokumen:</span>{" "}
+          {selected.jenis_hukum?.nama}
+        </p>
+      </div>
+
+      {/* Ringkasan */}
+      <div className="mt-6">
+        <p className="font-medium mb-1">Ringkasan:</p>
+        <p className="text-justify bg-gray-50 p-3 rounded-lg">
+          {selected.ringkasan}
+        </p>
+      </div>
+
+      {/* Kata Kunci */}
+      <div className="mt-4">
+        <p className="font-medium mb-1">Kata Kunci:</p>
+        <p className="bg-gray-50 p-2 rounded-lg">{selected.kata_kunci}</p>
+      </div>
+
+      {/* Berkas */}
+      <div className="mt-4">
+        <p className="font-medium mb-1">Berkas:</p>
+        {selected.berkas ? (
+          <a
+            href={`/storage/${selected.berkas}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 underline"
+          >
+            Lihat Berkas
+          </a>
+        ) : (
+          <span className="text-gray-500">Tidak ada berkas</span>
         )}
+      </div>
+
+      {/* 🌳 Dokumen Turunan (Children) */}
+      {selected.children && selected.children.length > 0 && (
+        <div className="mt-8 border-t pt-4">
+          <p className="font-semibold text-gray-800 mb-2">
+            Dokumen Turunan:
+          </p>
+          <ul className="list-disc list-inside text-sm text-blue-600 space-y-1">
+            {selected.children.map((child) => (
+              <li key={child.id}>
+                <a
+                  href={`/produkhukum/${child.id}`}
+                  target="_blank"
+                  className="hover:underline"
+                >
+                  {child.judul}
+                </a>{" "}
+                <span className="text-gray-500">
+                  ({child.status_peraturan?.nama ?? "Status tidak tersedia"})
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  </div>
+)}
       </div>
     </AdminLayout>
   );
