@@ -87,6 +87,17 @@ public function kategoriAkses()
     }
 
 
+    public function parentRecursive()
+{
+    return $this->parent()->with('parentRecursive');
+}
+
+public function childrenRecursive()
+{
+    return $this->children()->with('childrenRecursive');
+}
+
+
 }
 
 

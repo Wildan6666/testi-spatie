@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { usePage, Link } from "@inertiajs/react";
-import {
-  Search,
-  Download,
-  Eye,
-  ArrowLeft,
-} from "lucide-react";
+import { Search, Download, Eye, ArrowLeft } from "lucide-react";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import TreeList from "@/Components/Dokumen/TreeList";
+import { Book, Building, FileText, ChevronRight } from "lucide-react";
+
 
 import Navbar from "@/Components/landing/Navbar";
 import Footer from "@/Components/landing/Footer";
@@ -20,7 +18,6 @@ export default function DetailDokumen() {
 
   const [keyword, setKeyword] = useState("");
 
-  // Init animasi
   useEffect(() => {
     AOS.init({ duration: 1000, once: false, easing: "ease-in-out" });
   }, []);
@@ -43,11 +40,9 @@ export default function DetailDokumen() {
     <div className="landing-container">
       <Navbar />
 
-      {/* Detail Dokumen */}
       <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50 py-10">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
-          
-          {/* Informasi Dokumen */}
+          {/* ===== DETAIL UTAMA ===== */}
           <div
             className="lg:col-span-2 bg-white shadow-lg rounded-xl p-6"
             data-aos="fade-right"
@@ -61,6 +56,7 @@ export default function DetailDokumen() {
               </p>
             </div>
 
+            {/* INFORMASI DOKUMEN */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
               <div>
                 <span className="font-medium text-gray-700">Kategori:</span>
@@ -108,17 +104,82 @@ export default function DetailDokumen() {
               </div>
             </div>
 
-            {/* Statistik */}
+     {/* ===== STRUKTUR TREE ===== */}
+{(doc.ancestors?.length > 0 || doc.treeChildren?.length > 0) && (
+  <div
+    className="mt-8 bg-white border border-orange-200 rounded-xl p-6 shadow-sm"
+    data-aos="fade-up"
+  >
+    <h3 className="font-bold text-orange-700 text-lg mb-3 flex items-center gap-2">
+      🌳 Struktur Produk Hukum
+    </h3>
+
+{/* ===== Jalur Induk (Breadcrumb Profesional) ===== */}
+{doc.ancestors && doc.ancestors.length > 0 && (
+  <div
+    className="mb-6 bg-white border border-orange-200 rounded-xl p-5 shadow-sm"
+    data-aos="fade-right"
+  >
+    <h3 className="text-sm font-semibold text-orange-700 mb-3 flex items-center gap-2">
+      <Book size={18} className="text-orange-600" />
+      Rantai Dokumen Induk
+    </h3>
+
+    <div className="flex flex-wrap items-center gap-2 text-sm">
+      {doc.ancestors.map((p, idx) => (
+        <React.Fragment key={idx}>
+          <Link
+            href={`/dokumen/${p.id}`}
+            title={p.judul}
+            className="group flex items-center gap-2 bg-gradient-to-r from-orange-50 to-white border border-orange-200 hover:border-orange-400 text-gray-700 hover:text-orange-600 font-medium px-3 py-1.5 rounded-lg transition-all duration-200"
+          >
+            {/* Ikon sesuai urutan */}
+            {idx === 0 ? (
+              <Book size={14} className="text-orange-500 group-hover:scale-110 transition-transform" />
+            ) : (
+              <Building size={14} className="text-orange-500 group-hover:scale-110 transition-transform" />
+            )}
+            <span>{p.judul}</span>
+          </Link>
+
+          {idx < doc.ancestors.length - 1 && (
+            <ChevronRight size={14} className="text-gray-400" />
+          )}
+        </React.Fragment>
+      ))}
+
+      {/* Dokumen saat ini (aktif) */}
+      <div className="flex items-center gap-2 bg-orange-500 text-white font-semibold px-3 py-1.5 rounded-lg shadow-inner">
+        <FileText size={14} />
+        <span>{doc.title}</span>
+      </div>
+    </div>
+  </div>
+)}
+
+
+    {/* Pohon turunan */}
+    {doc.treeChildren && doc.treeChildren.length > 0 ? (
+      <TreeList nodes={doc.treeChildren} />
+    ) : (
+      <p className="text-gray-500 italic text-sm">
+        Tidak ada dokumen turunan.
+      </p>
+    )}
+  </div>
+)}
+
+            {/* STATISTIK */}
             <div className="mt-6 flex items-center gap-6 text-sm text-gray-600">
               <div className="flex items-center gap-1">
-                 <Eye size={16} /> <span>{doc.views ?? 0}</span>
+                <Eye size={16} /> <span>{doc.views ?? 0}</span>
               </div>
               <div className="flex items-center gap-1">
-                  <Download size={16} /> <span>{doc.downloads ?? 0}</span>
+                <Download size={16} /> <span>{doc.downloads ?? 0}</span>
               </div>
             </div>
 
-            {/* Tombol Aksi */}
+            {/* TOMBOL AKSI */}
             <div className="mt-6 flex gap-4">
               {doc.file ? (
                 <a
@@ -129,9 +190,7 @@ export default function DetailDokumen() {
                   <Download size={18} /> Unduh Dokumen
                 </a>
               ) : (
-                <span className="italic text-gray-500">
-                  File belum tersedia
-                </span>
+                <span className="italic text-gray-500">File belum tersedia</span>
               )}
               <Link
                 href={route("produkhukum.index")}
@@ -142,7 +201,7 @@ export default function DetailDokumen() {
             </div>
           </div>
 
-          {/* Sidebar Pencarian */}
+          {/* ===== SIDEBAR ===== */}
           <aside
             className="bg-white shadow-lg rounded-xl p-6"
             data-aos="fade-left"
@@ -174,7 +233,7 @@ export default function DetailDokumen() {
           </aside>
         </div>
 
-        {/* Pratinjau PDF */}
+        {/* PRATINJAU PDF */}
         {doc.file && <Pratinjau file={doc.file} title={doc.title} />}
 
         <ScrollTop />

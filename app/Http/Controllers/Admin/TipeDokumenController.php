@@ -21,11 +21,15 @@ class TipeDokumenController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama' => 'required|string|max:255|unique:tipe_dokumens,nama',
+            'kode' => 'required|string|max:50|unique:tipe_dokumen,kode',
+            'nama' => 'required|string|max:255|unique:tipe_dokumen,nama',
+            'deskripsi' => 'nullable|string',
         ]);
 
         TipeDokumen::create([
+            'kode' => strtoupper($request->kode),
             'nama' => $request->nama,
+            'deskripsi' => $request->deskripsi,
         ]);
 
         return back()->with('success', 'Tipe dokumen berhasil ditambahkan');
@@ -34,12 +38,16 @@ class TipeDokumenController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nama' => 'required|string|max:255|unique:tipe_dokumens,nama,' . $id,
+            'kode' => 'required|string|max:50|unique:tipe_dokumen,kode,' . $id,
+            'nama' => 'required|string|max:255|unique:tipe_dokumen,nama,' . $id,
+            'deskripsi' => 'nullable|string',
         ]);
 
         $tipe = TipeDokumen::findOrFail($id);
         $tipe->update([
+            'kode' => strtoupper($request->kode),
             'nama' => $request->nama,
+            'deskripsi' => $request->deskripsi,
         ]);
 
         return back()->with('success', 'Tipe dokumen berhasil diperbarui');

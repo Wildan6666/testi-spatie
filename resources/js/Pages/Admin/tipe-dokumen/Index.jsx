@@ -1,32 +1,39 @@
 import AdminLayout from "@/Layouts/AdminLayout";
 import { useState } from "react";
-import { useForm, router, usePage } from "@inertiajs/react";
+import { useForm, usePage } from "@inertiajs/react";
 import { Plus, Pencil, Trash2, X, Search } from "lucide-react";
 
 export default function TipeDokumenPage() {
   const { props } = usePage();
-  const documentTypes = props.tipeDokumens || []; // 👉 ambil dari database
+  const documentTypes = props.tipeDokumens || [];
 
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState(""); // "create" | "edit" | "delete"
   const [selected, setSelected] = useState(null);
   const [search, setSearch] = useState("");
 
+  // 🧩 tambahkan kode & deskripsi di form
   const { data, setData, post, put, delete: destroy, reset } = useForm({
+    kode: "",
     nama: "",
+    deskripsi: "",
   });
 
   const handleOpenModal = (type, item = null) => {
     setModalType(type);
     setSelected(item);
-    setData({ nama: item?.nama || "" });
+    setData({
+      kode: item?.kode || "",
+      nama: item?.nama || "",
+      deskripsi: item?.deskripsi || "",
+    });
     setShowModal(true);
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
     setSelected(null);
-    reset("nama");
+    reset("kode", "nama", "deskripsi");
   };
 
   const handleSubmit = () => {
@@ -39,15 +46,17 @@ export default function TipeDokumenPage() {
     }
   };
 
-  // Filter data by search
-  const filteredData = documentTypes.filter((t) =>
-    t.nama.toLowerCase().includes(search.toLowerCase())
+  // Filter data berdasarkan pencarian
+  const filteredData = documentTypes.filter(
+    (t) =>
+      t.nama.toLowerCase().includes(search.toLowerCase()) ||
+      t.kode.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
     <AdminLayout>
-      <div className="max-w-5xl mx-auto space-y-6">
-        {/* Header Card */}
+      <div className="max-w-6xl mx-auto space-y-6">
+        {/* Header */}
         <div className="bg-white rounded-xl shadow border border-gray-200">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 p-6 border-b">
             <h1 className="text-xl font-bold text-gray-800">Daftar Tipe Dokumen</h1>
@@ -57,7 +66,7 @@ export default function TipeDokumenPage() {
                 <Search className="absolute left-3 top-2.5 text-gray-400 w-4 h-4" />
                 <input
                   type="text"
-                  placeholder="Cari tipe dokumen..."
+                  placeholder="Cari kode atau nama..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className="w-full border rounded-lg pl-9 pr-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
@@ -79,7 +88,9 @@ export default function TipeDokumenPage() {
               <thead className="bg-gray-100 text-gray-700">
                 <tr>
                   <th className="px-6 py-3 text-left font-semibold">ID</th>
+                  <th className="px-6 py-3 text-left font-semibold">Kode</th>
                   <th className="px-6 py-3 text-left font-semibold">Nama</th>
+                  <th className="px-6 py-3 text-left font-semibold">Deskripsi</th>
                   <th className="px-6 py-3 text-center font-semibold">Aksi</th>
                 </tr>
               </thead>
@@ -88,7 +99,11 @@ export default function TipeDokumenPage() {
                   filteredData.map((type) => (
                     <tr key={type.id} className="hover:bg-gray-50 transition">
                       <td className="px-6 py-3">{type.id}</td>
+                      <td className="px-6 py-3 font-semibold text-gray-700">{type.kode}</td>
                       <td className="px-6 py-3">{type.nama}</td>
+                      <td className="px-6 py-3 text-gray-600">
+                        {type.deskripsi || "-"}
+                      </td>
                       <td className="px-6 py-3 text-center">
                         <div className="flex justify-center gap-2">
                           {/* Edit */}
@@ -113,7 +128,7 @@ export default function TipeDokumenPage() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="3" className="px-6 py-4 text-center text-gray-500">
+                    <td colSpan="5" className="px-6 py-4 text-center text-gray-500">
                       Tidak ada tipe dokumen
                     </td>
                   </tr>
@@ -143,16 +158,42 @@ export default function TipeDokumenPage() {
               </h2>
 
               {modalType === "create" || modalType === "edit" ? (
-                <div>
-                  <label className="block mb-2 text-sm font-medium text-gray-600">
-                    Nama Dokumen
-                  </label>
-                  <input
-                    type="text"
-                    value={data.nama}
-                    onChange={(e) => setData("nama", e.target.value)}
-                    className="w-full border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                  />
+                <div className="space-y-3">
+                  <div>
+                    <label className="block mb-1 text-sm font-medium text-gray-600">
+                      Kode Dokumen
+                    </label>
+                    <input
+                      type="text"
+                      value={data.kode}
+                      onChange={(e) => setData("kode", e.target.value)}
+                      className="w-full border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                      placeholder="Contoh: PERDA"
+                    />
+                  </div>
+                  <div>
+                    <label className="block mb-1 text-sm font-medium text-gray-600">
+                      Nama Dokumen
+                    </label>
+                    <input
+                      type="text"
+                      value={data.nama}
+                      onChange={(e) => setData("nama", e.target.value)}
+                      className="w-full border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block mb-1 text-sm font-medium text-gray-600">
+                      Deskripsi
+                    </label>
+                    <textarea
+                      value={data.deskripsi}
+                      onChange={(e) => setData("deskripsi", e.target.value)}
+                      className="w-full border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                      placeholder="Tuliskan deskripsi singkat..."
+                      rows="3"
+                    ></textarea>
+                  </div>
                 </div>
               ) : (
                 <p className="text-gray-700">
