@@ -247,12 +247,6 @@ Sections
   margin-top: 24px;
 }
 
-@media (min-width: 768px) {
-  .grid-3-cols {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
 /* ============================
   News Section & Carousel
    ============================ */
@@ -417,23 +411,6 @@ Sections
   transform: scale(1.2);
 }
 
-/* ============================
-   Responsiveness news
-   ============================ */
-@media (max-width: 992px) {
-  .news-card {
-    flex: 0 0 calc(50% - 20px); /* 2 kolom di tablet */
-    max-width: calc(50% - 20px);
-  }
-}
-
-@media (max-width: 600px) {
-  .news-card {
-    flex: 0 0 100%; /* 1 kolom di mobile */
-    max-width: 100%;
-    margin: 0 0 16px 0;
-  }
-}
 
 /* ============================
   Link Cards
@@ -654,27 +631,6 @@ padding-bottom: 15px;
     gap: 12px;
   }
 
-  .navbar-content {
-    flex-direction: column;
-    gap: 16px;
-  }
-}
-
-@media (max-width: 480px) {
-  .stats-summary {
-    grid-template-columns: 1fr;
-  }
-
-  .summary-number {
-    font-size: 1.5rem;
-  }
-}
-
-@media (min-width: 768px) {
-  .hero-title,
-  .section-title {
-    font-size: 2.5rem;
-  }
 }
 
 /* ============================
@@ -898,4 +854,234 @@ padding-bottom: 15px;
 @font-face {
   font-family: 'OpenDyslexic';
   src: url('https://cdn.jsdelivr.net/gh/antijingoist/open-dyslexic/otf/OpenDyslexic-Regular.otf');
+}
+
+
+
+/* === PERBAIKAN FONT DISLEKSIA === */
+.dyslexia-font .navbar,
+.dyslexia-font .nav-link {
+  font-family: 'OpenDyslexic', Arial, sans-serif !important;
+  letter-spacing: 0.05em;
+}
+
+
+/* =========================================================
+    DARK MODE LANDING PAGE 
+   ========================================================= */
+
+.dark body,
+.dark .landing-container {
+  background-color: #0a0a0a;
+  color: #e5e7eb;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* === Hero Section === */
+.dark .hero-section {
+  background: url('/assets/gerbang.jpg') center/cover no-repeat;
+  position: relative;
+}
+
+.dark .hero-overlay {
+  background-color: rgba(0, 0, 0, 0.8); /* Lebih gelap */
+}
+
+.dark .hero-title {
+  color: #f97316; /* oranye hangat */
+}
+
+.dark .hero-description {
+  color: #e2e8f0;
+}
+
+/* === Search Section === */
+.dark .search-container {
+  background: transparent;
+}
+
+.dark .main-search,
+.dark .filter-input input,
+.dark .filter-input select,
+.dark .custom-select {
+  background-color: #111827;
+  color: #e5e7eb;
+  border: 1px solid #374151;
+}
+
+.dark input::placeholder {
+  color: #9ca3af;
+}
+
+.dark .icon-dropdown {
+  color: #9ca3af;
+}
+
+.dark .search-button {
+  background-color: #f97316;
+  color: #fff;
+  border: none;
+  box-shadow: 0 2px 8px rgba(234, 88, 12, 0.4);
+}
+
+.dark .search-button:hover {
+  background-color: #ea580c;
+}
+
+.dark .reset-button {
+  background-color: #1f2937;
+  color: #e5e7eb;
+  border: 1px solid #475569;
+}
+
+.dark .reset-button:hover {
+  background-color: #374151;
+}
+
+/* === Section Backgrounds === */
+.dark .section-gradient,
+.dark .section-statistik,
+.dark .to_footer {
+  background: linear-gradient(to bottom, #0a0a0a, #111827, #0a0a0a);
+}
+
+.dark .section-title {
+  color: #f97316;
+}
+
+/* === Tabs === */
+.dark .tab-active {
+  background-color: #f97316;
+  color: #fff;
+  border: none;
+}
+
+.dark .tab-inactive {
+  background-color: #1f2937;
+  color: #fbbf24;
+}
+
+.dark .tab-inactive:hover {
+  background-color: #374151;
+}
+
+/* === News Cards & Link Cards === */
+.dark .news-card,
+.dark .link-card,
+.dark .product-card {
+  background-color: #111827;
+  color: #e5e7eb;
+  border: 1px solid #f97316;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.dark .news-card:hover,
+.dark .link-card:hover,
+.dark .product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+}
+
+.dark .news-title,
+.dark .product-title,
+.dark .link-title {
+  color: #f97316;
+}
+
+.dark .news-desc,
+.dark .product-desc,
+.dark .link-description {
+  color: #cbd5e1;
+}
+
+.dark .news-link,
+.dark .card-link {
+  color: #f97316;
+}
+
+.dark .news-link:hover,
+.dark .card-link:hover {
+  color: #ea580c;
+}
+
+/* === Statistik & Charts === */
+.dark .stats-section {
+  background: linear-gradient(135deg, #0a0a0a 0%, #1f2937 100%);
+  color: #f8fafc;
+}
+
+.dark .chart-card,
+.dark .single-chart {
+  background: #111827;
+  border-color: #f97316;
+  color: #f1f5f9;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.dark .chart-title {
+  color: #f97316;
+}
+
+.dark .summary-item {
+  background: #111827;
+  color: #f1f5f9;
+  border: 1px solid #f97316;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+/* === Carousel Buttons === */
+.dark .nav-button {
+  background: #1f2937;
+  color: #f1f5f9;
+  border: 1px solid #f97316;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.dark .nav-button:hover {
+  background: #f97316;
+  color: #fff;
+}
+
+.dark .indicator {
+  background: #475569;
+}
+
+.dark .indicator.active {
+  background: #f97316;
+}
+
+/* === Card Slider === */
+.dark .card {
+  background: #111827;
+  color: #f1f5f9;
+  border: 1px solid #f97316;
+}
+
+.dark .card-title {
+  color: #f97316;
+}
+
+.dark .card-desc {
+  color: #cbd5e1;
+}
+
+/* === Navbar (override existing) === */
+.dark .navbar {
+  background: #0f0f0f;
+  border-bottom: 1px solid #2d2d2d;
+}
+
+.dark .nav-link {
+  color: #e5e7eb !important;
+}
+
+.dark .nav-link:hover {
+  color: #fff !important;
+}
+
+/* === Transitions === */
+.dark *,
+.dark *::before,
+.dark *::after {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }

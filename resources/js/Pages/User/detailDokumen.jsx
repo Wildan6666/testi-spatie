@@ -40,7 +40,10 @@ export default function DetailDokumen() {
     <div className="landing-container">
       <Navbar />
 
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50 py-10">
+      <div className="flex-1 
+  bg-gradient-to-b from-[#fff9f5] via-[#f6bc96] via-[#f2a87e] to-[#d97b52]
+  dark:bg-gradient-to-b dark:from-[#0a0a0a] dark:via-[#111827] dark:to-[#0a0a0a] 
+  text-gray-900 dark:text-gray-200 transition-colors duration-500 ease-in-out">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
           {/* ===== DETAIL UTAMA ===== */}
           <div

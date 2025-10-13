@@ -4,6 +4,7 @@ import "../../../css/berita.css";
 import Footer from "@/Components/landing/footer";
 import Navbar from "@/Components/landing/Navbar";
 import ScrollTop from "@/Components/landing/ScrollTop";
+// import AccessibilityMenu from "@/Components/landing/AccessibilityMenu";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
@@ -96,7 +97,7 @@ export default function NewsWebsite({ mainNews, popularNews }) {
           </div>
         </div>
       </div>
-
+      {/* <AccessibilityMenu/> */}
       <ScrollTop />
       <Footer />
     </div>

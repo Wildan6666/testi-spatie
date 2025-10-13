@@ -1,4 +1,6 @@
-/* Reset */
+/* =====================================================
+   RESET & BASE
+===================================================== */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -8,8 +10,12 @@
 
 html, body {
   overflow-x: hidden;
+  transition: background 0.3s, color 0.3s;
 }
-/* Container */
+
+/* =====================================================
+   LIGHT MODE DEFAULT
+===================================================== */
 .dm-container {
   background: #f8fafc;
   min-height: 100vh;
@@ -21,10 +27,11 @@ html, body {
 .dm-navbar {
   background: white;
   border-bottom: 1px solid #e5e7eb;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
   position: sticky;
   top: 0;
   z-index: 50;
+  transition: background 0.3s, border-color 0.3s;
 }
 
 .dm-navbar-content {
@@ -58,16 +65,15 @@ html, body {
   border-radius: 6px;
   transition: all 0.3s ease;
 }
-
 .dm-nav-link:hover {
   background: #f3f4f6;
   color: #ea580c;
 }
 
+/* Dropdown */
 .dm-dropdown {
   position: relative;
 }
-
 .dm-dropdown-content {
   position: absolute;
   display: none;
@@ -75,15 +81,13 @@ html, body {
   left: 0;
   background: white;
   border-radius: 10px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
   overflow: hidden;
 }
-
 .dm-dropdown:hover .dm-dropdown-content {
   display: block;
   animation: fadeIn 0.2s ease;
 }
-
 .dm-dropdown-content a {
   display: block;
   padding: 10px 16px;
@@ -96,6 +100,7 @@ html, body {
   color: #ea580c;
 }
 
+/* Logout Button */
 .dm-logout-button {
   background: linear-gradient(135deg, #ea580c, #f97316);
   color: white;
@@ -113,7 +118,9 @@ html, body {
   transform: translateY(-2px);
 }
 
-/* Main Layout */
+/* =====================================================
+   MAIN CONTENT
+===================================================== */
 .dm-main {
   display: flex;
   max-width: 1200px;
@@ -129,7 +136,8 @@ html, body {
   border-radius: 14px;
   border: 1px solid #e5e7eb;
   margin-bottom: 20px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  transition: background 0.3s, border-color 0.3s;
 }
 .dm-header-card h1 {
   font-size: 22px;
@@ -147,7 +155,6 @@ html, body {
   flex-direction: column;
   gap: 14px;
 }
-
 .dm-document-card {
   background: white;
   border-radius: 14px;
@@ -159,7 +166,7 @@ html, body {
 }
 .dm-document-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
   border-color: #ea580c;
 }
 
@@ -173,7 +180,6 @@ html, body {
   align-items: center;
   border-radius: 8px;
 }
-
 .dm-doc-body h3 {
   font-size: 16px;
   font-weight: bold;
@@ -194,6 +200,7 @@ html, body {
   display: inline-block;
 }
 
+/* Status Bar */
 .dm-status-bar {
   background: #f9fafb;
   padding: 8px;
@@ -260,7 +267,8 @@ html, body {
   padding: 20px;
   border: 1px solid #e5e7eb;
   border-radius: 14px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  transition: background 0.3s, border-color 0.3s;
 }
 .dm-sidebar-card h3 {
   display: flex;
@@ -282,6 +290,9 @@ html, body {
   margin: 6px 0 14px 0;
   border: 1px solid #d1d5db;
   border-radius: 8px;
+  background: white;
+  color: #111827;
+  transition: background 0.3s, border-color 0.3s, color 0.3s;
 }
 .search-btn {
   width: 100%;
@@ -315,4 +326,89 @@ html, body {
   justify-content: space-between;
   align-items: center;
 }
-.dm-footer p b { color: #ea580c; }
+.dm-footer p b {
+  color: #ea580c;
+}
+
+/* =====================================================
+   DARK MODE
+===================================================== */
+.dark-mode {
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+/* Navbar */
+.dark-mode .dm-navbar {
+  background: #1e293b;
+  border-bottom: 1px solid #334155;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+}
+.dark-mode .dm-nav-link {
+  color: #e2e8f0;
+}
+.dark-mode .dm-nav-link:hover {
+  background: #334155;
+  color: #f97316;
+}
+.dark-mode .dm-dropdown-content {
+  background: #1e293b;
+}
+.dark-mode .dm-dropdown-content a {
+  color: #e2e8f0;
+}
+.dark-mode .dm-dropdown-content a:hover {
+  background: #334155;
+  color: #f97316;
+}
+
+/* Cards */
+.dark-mode .dm-header-card,
+.dark-mode .dm-document-card,
+.dark-mode .dm-sidebar-card,
+.dark-mode .dm-empty-card {
+  background: #1e293b;
+  border-color: #334155;
+  color: #e2e8f0;
+}
+.dark-mode .dm-doc-body p {
+  color: #cbd5e1;
+}
+
+/* Inputs */
+.dark-mode .dm-sidebar-card input,
+.dark-mode .dm-sidebar-card select {
+  background: #334155;
+  border-color: #475569;
+  color: #f1f5f9;
+}
+
+/* Status Bar */
+.dark-mode .dm-status-bar {
+  background: #334155;
+}
+
+/* Pagination */
+.dark-mode .dm-pagination button {
+  background: #1e293b;
+  border-color: #475569;
+  color: #f1f5f9;
+}
+.dark-mode .dm-pagination button:hover {
+  background: #334155;
+  color: #f97316;
+  border-color: #f97316;
+}
+.dark-mode .dm-pagination button.active {
+  background: #f97316;
+  color: white;
+}
+
+/* Footer */
+.dark-mode .dm-footer {
+  background: #0f172a;
+  color: #94a3b8;
+}
+.dark-mode .dm-footer b {
+  color: #f97316;
+}

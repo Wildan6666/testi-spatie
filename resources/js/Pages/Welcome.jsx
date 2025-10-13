@@ -18,7 +18,7 @@ import {
 import { Eye, Download, LogIn } from "lucide-react";
 import { Facebook, Twitter, Youtube, Instagram, Linkedin } from "lucide-react";
 import "../../css/LandingPage.css";
-import "../../css/Navbar.css";
+import NavbarLogin from "@/Components/landing/NavbarLogin";
 
 export default function LandingPage() {
   const { props } = usePage();
@@ -72,36 +72,7 @@ export default function LandingPage() {
 
   return (
     <div className="landing-container">
-      {/* Navbar */}
-      <header className="navbar">
-        <div className="navbar-content">
-          <div className="logo-container">
-            <img
-              src="https://jdih.perpusnas.go.id/public/style/img/LOGO-JDIHN-PHN.png"
-              alt="Logo jdih"
-              className="logo"
-            />
-            <Link href="/">
-              <img
-                src="https://agribisnis.unja.ac.id/wp-content/uploads/2019/11/cropped-Logo-UNJA.png"
-                alt="Logo unja"
-                className="logo cursor-pointer"
-              />
-            </Link>
-          </div>
-
-          {/* Menu */}
-          <nav className="navigation">
-            <a href="/" className="nav-link">Beranda</a>
-            <a href="#" className="nav-link">Tentang Kami</a>
-            <a href={route("produkhukum.index")} className="nav-link">Dokumen Hukum</a>
-            <Link href={route("login")} className="login-button flex items-center gap-2">
-              <LogIn size={18} />
-              <span>Login</span>
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <NavbarLogin/>
 
       {/* Daftar Produk Hukum */}
       <section className="section-gradient">

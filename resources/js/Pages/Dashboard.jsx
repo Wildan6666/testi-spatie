@@ -11,7 +11,7 @@ import Statistik from "@/Components/landing/Statistik";
 import ProdukHukum from "@/Components/landing/ProdukHukum";
 import BeritaLanding from "@/Components/landing/BeritaLanding";
 import ScrollTop from "@/Components/landing/ScrollTop";
-import AccessibilityMenu from "@/Components/landing/AccessibilityMenu";
+// import AccessibilityMenu from "@/Components/landing/AccessibilityMenu";
 
 export default function DashboardUser() {
   const { props } = usePage();
@@ -53,7 +53,7 @@ export default function DashboardUser() {
 
   
   useEffect(() => {
-    AOS.init({ duration: 1000, once: false, easing: "ease-in-out" });
+    AOS.init({ duration: 1000, once: true, easing: "ease-in-out" });
   }, []);
   
 
@@ -179,7 +179,7 @@ export default function DashboardUser() {
       </section>
 
       {/* Komponen lain */}
-      <AccessibilityMenu />
+      {/* <AccessibilityMenu /> */}
       <ProdukHukum />
       <BeritaLanding />
       {/* Statistik ambil dari props */}

@@ -407,3 +407,49 @@
 .main-content {
   padding-top: 80px; /* ✅ tinggi navbar */
 }
+
+
+/* Saat dark mode aktif */
+.dark .navbar {
+  background: linear-gradient(135deg,
+    rgba(30, 41, 59, 0.95) 0%,   /* slate-800 */
+    rgba(15, 23, 42, 0.95) 100%  /* slate-900 */
+  );
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.dark .navbar .nav-link {
+  color: #e2e8f0; /* slate-200 */
+}
+
+.dark .navbar .nav-link:hover {
+  color: #f97316; /* oranye */
+}
+
+.dark .navbar .login-button {
+  background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+}
+
+/* Saat dark mode dan di-scroll */
+.dark .navbar.scrolled {
+  background: linear-gradient(135deg,
+    rgba(15, 23, 42, 0.95) 0%,  /* lebih gelap dari atas */
+    rgba(30, 41, 59, 0.9) 100%
+  );
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5),
+              0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.dark .navbar.scrolled .nav-link {
+  color: #e2e8f0;
+}
+
+.dark .navbar.scrolled .nav-link:hover {
+  color: #f97316;
+}
+
+.dark .navbar.scrolled .logo {
+  filter: drop-shadow(0 2px 6px rgba(255, 255, 255, 0.1));
+}

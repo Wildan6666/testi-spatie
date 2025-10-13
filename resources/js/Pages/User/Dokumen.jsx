@@ -8,10 +8,12 @@ import "aos/dist/aos.css";
 import Footer from "@/Components/landing/Footer";
 import Navbar from "@/Components/landing/Navbar";
 import ScrollTop from "@/Components/landing/ScrollTop";
+// import AccessibilityMenu from "@/Components/landing/AccessibilityMenu";
 import SidebarFilter from "@/Components/Dokumen/SidebarFilter";
 import Pagination from "@/Components/Dokumen/Pagination";
 import MainDoc from "@/Components/Dokumen/MainDoc";
 
+// --- Konfigurasi Worker PDFJS ---
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
   import.meta.url
@@ -31,7 +33,7 @@ export default function Dokumen() {
     nomor: filters.nomor || "",
   });
 
-  // Data dari server (laravel pagination)
+  // --- Data Pagination dari Server ---
   const rows = dokumen.data || [];
   const currentPage = dokumen.current_page || 1;
   const totalPages = dokumen.last_page || 1;
@@ -39,12 +41,12 @@ export default function Dokumen() {
   const startIndex = (currentPage - 1) * perPage;
   const endIndex = startIndex + rows.length;
 
-  // --- Handler perubahan filter ---
+  // --- Fungsi Perubahan Filter ---
   const handleFilterChange = (field, value) => {
     setFilterState((prev) => ({ ...prev, [field]: value }));
   };
 
-  // --- Fungsi untuk trigger pencarian ---
+  // --- Trigger Pencarian ---
   const performSearch = () => {
     router.get(
       route("produkhukum.index"),
@@ -60,23 +62,22 @@ export default function Dokumen() {
     );
   };
 
-  // --- Debounce: tunggu 500ms setelah user berhenti mengetik ---
+  // --- Debounce: tunggu 1.5 detik setelah user berhenti mengetik ---
   useEffect(() => {
     const timeout = setTimeout(() => {
       performSearch();
-    }, 1500); // 0.5 detik
+    }, 1500);
+    return () => clearTimeout(timeout);
+  }, [searchTerm, filterState]);
 
-    return () => clearTimeout(timeout); // batalkan timer kalau user masih mengetik
-  }, [searchTerm, filterState]); // jalankan ulang kalau ada perubahan di filter
-
-  // --- Tombol Reset ---
+  // --- Reset Semua Filter ---
   const resetFilters = () => {
     setSearchTerm("");
     setFilterState({ jenis: "", tipe: "", tahun: "", nomor: "" });
     router.get(route("produkhukum.index"), { page: 1 }, { preserveState: true, replace: true });
   };
 
-  // --- Pagination ---
+  // --- Pagination Handler ---
   const handlePageChange = (page) => {
     router.get(
       route("produkhukum.index"),
@@ -92,7 +93,7 @@ export default function Dokumen() {
     );
   };
 
-  // --- Download File ---
+  // --- Download Dokumen ---
   const handleDownload = (file, title) => {
     const link = document.createElement("a");
     link.href = file;
@@ -102,17 +103,27 @@ export default function Dokumen() {
     document.body.removeChild(link);
   };
 
-  // --- Init AOS Animasi ---
+  // --- Init Animasi AOS ---
   useEffect(() => {
-    AOS.init({ duration: 1000, once: false, easing: "ease-in-out" });
+    AOS.init({ duration: 1000, once: true, easing: "ease-in-out" });
   }, []);
 
   return (
-    <div className="landing-container">
+    <div
+      className="landing-container min-h-screen flex flex-col 
+      bg-gradient-to-b from-[#fff9f5] via-[#f6bc96] via-[#f2a87e] to-[#d97b52]
+      dark:bg-gradient-to-b dark:from-[#0a0a0a] dark:via-[#111827] dark:to-[#0a0a0a] 
+      text-gray-900 dark:text-gray-200 transition-colors duration-500 ease-in-out"
+    >
+      {/* === Navbar === */}
       <Navbar />
 
-      <div className="flex-1 flex max-w-7xl mx-auto gap-6 p-6" data-aos="fade-down">
-        {/* Konten Dokumen */}
+      {/* === Konten Utama === */}
+      <div
+        className="flex-1 flex w-full max-w-6xl mx-auto gap-4 px-4 sm:px-6 lg:px-8 py-10"
+        data-aos="fade-down"
+      >
+        {/* --- Kolom Dokumen --- */}
         <div className="flex-1 space-y-6">
           <MainDoc
             currentDocuments={rows}
@@ -122,7 +133,7 @@ export default function Dokumen() {
             handleDownload={handleDownload}
           />
 
-          {/* Pagination */}
+          {/* --- Pagination --- */}
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
@@ -130,20 +141,22 @@ export default function Dokumen() {
           />
         </div>
 
-        {/* Sidebar Filter */}
+        {/* --- Sidebar Filter --- */}
         <SidebarFilter
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           filters={filterState}
           handleFilterChange={handleFilterChange}
-          handleSearch={performSearch} // masih bisa dipakai manual
+          handleSearch={performSearch}
           resetFilters={resetFilters}
           jenisOptions={props.jenisOptions || []}
           tipeOptions={props.tipeOptions || []}
         />
       </div>
 
+      {/* === Elemen Tambahan === */}
       <ScrollTop />
+      {/* <AccessibilityMenu /> */}
       <Footer />
     </div>
   );

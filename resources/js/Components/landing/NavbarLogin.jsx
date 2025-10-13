@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "@inertiajs/react";
-import { LogOut, Languages } from "lucide-react";
+import { LogIn, Languages } from "lucide-react";
 import "../../../css/Navbar.css";
 import "flag-icons/css/flag-icons.min.css";
 
@@ -99,31 +99,31 @@ export default function Navbar() {
               </button>
               <div className="absolute left-0 mt-0 w-56 bg-white shadow-xl rounded-xl text-gray-800 z-50 hidden group-hover:block">
                 <a
-                  href="/Tentang/SekilasSejarah"
+                  href="/tentang/sekilas-sejarah"
                   className="block px-4 py-2 hover:bg-gray-100 rounded-t-xl"
                 >
                   Sekilas Sejarah
                 </a>
                 <a
-                  href="/Tentang/DasarHukum"
+                  href="/tentang/dasar-hukum"
                   className="block px-4 py-2 hover:bg-gray-100"
                 >
                   Dasar Hukum
                 </a>
                 <a
-                  href="/Tentang/VisiMisi"
+                  href="/VisiMisi"
                   className="block px-4 py-2 hover:bg-gray-100"
                 >
                   Visi & Misi
                 </a>
                 <a
-                  href="/Tentang/Organisasi"
+                  href="/tentang/struktur-organisasi"
                   className="block px-4 py-2 hover:bg-gray-100"
                 >
                   Struktur Organisasi
                 </a>
                 <a
-                  href="/Tentang/Operasional"
+                  href="/tentang/prosedur-operasional"
                   className="block px-4 py-2 hover:bg-gray-100 rounded-b-xl"
                 >
                   Prosedur Operasional Standar
@@ -135,15 +135,9 @@ export default function Navbar() {
               Dokumen Hukum
             </Link>
 
-            {/* Logout */}
-            <Link
-              href="/logout"
-              method="post"
-              as="button"
-              className="login-button flex items-center gap-2"
-            >
-              <LogOut size={18} />
-              <span>Logout</span>
+            <Link href={route("login")} className="login-button flex items-center gap-2">
+              <LogIn size={18} />
+              <span>Login</span>
             </Link>
 
             {/* Google Translate (hidden widget) */}

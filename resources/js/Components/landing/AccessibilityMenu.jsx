@@ -1,204 +1,143 @@
 import { useState, useEffect } from "react";
+import {
+  FaSun, FaMoon, FaAdjust, FaFont, FaTimes,
+  FaTextHeight, FaTextWidth, FaLink, FaHeading, FaSync
+} from "react-icons/fa";
+import "../../../css/accessbility.css"; 
+
+// === SVG ICON MATERIAL accessibility_new ===
+function AccessibilityIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      height="28px"
+      viewBox="0 -960 960 960"
+      width="28px"
+      fill="#ffffff"
+    >
+      <path d="M480-720q-33 0-56.5-23.5T400-800q0-33 23.5-56.5T480-880q33 0 56.5 23.5T560-800q0 33-23.5 56.5T480-720ZM360-80v-520q-60-5-122-15t-118-25l20-80q78 21 166 30.5t174 9.5q86 0 174-9.5T820-720l20 80q-56 15-118 25t-122 15v520h-80v-240h-80v240h-80Z"/>
+    </svg>
+  );
+}
+
+const FeatureButton = ({ icon, text, onClick, isActive }) => (
+  <button
+    onClick={onClick}
+    className={`feature-button ${isActive ? "active" : ""}`}
+  >
+    <div className="feature-icon">{icon}</div>
+    <span className="feature-label">{text}</span>
+  </button>
+);
+
+const initialSettings = {
+  theme: 'light',
+  dyslexiaFont: false,
+  highlightHeadings: false,
+  highlightLinks: false,
+  fontSize: 100,
+  lineHeight: 1.5,
+  letterSpacing: 0,
+};
 
 export default function AccessibilityMenu() {
-  const [open, setOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [settings, setSettings] = useState(initialSettings);
 
   useEffect(() => {
-    // Inject @font-face + helper class sekali di <head>
-    if (!document.getElementById("open-dyslexic-style")) {
-      const style = document.createElement("style");
-      style.id = "open-dyslexic-style";
-      style.innerHTML = `
-@font-face{
-  font-family:'OpenDyslexic';
-  src:url('https://cdn.jsdelivr.net/gh/antijingoist/open-dyslexic/woff2/OpenDyslexic-Regular.woff2') format('woff2'),
-      url('https://cdn.jsdelivr.net/gh/antijingoist/open-dyslexic/otf/OpenDyslexic-Regular.otf') format('opentype');
-  font-weight:400;
-  font-style:normal;
-  font-display:swap;
-}
-html.dyslexia-font, body.dyslexia-font{
-  font-family:'OpenDyslexic', Arial, sans-serif !important;
-}`;
-      document.head.appendChild(style);
-      // (opsional) pancing load
-      if ("fonts" in document) document.fonts.load('1rem "OpenDyslexic"');
+    const root = document.documentElement;
+    root.classList.remove('dark', 'high-contrast');
+    if (settings.theme === 'dark') root.classList.add('dark');
+    else if (settings.theme === 'contrast') root.classList.add('high-contrast');
+
+    root.classList.toggle('dyslexia-font', settings.dyslexiaFont);
+    root.dataset.highlightHeadings = settings.highlightHeadings;
+    root.dataset.highlightLinks = settings.highlightLinks;
+
+    root.style.setProperty('--font-size-multiplier', `${settings.fontSize / 100}`);
+    root.style.setProperty('--line-height', settings.lineHeight);
+    root.style.setProperty('--letter-spacing', `${settings.letterSpacing}px`);
+
+    localStorage.setItem('accessibilitySettings', JSON.stringify(settings));
+  }, [settings]);
+
+  useEffect(() => {
+    try {
+      const savedSettings = localStorage.getItem('accessibilitySettings');
+      if (savedSettings) setSettings(JSON.parse(savedSettings));
+    } catch (error) {
+      console.error("Gagal memuat pengaturan aksesibilitas:", error);
+      setSettings(initialSettings);
     }
-
-    let fontSize = 100;
-    let lineHeight = 1.5;
-    let letterSpacing = 0;
-    let boldActive = false;
-    let dyslexiaActive = false;
-    let highlightHeadings = false;
-    let highlightLinks = false;
-
-    // Persist jika sebelumnya aktif
-    if (localStorage.getItem("dyslexia") === "1") {
-      document.documentElement.classList.add("dyslexia-font");
-      document.body.classList.add("dyslexia-font");
-      dyslexiaActive = true;
-    }
-
-    // ✅ Ukuran Font
-    window.increaseFont = function () {
-      fontSize += 10;
-      document.body.style.fontSize = fontSize + "%";
-      const el = document.getElementById("fontSizeDisplay");
-      if (el) el.innerText = fontSize + "%";
-    };
-
-    window.decreaseFont = function () {
-      fontSize = Math.max(50, fontSize - 10);
-      document.body.style.fontSize = fontSize + "%";
-      const el = document.getElementById("fontSizeDisplay");
-      if (el) el.innerText = fontSize + "%";
-    };
-
-    // ✅ Sorot Judul
-    window.toggleHighlightHeadings = function () {
-      highlightHeadings = !highlightHeadings;
-      document.querySelectorAll("h1,h2,h3,h4,h5,h6").forEach((el) => {
-        el.style.background = highlightHeadings ? "yellow" : "transparent";
-      });
-    };
-
-    // ✅ Sorot Tautan
-    window.toggleHighlightLinks = function () {
-      highlightLinks = !highlightLinks;
-      document.querySelectorAll("a").forEach((el) => {
-        el.style.background = highlightLinks ? "lightblue" : "transparent";
-      });
-    };
-
-    // ✅ Font Disleksia (pakai class agar pasti override Tailwind/theme)
-    window.toggleDyslexiaFont = function () {
-      dyslexiaActive = !dyslexiaActive;
-      const root = document.documentElement;
-      if (dyslexiaActive) {
-        root.classList.add("dyslexia-font");
-        document.body.classList.add("dyslexia-font");
-        localStorage.setItem("dyslexia", "1");
-        if ("fonts" in document) document.fonts.load('1rem "OpenDyslexic"');
-      } else {
-        root.classList.remove("dyslexia-font");
-        document.body.classList.remove("dyslexia-font");
-        localStorage.removeItem("dyslexia");
-      }
-    };
-
-    // ✅ Jarak Huruf
-    window.increaseLetterSpacing = function () {
-      letterSpacing += 1;
-      document.body.style.letterSpacing = letterSpacing + "px";
-    };
-    window.decreaseLetterSpacing = function () {
-      letterSpacing = Math.max(0, letterSpacing - 1);
-      document.body.style.letterSpacing = letterSpacing + "px";
-    };
-
-    // ✅ Tinggi Baris
-    window.increaseLineHeight = function () {
-      lineHeight += 0.2;
-      document.body.style.lineHeight = lineHeight;
-    };
-    window.decreaseLineHeight = function () {
-      lineHeight = Math.max(1, lineHeight - 0.2);
-      document.body.style.lineHeight = lineHeight;
-    };
-
-    // ✅ Ketebalan Font
-    window.toggleBold = function () {
-      boldActive = !boldActive;
-      document.body.style.fontWeight = boldActive ? "bold" : "normal";
-    };
   }, []);
+
+  const toggleTheme = (theme) => setSettings(s => ({ ...s, theme }));
+  const toggleDyslexiaFont = () => setSettings(s => ({ ...s, dyslexiaFont: !s.dyslexiaFont }));
+  const toggleHighlightHeadings = () => setSettings(s => ({ ...s, highlightHeadings: !s.highlightHeadings }));
+  const toggleHighlightLinks = () => setSettings(s => ({ ...s, highlightLinks: !s.highlightLinks }));
+  const changeFontSize = (amount) => setSettings(s => ({ ...s, fontSize: Math.max(50, s.fontSize + amount) }));
+  const changeLineHeight = (amount) => setSettings(s => ({ ...s, lineHeight: Math.max(1, s.lineHeight + amount) }));
+  const changeLetterSpacing = (amount) => setSettings(s => ({ ...s, letterSpacing: Math.max(0, s.letterSpacing + amount) }));
+  const resetAccessibility = () => setSettings(initialSettings);
 
   return (
     <>
-      {/* Floating Button */}
+      {/* === Tombol Utama dengan SVG Icon === */}
       <button
-        onClick={() => setOpen(!open)}
-        className="fixed bottom-5 left-5 bg-blue-600 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-2xl z-50 hover:bg-blue-700 transition"
+        onClick={() => setIsOpen(!isOpen)}
+        className="accessibility-toggle"
+        aria-label="Buka Menu Aksesibilitas"
       >
-        ♿
+        <AccessibilityIcon />
       </button>
 
-      {/* Panel Aksesibilitas */}
-      {open && (
-        <div className="fixed bottom-24 left-5 bg-white p-4 rounded-xl shadow-lg w-72 z-50 font-sans border border-gray-200">
-          <h3 className="text-lg font-bold text-center mb-3 text-gray-800">
-            Aksesibilitas
-          </h3>
-
-          {/* Ukuran Font */}
-          <div className="flex items-center justify-between mb-3">
+      {/* === Panel Menu Aksesibilitas === */}
+      {isOpen && (
+        <div className="accessibility-panel">
+          <div className="panel-header">
+            <h3 className="panel-title">Menu Aksesibilitas</h3>
             <button
-              onClick={() => window.decreaseFont()}
-              className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+              onClick={() => setIsOpen(false)}
+              className="close-button"
+              aria-label="Tutup Menu Aksesibilitas"
             >
-              A-
-            </button>
-            <span id="fontSizeDisplay" className="text-sm font-medium">
-              100%
-            </span>
-            <button
-              onClick={() => window.increaseFont()}
-              className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
-            >
-              A+
+              <FaTimes />
             </button>
           </div>
 
-          {/* Grid Fitur */}
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              onClick={() => window.toggleHighlightHeadings()}
-              className="px-2 py-2 text-sm bg-gray-100 rounded hover:bg-gray-200"
-            >
-              Sorot Judul
-            </button>
-            <button
-              onClick={() => window.toggleHighlightLinks()}
-              className="px-2 py-2 text-sm bg-gray-100 rounded hover:bg-gray-200"
-            >
-              Sorot Tautan
-            </button>
-            <button
-              onClick={() => window.toggleDyslexiaFont()}
-              className="px-2 py-2 text-sm bg-gray-100 rounded hover:bg-gray-200"
-            >
-              Font Disleksia
-            </button>
-            <button
-              onClick={() => window.toggleBold()}
-              className="px-2 py-2 text-sm bg-gray-100 rounded hover:bg-gray-200"
-            >
-              Ketebalan Font
-            </button>
-            <button
-              onClick={() => window.increaseLetterSpacing()}
-              className="px-2 py-2 text-sm bg-gray-100 rounded hover:bg-gray-200"
-            >
-              + Jarak Huruf
-            </button>
-            <button
-              onClick={() => window.decreaseLetterSpacing()}
-              className="px-2 py-2 text-sm bg-gray-100 rounded hover:bg-gray-200"
-            >
-              - Jarak Huruf
-            </button>
-            <button
-              onClick={() => window.increaseLineHeight()}
-              className="px-2 py-2 text-sm bg-gray-100 rounded hover:bg-gray-200"
-            >
-              + Tinggi Baris
-            </button>
-            <button
-              onClick={() => window.decreaseLineHeight()}
-              className="px-2 py-2 text-sm bg-gray-100 rounded hover:bg-gray-200"
-            >
-              - Tinggi Baris
+          <div className="section">
+            <p className="section-title">Konten & Tampilan</p>
+            <div className="feature-grid">
+              <FeatureButton icon={<FaSun />} text="Light" onClick={() => toggleTheme('light')} isActive={settings.theme === 'light'} />
+              <FeatureButton icon={<FaMoon />} text="Dark" onClick={() => toggleTheme('dark')} isActive={settings.theme === 'dark'} />
+              <FeatureButton icon={<FaAdjust />} text="Kontras" onClick={() => toggleTheme('contrast')} isActive={settings.theme === 'contrast'} />
+              <FeatureButton icon={<FaFont />} text="Disleksia" onClick={toggleDyslexiaFont} isActive={settings.dyslexiaFont} />
+              <FeatureButton icon={<FaHeading />} text="Sorot Judul" onClick={toggleHighlightHeadings} isActive={settings.highlightHeadings} />
+              <FeatureButton icon={<FaLink />} text="Sorot Tautan" onClick={toggleHighlightLinks} isActive={settings.highlightLinks} />
+            </div>
+          </div>
+
+          <div className="section">
+            <p className="section-title">Ukuran & Spasi</p>
+            <div className="font-size-control">
+              <span className="label">Ukuran Font</span>
+              <div className="font-size-buttons">
+                <button onClick={() => changeFontSize(-10)}>-</button>
+                <span className="font-size-value">{settings.fontSize}%</span>
+                <button onClick={() => changeFontSize(10)}>+</button>
+              </div>
+            </div>
+            <div className="spacing-grid">
+              <button onClick={() => changeLineHeight(0.2)}><FaTextHeight /> +Tinggi</button>
+              <button onClick={() => changeLineHeight(-0.2)}><FaTextHeight /> -Tinggi</button>
+              <button onClick={() => changeLetterSpacing(0.1)}><FaTextWidth /> +Jarak</button>
+              <button onClick={() => changeLetterSpacing(-0.1)}><FaTextWidth /> -Jarak</button>
+            </div>
+          </div>
+
+          <div className="reset-section">
+            <button onClick={resetAccessibility} className="reset-button">
+              <FaSync /> Reset Pengaturan
             </button>
           </div>
         </div>

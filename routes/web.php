@@ -140,4 +140,20 @@ Route::get('/produkhukum/{id}/download', [UserProdukHukumController::class, 'dow
 Route::get('/', [BerandaController::class, 'index'])->name('welcome');
 Route::get('/beranda', [BerandaController::class, 'index'])->name('beranda');
 
+// tentang
+Route::get('/Tentang/VisiMisi', function () {
+    return Inertia::render('Tentang/VisiMisi');
+})->middleware(['auth', 'verified'])->name('tentang.visimisi');
+
+Route::get('/Tentang/DasarHukum', function () {
+    return Inertia::render('Tentang/DasarHukum');
+})->middleware(['auth', 'verified'])->name('tentang.dasarhukum');
+
+Route::get('/Tentang/Organisasi', function () {
+    return Inertia::render('Tentang/Organisasi');
+})->middleware(['auth', 'verified'])->name('tentang.organisasi');
+
+Route::get('/Tentang/SekilasSejarah', function () {
+    return Inertia::render('Tentang/SekilasSejarah');
+})->middleware(['auth', 'verified'])->name('kilas.sejarah');
 
