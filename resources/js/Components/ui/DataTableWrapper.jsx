@@ -1,10 +1,10 @@
 import DataTable from "react-data-table-component";
 
-export default function DataTableWrapper({ columns, data, noDataMessage = "😔 Data tidak ditemukan" }) {
+export default function DataTableWrapper({ columns, data, noDataMessage = " Data tidak ditemukan" }) {
   const customStyles = {
     table: {
       style: {
-        borderTop: "3px solid #3b82f6", // biru-500
+        borderTop: "3px solid #ff8b2f", // biru-500
         borderRadius: "0.75rem", // rounded-xl
         overflow: "hidden",
       },

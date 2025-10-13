@@ -40,7 +40,7 @@ export default function Sidebar() {
       } h-screen bg-white border-r shadow-md flex flex-col transition-all duration-300`}
     >
       {/* Header */}
-      <div className="relative p-6 border-b bg-gradient-to-r from-blue-600 to-blue-500 flex items-center justify-between">
+      <div className="relative p-6 border-b bg-gradient-to-r from-orange-600 to-orange-400 flex items-center justify-between">
         {!collapsed && (
           <h1 className="text-xl font-bold text-white tracking-wide">
             Admin JDIH
@@ -69,7 +69,7 @@ export default function Sidebar() {
                     collapsed ? "justify-center" : "gap-3"
                   } px-4 py-2 rounded-md transition-all duration-200 ${
                     activeParent
-                      ? "bg-blue-50 text-blue-700 font-semibold border-l-4 border-blue-600"
+                      ? "bg-orange-50 text-orange-700 font-semibold border-l-4 border-orange-600"
                       : "hover:bg-gray-50"
                   }`}
                 >
@@ -86,7 +86,7 @@ export default function Sidebar() {
                       collapsed ? "justify-center" : "justify-between"
                     } px-4 py-2 rounded-md transition-all duration-200 ${
                       activeParent
-                        ? "bg-blue-50 text-blue-700 font-semibold border-l-4 border-blue-600"
+                        ? "bg-orange-50 text-orange-700 font-semibold border-l-4 border-orange-600"
                         : "hover:bg-gray-50"
                     }`}
                   >
@@ -116,7 +116,7 @@ export default function Sidebar() {
                             collapsed ? "justify-center" : "gap-2"
                           } px-3 py-2 text-sm rounded-md ${
                             url.startsWith(`/${child.url}`)
-                              ? "bg-blue-100 text-blue-700 font-semibold"
+                              ? "bg-orange-100 text-orange-700 font-semibold"
                               : "hover:bg-gray-100"
                           }`}
                         >

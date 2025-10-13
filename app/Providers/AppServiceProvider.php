@@ -25,20 +25,5 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Bypass permission untuk super-admin
-        Gate::before(function ($user, $ability) {
-            if ($user->hasRole('super-admin')) {
-                return true;
-            }
-        });
-
-        // Share menus ke semua view inertia
-        Inertia::share('menus', function () {
-            return Navigation::whereNull('parent_id')
-                ->with(['children' => function ($q) {
-                    $q->orderBy('sort');
-                }])
-                ->orderBy('sort')
-                ->get();
-        });
     }
 }

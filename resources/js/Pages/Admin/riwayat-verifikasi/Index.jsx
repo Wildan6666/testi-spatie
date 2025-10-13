@@ -3,7 +3,7 @@ import { usePage, router } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
 import DataTable from "react-data-table-component";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, XCircle, Clock, Search, X, Filter } from "lucide-react";
+import { CheckCircle, XCircle, Clock, Search, X, Filter,Eye } from "lucide-react";
 
 export default function RiwayatVerifikasiIndex() {
   const { props } = usePage();

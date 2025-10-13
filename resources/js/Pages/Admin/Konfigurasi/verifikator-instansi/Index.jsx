@@ -99,7 +99,7 @@ export default function VerifikatorInstansiIndex() {
           pagination
           highlightOnHover
           striped
-          noDataComponent="😔 Belum ada data verifikator instansi"
+          noDataComponent=" Belum ada data verifikator instansi"
         />
 
         {/* Modal Tambah */}

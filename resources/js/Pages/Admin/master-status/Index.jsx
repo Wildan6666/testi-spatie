@@ -111,22 +111,22 @@ export default function StatusVerifikasiPage() {
                       <td className="p-3">{item.kode}</td>
                       <td className="p-3">{item.deskripsi}</td>
                       <td className="p-3 text-center flex justify-center gap-2">
-                        <Button
-                          size="sm"
-                          onClick={() => handleEdit(item)}
-                          className="flex items-center gap-1 bg-yellow-500 hover:bg-yellow-600 text-white"
-                        >
-                          <Pencil className="w-4 h-4" />
-                          Edit
-                        </Button>
-                        <Button
-                          size="sm"
-                          className="flex items-center gap-1 bg-red-600 hover:bg-red-700 text-white"
-                          onClick={() => handleDelete(item.id)}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                          Hapus
-                        </Button>
+                       {/* Edit */}
+                          <button
+                            onClick={() => openModal(item)}
+                            className="p-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition"
+                            title="Edit"
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </button>
+                          {/* Delete */}
+                          <button
+                            onClick={() => handleDelete(item.id)}
+                            className="p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition"
+                            title="Hapus"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                       </td>
                     </tr>
                   ))}

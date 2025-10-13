@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Models\Berita;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class KelolaBeritaController extends Controller
 {
@@ -46,7 +47,45 @@ class KelolaBeritaController extends Controller
         return redirect()->route('kelola-berita.index')->with('success', 'Berita berhasil ditambahkan');
     }
 
-    public function destroy(\App\Models\Berita $berita)
+    public function edit($id)
+    {
+        $berita = Berita::findOrFail($id);
+
+        // ✅ Kirim data berita ke halaman edit
+        return Inertia::render('Admin/kelola-berita/EditBerita', [
+            'berita' => $berita,
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $berita = Berita::findOrFail($id);
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required',
+            'published_at' => 'nullable|date',
+            'status' => 'required|in:draft,published',
+            'image' => 'nullable|image|max:2048',
+        ]);
+
+        // ✅ Hapus gambar lama jika upload baru
+        if ($request->hasFile('image')) {
+            if ($berita->image && Storage::disk('public')->exists($berita->image)) {
+                Storage::disk('public')->delete($berita->image);
+            }
+            $validated['image'] = $request->file('image')->store('berita', 'public');
+        }
+
+        // ✅ Update author jika ingin tetap mencatat editor terakhir
+        $validated['author'] = Auth::user()->name;
+
+        $berita->update($validated);
+
+        return redirect()->route('kelola-berita.index')->with('success', 'Berita berhasil diperbarui');
+    }
+
+    public function destroy(Berita $berita)
 {
     $berita->delete();
     return redirect()->route('kelola-berita.index')->with('success', 'Berita berhasil dihapus');

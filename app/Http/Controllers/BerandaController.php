@@ -14,10 +14,6 @@ class BerandaController extends Controller
     private function getProdukData()
     {
         $user = auth()->user();
-
-        // ====================================================
-        // 🎯 Filter berdasarkan peran pengguna (Role-based access)
-        // ====================================================
         $allowedAkses = [];
 
         if ($user) {
@@ -36,17 +32,13 @@ class BerandaController extends Controller
             $allowedAkses = ['Publik'];
         }
 
-        // ====================================================
-        // 🔍 Query produk hukum hanya yang sesuai kategori akses
-        // ====================================================
+
         $baseQuery = ProdukHukum::with(['kategoriAkses'])
             ->whereHas('kategoriAkses', function ($q) use ($allowedAkses) {
                 $q->whereIn('nama', $allowedAkses);
             });
 
-        // ====================================================
-        // 📦 Data Terbaru
-        // ====================================================
+
         $latest = (clone $baseQuery)
             ->orderByDesc('created_at')
             ->take(6)
@@ -60,9 +52,7 @@ class BerandaController extends Controller
                 'downloads' => $row->downloads,
             ]);
 
-        // ====================================================
-        // 📊 Data Populer (berdasarkan downloads)
-        // ====================================================
+
         $popular = (clone $baseQuery)
             ->orderByDesc('downloads')
             ->take(6)
@@ -76,9 +66,7 @@ class BerandaController extends Controller
                 'downloads' => $row->downloads,
             ]);
 
-        // ====================================================
-        // 🥧 Data Pie Chart (per jenis dokumen)
-        // ====================================================
+
         $pieData = (clone $baseQuery)
             ->selectRaw('jenis_hukum_id, COUNT(*) as total')
             ->groupBy('jenis_hukum_id')
@@ -90,9 +78,7 @@ class BerandaController extends Controller
                 'color' => '#f97316',
             ]);
 
-        // ====================================================
-        // 📈 Data Tahunan & Bulanan
-        // ====================================================
+
         $yearlyData = (clone $baseQuery)
             ->selectRaw('tahun, COUNT(*) as documents')
             ->groupBy('tahun')
@@ -106,9 +92,7 @@ class BerandaController extends Controller
             ->orderBy('month')
             ->get();
 
-        // ====================================================
-        // 📰 Berita
-        // ====================================================
+
         $berita = Berita::where('status', 'published')
             ->latest('published_at')
             ->take(6)
@@ -149,7 +133,7 @@ class BerandaController extends Controller
             'monthlyData'   => $data['monthlyData'],
             'beritaTerkini' => $data['berita'],
             'summary'       => $data['summary'],
-            'allowedAkses'  => $data['allowedAkses'], // ✅ kirim juga ke front-end
+            'allowedAkses'  => $data['allowedAkses'], 
         ]);
     }
 
@@ -167,7 +151,7 @@ class BerandaController extends Controller
                 'pie'     => $data['pieData'],
             ],
             'beritaTerkini' => $data['berita'],
-            'allowedAkses'  => $data['allowedAkses'], // ✅ penting untuk ProdukHukum.jsx
+            'allowedAkses'  => $data['allowedAkses'], 
         ]);
     }
 }

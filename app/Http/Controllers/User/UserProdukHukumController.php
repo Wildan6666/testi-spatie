@@ -26,11 +26,7 @@ class UserProdukHukumController extends Controller
             'parent:id,judul', 'children:id,judul,parent_id'
         ]);
 
-        /*
-        |--------------------------------------------------------------------------
-        | 🔐 Filter berdasarkan hak akses user
-        |--------------------------------------------------------------------------
-        */
+ 
         $allowedAkses = [];
 
         if ($user) {

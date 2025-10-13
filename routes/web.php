@@ -118,6 +118,8 @@ Route::resource('kelola-berita', KelolaBeritaController::class)
     ->middleware('can:read kelola berita');
 Route::get('/berita/create', [KelolaBeritaController::class, 'create'])->name('berita.create');
 Route::post('/berita', [KelolaBeritaController::class, 'store'])->name('berita.store');
+Route::get('/kelola-berita/{id}/edit', [KelolaBeritaController::class, 'edit'])->name('edit');
+Route::put('/kelola-berita/{id}', [KelolaBeritaController::class, 'update'])->name('update');
 
 
 use App\Http\Controllers\User\BeritaController;
