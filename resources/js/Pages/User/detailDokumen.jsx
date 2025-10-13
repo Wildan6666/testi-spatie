@@ -111,7 +111,7 @@ export default function DetailDokumen() {
     data-aos="fade-up"
   >
     <h3 className="font-bold text-orange-700 text-lg mb-3 flex items-center gap-2">
-      🌳 Struktur Produk Hukum
+       Struktur Produk Hukum
     </h3>
 
 {/* ===== Jalur Induk (Breadcrumb Profesional) ===== */}
@@ -122,14 +122,14 @@ export default function DetailDokumen() {
   >
     <h3 className="text-sm font-semibold text-orange-700 mb-3 flex items-center gap-2">
       <Book size={18} className="text-orange-600" />
-      Rantai Dokumen Induk
+      Dokumen Induk
     </h3>
 
     <div className="flex flex-wrap items-center gap-2 text-sm">
       {doc.ancestors.map((p, idx) => (
         <React.Fragment key={idx}>
           <Link
-            href={`/dokumen/${p.id}`}
+            href={`/produkhukum/${p.id}`}
             title={p.judul}
             className="group flex items-center gap-2 bg-gradient-to-r from-orange-50 to-white border border-orange-200 hover:border-orange-400 text-gray-700 hover:text-orange-600 font-medium px-3 py-1.5 rounded-lg transition-all duration-200"
           >
@@ -157,8 +157,15 @@ export default function DetailDokumen() {
   </div>
 )}
 
-
+ <div
+    className="mb-6 bg-white border border-orange-200 rounded-xl p-5 shadow-sm"
+    data-aos="fade-right"
+  >
     {/* Pohon turunan */}
+    <h3 className="text-sm font-semibold text-orange-700 mb-3 flex items-center gap-2">
+      <Book size={18} className="text-orange-600" />
+      Dokumen Turunan
+    </h3>
     {doc.treeChildren && doc.treeChildren.length > 0 ? (
       <TreeList nodes={doc.treeChildren} />
     ) : (
@@ -166,6 +173,7 @@ export default function DetailDokumen() {
         Tidak ada dokumen turunan.
       </p>
     )}
+  </div>
   </div>
 )}
 
