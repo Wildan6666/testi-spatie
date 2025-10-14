@@ -15,7 +15,7 @@ import useModal from "@/Hooks/useModal";
 import useUserActions from "@/Hooks/useUserActions";
 import useFilter from "@/Hooks/useFilter";
 
-export default function Users({ users, roles, permissions }) {
+export default function Users({ users, roles, permissions, instansi }) {
   const { data, setData, post, put, delete: destroy } = useForm();
 
   // 🔧 Hooks
@@ -75,10 +75,7 @@ export default function Users({ users, roles, permissions }) {
       {/* 📋 DataTable */}
       <DataTable
         users={finalUsers}
-        onEdit={(user) => {
-          setEditName(user.name);
-          editModal.open(user);
-        }}
+        onEdit={(user) => editModal.open(user)}
         onDelete={deleteUser}
         onSetUser={roleModal.open}
         onViewPerms={permModal.open}
@@ -105,10 +102,8 @@ export default function Users({ users, roles, permissions }) {
 
       <EditModal
         user={editModal.value}
-        editName={editName}
         setEditUser={editModal.close}
-        setEditName={setEditName}
-        submitEdit={() => updateUser(editModal.value?.id, { name: editName })}
+         instansi={instansi} 
       />
 
       <FilterModal

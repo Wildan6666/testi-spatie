@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\NavigationController;
 use App\Http\Controllers\Admin\VerifikasiDataController;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\BerandaController;
+use App\Http\Controllers\Auth\PasswordController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -32,6 +33,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::middleware('auth')->patch('/profile/password/force', [PasswordController::class, 'forceUpdate'])
+    ->name('password.forceUpdate');
 });
 
 Route::get('/admin', [AdminDashboardController::class, 'index'])
@@ -47,8 +50,13 @@ Route::prefix('konfigurasi')->middleware(['auth'])->name('admin.')->group(functi
     Route::post('users/assign-role', [UserController::class, 'assignRole'])->name('users.assignRole');
     Route::post('users/revoke-role', [UserController::class, 'revokeRole'])->name('users.revokeRole');
     Route::post('users/give-permission', [UserController::class, 'givePermissionTo'])->name('users.givePermissionTo');
-    Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
+    //Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::put('users/{user}/detail', [UserController::class, 'updateDetail'])->name('users.updateDetail');
+    Route::middleware(['auth'])->patch('users/{user}/reset-password', [App\Http\Controllers\Admin\UserController::class, 'resetPassword'])
+    ->name('users.resetPassword');
+
+
 
     // Permissions
     Route::get('permissions', [PermissionController::class, 'index'])->name('permissions.index')

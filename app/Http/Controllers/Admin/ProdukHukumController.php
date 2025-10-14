@@ -28,7 +28,10 @@ class ProdukHukumController extends Controller
             'jenisHukum',
             'parent',
             'children',
-            'children.statusPeraturan'
+            'children.statusPeraturan',
+            'childrenRecursive',
+            'childrenRecursive.statusPeraturan',
+            'childrenRecursive.instansi',
         ]);
 
         // 🔍 Filter instansi untuk verifikator
@@ -51,7 +54,9 @@ class ProdukHukumController extends Controller
         }
 
         $produkHukums = $query->orderBy('created_at', 'desc')->get();
-        $produkHukums->load('children.statusPeraturan');
+        $produkHukums->load('childrenRecursive',
+            'childrenRecursive.statusPeraturan',
+            'childrenRecursive.instansi',);
 
         // 🔁 Tambahkan rantai induk untuk setiap produk hukum (untuk modal React)
         $produkHukums->map(function ($item) {
@@ -186,21 +191,30 @@ class ProdukHukumController extends Controller
 
         return redirect()->route('produk-hukum.index')->with('success', 'Produk hukum berhasil dihapus.');
     }
+public function show($id)
+{
+    $produk = ProdukHukum::with([
+        'parent',
+        'instansi',
+        'statusPeraturan',
+        'tipeDokumen',
+        'jenisHukum',
+        'children.statusPeraturan',
+        'children.instansi',
+    ])->findOrFail($id);
 
-    public function show($id)
-    {
-        $produk = ProdukHukum::with(['parent', 'instansi', 'statusPeraturan', 'tipeDokumen', 'jenisHukum', 'children' => function ($q) {
-            $q->with(['statusPeraturan', 'instansi']); // preload data anak
-        },])
-            ->findOrFail($id);
+    $parentChain = $this->getParentChain($produk);
+    $childrenChain = $this->getChildrenChain($produk); // 🔥 tambahkan ini
 
-        $parentChain = $this->getParentChain($produk);
+    // Tambahkan hasil helper ke dalam produk
+    $produk->children_recursive = $childrenChain;
 
-        return Inertia::render('Admin/produk-hukum/Index', [
-            'produk' => $produk,
-            'parentChain' => $parentChain,
-        ]);
-    }
+    return Inertia::render('Admin/produk-hukum/Index', [
+        'produk' => $produk,
+        'parentChain' => $parentChain,
+    ]);
+}
+
 
     /**
      * Helper rekursif untuk mendapatkan semua induk dokumen (parent chain)
@@ -217,4 +231,22 @@ class ProdukHukumController extends Controller
 
         return array_reverse($chain); // urut dari induk tertinggi ke bawah
     }
+
+    /**
+ * Helper rekursif untuk mendapatkan seluruh turunan (children chain)
+ */
+private function getChildrenChain($produk)
+{
+    $children = [];
+
+    foreach ($produk->children as $child) {
+        // Ambil data anak dan turunannya
+        $childData = $child->toArray();
+        $childData['children'] = $this->getChildrenChain($child); // rekursif
+        $children[] = $childData;
+    }
+
+    return $children;
+}
+
 }

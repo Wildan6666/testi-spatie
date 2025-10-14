@@ -38,7 +38,7 @@ export default function Sidebar() {
       className={`${
         collapsed ? "w-20" : "w-64"
       } h-screen bg-white border-r shadow-md flex flex-col transition-all duration-300`}
-    >
+    > 
       {/* Header */}
       <div className="relative p-6 border-b bg-gradient-to-r from-orange-600 to-orange-400 flex items-center justify-between">
         {!collapsed && (

@@ -55,4 +55,10 @@ class User extends Authenticatable
     {
         return $this->instansis()->wherePivot('role', 'viewer');
     }
+
+    public function detail()
+{
+    return $this->hasOne(UserDetail::class);
+}
+
 }

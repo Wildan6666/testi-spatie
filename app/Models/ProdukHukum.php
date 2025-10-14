@@ -94,7 +94,11 @@ public function kategoriAkses()
 
 public function childrenRecursive()
 {
-    return $this->children()->with('childrenRecursive');
+    return $this->children()->with([
+        'statusPeraturan',
+        'instansi',
+        'childrenRecursive', // ← inilah yang membuatnya benar-benar rekursif
+    ]);
 }
 
 
