@@ -79,7 +79,7 @@ export default function DasarHukum() {
       <Navbar />
 
       <main className="font-sans min-h-screen pt-28 transition-all duration-700">
-        {/* === HERO SECTION (PUTIH BERSIH) === */}
+        {/* === HERO SECTION === */}
         <section className="bg-white py-20 px-6 text-center border-b border-orange-100">
           <div className="max-w-4xl mx-auto" data-aos="fade-up">
             <FileText
@@ -101,7 +101,7 @@ export default function DasarHukum() {
           </div>
         </section>
 
-        {/* === GRID SECTION (DENGAN GRADIENT MENUJU FOOTER) === */}
+        {/* === GRID SECTION === */}
         <section
           className="py-16 lg:py-20 px-6"
           style={{
@@ -116,35 +116,49 @@ export default function DasarHukum() {
               return (
                 <div
                   key={index}
-                  className="bg-white rounded-2xl border border-slate-200 shadow-lg flex flex-col overflow-hidden transition-all duration-300 ease-in-out hover:scale-[1.02] hover:shadow-2xl hover:border-orange-400 border-t-8 border-orange-600 cursor-pointer"
+                  className="group bg-white rounded-2xl border border-slate-200 shadow-lg flex flex-col overflow-hidden cursor-pointer
+                  transition-all duration-500 ease-in-out hover:-translate-y-2 hover:shadow-2xl hover:border-orange-400"
+                  style={{ transitionDelay: "200ms" }}
                   data-aos="fade-up"
                   data-aos-delay={index * 150}
                   data-aos-duration="800"
                 >
-                  <div className="p-6 bg-orange-50/50 flex justify-between items-start">
-                    <Icon size={40} className="text-orange-500 animate-fade-in" />
-                    <span className="bg-orange-600 text-white text-xs font-semibold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-md">
-                      {item.type}
-                    </span>
-                  </div>
-                  <div className="p-6 flex-grow flex flex-col">
-                    <h2 className="text-xl font-bold text-slate-800 mb-2 leading-tight">
-                      {item.number}
-                    </h2>
-                    <p className="text-md font-medium text-slate-500 mb-4 italic">
-                      tentang {item.about}
-                    </p>
-                    <p className="text-base text-slate-600 leading-relaxed flex-grow">
-                      {item.description}
-                    </p>
-                  </div>
-                  <div className="p-6 bg-slate-50 mt-auto border-t border-slate-100">
-                    <Link
-                      href={item.link}
-                      className="block w-full text-center bg-gradient-to-r from-orange-600 to-orange-500 text-white py-3 px-6 rounded-xl font-semibold shadow-lg shadow-orange-500/20 transition-all duration-300 ease-in-out hover:from-orange-700 hover:to-orange-600 hover:-translate-y-1 hover:shadow-xl hover:shadow-orange-600/30"
-                    >
-                      Lihat Dokumen
-                    </Link>
+                  {/* === BORDER TOP === */}
+                  <div className="border-t-8 border-slate-300 transition-all duration-500 ease-in-out group-hover:border-orange-600" />
+
+                  {/* === ISI CARD === */}
+                  <div className="flex flex-col flex-grow">
+                    {/* HEADER */}
+                    <div className="p-6 bg-orange-50/50 flex justify-between items-start">
+                      <Icon size={40} className="text-orange-500 animate-fade-in" />
+                      <span className="bg-orange-600 text-white text-xs font-semibold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-md">
+                        {item.type}
+                      </span>
+                    </div>
+
+                    {/* BODY */}
+                    <div className="p-6 flex flex-col flex-grow">
+                      <h2 className="text-xl font-bold text-slate-800 mb-2 leading-tight">
+                        {item.number}
+                      </h2>
+                      <p className="text-md font-medium text-slate-500 mb-4 italic">
+                        tentang {item.about}
+                      </p>
+                      <p className="text-base text-slate-600 leading-relaxed flex-grow">
+                        {item.description}
+                      </p>
+                    </div>
+
+                    {/* FOOTER (selalu di bawah) */}
+                    <div className="p-6 bg-slate-50 border-t border-slate-100 mt-auto">
+                      <Link
+                        href={item.link}
+                        className="block w-full text-center bg-gradient-to-r from-orange-600 to-orange-500 text-white py-3 px-6 rounded-xl font-semibold shadow-lg shadow-orange-500/20 
+                        transition-all duration-300 ease-in-out hover:from-orange-700 hover:to-orange-600 hover:-translate-y-1 hover:shadow-xl hover:shadow-orange-600/30"
+                      >
+                        Lihat Dokumen
+                      </Link>
+                    </div>
                   </div>
                 </div>
               );

@@ -122,12 +122,6 @@ export default function Navbar() {
                 >
                   Struktur Organisasi
                 </a>
-                <a
-                  href="/tentang/prosedur-operasional"
-                  className="block px-4 py-2 hover:bg-gray-100 rounded-b-xl"
-                >
-                  Prosedur Operasional Standar
-                </a>
               </div>
             </div>
 
