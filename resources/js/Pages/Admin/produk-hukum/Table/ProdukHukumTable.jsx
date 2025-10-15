@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tooltip } from "@/Components/Tooltip";
 
-export default function ProdukHukumTable({ data, instansis, tipes, onDetail }) {
+export default function ProdukHukumTable({ data, instansis, tipes, onDetail , onEdit }) {
   const [filterText, setFilterText] = useState("");
   const [openFilter, setOpenFilter] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState({
@@ -66,52 +66,52 @@ export default function ProdukHukumTable({ data, instansis, tipes, onDetail }) {
       center: true,
     },
     {
-      name: "Aksi",
-      cell: (row) => (
-        <div className="flex gap-2 justify-center">
-          {/* Detail */}
-          <Tooltip content="Detail">
-            <Button
-              size="icon"
-              variant="outline"
-              className="border-gray-300"
-              onClick={() => onDetail(row)}
-            >
-              <Eye className="w-4 h-4" />
-            </Button>
-          </Tooltip>
+  name: "Aksi",
+  cell: (row) => (
+    <div className="flex gap-2 justify-center">
+      {/* Detail */}
+      <Tooltip content="Detail">
+        <Button
+          size="icon"
+          variant="outline"
+          className="border-gray-300"
+          onClick={() => onDetail(row)}
+        >
+          <Eye className="w-4 h-4" />
+        </Button>
+      </Tooltip>
 
-          {/* Edit */}
-          <Tooltip content="Edit">
-            <Button
-              size="icon"
-              className="bg-yellow-500 hover:bg-yellow-600 text-white"
-              onClick={() => router.get(route("produk-hukum.edit", row.id))}
-            >
-              <Pencil className="w-4 h-4" />
-            </Button>
-          </Tooltip>
+      {/* Edit */}
+      <Tooltip content="Edit">
+        <Button
+          size="icon"
+          className="bg-yellow-500 hover:bg-yellow-600 text-white"
+          onClick={() => onEdit(row)} // ✅ buka modal
+        >
+          <Pencil className="w-4 h-4" />
+        </Button>
+      </Tooltip>
 
-          {/* Delete */}
-          <Tooltip content="Hapus">
-            <Button
-              size="icon"
-              className="bg-red-600 hover:bg-red-700 text-white"
-              onClick={() => {
-                if (confirm("Apakah Anda yakin ingin menghapus dokumen ini?")) {
-                  router.delete(route("produk-hukum.destroy", row.id));
-                }
-              }}
-            >
-              <Trash2 className="w-4 h-4" />
-            </Button>
-          </Tooltip>
-        </div>
-      ),
-      ignoreRowClick: true,
-      center: true,
-      width: "150px",
-    },
+      {/* Hapus */}
+      <Tooltip content="Hapus">
+        <Button
+          size="icon"
+          className="bg-red-600 hover:bg-red-700 text-white"
+          onClick={() => {
+            if (confirm("Apakah Anda yakin ingin menghapus dokumen ini?")) {
+              router.delete(route("produk-hukum.destroy", row.id));
+            }
+          }}
+        >
+          <Trash2 className="w-4 h-4" />
+        </Button>
+      </Tooltip>
+    </div>
+  ),
+  ignoreRowClick: true,
+  center: true,
+  width: "150px",
+},
   ];
 
   const FilterChips = () => {

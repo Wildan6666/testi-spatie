@@ -101,6 +101,9 @@ Route::resource('status-peraturan', App\Http\Controllers\Admin\StatusPeraturanCo
 
 
 Route::resource('produk-hukum', App\Http\Controllers\Admin\ProdukHukumController::class)->middleware('can:read produk hukum');
+Route::put('produk-hukum/{id}', [App\Http\Controllers\Admin\ProdukHukumController::class, 'update'])
+    ->name('produk-hukum.update');
+
 
 
 Route::resource('instansi', App\Http\Controllers\Admin\InstansiController::class)->middleware(['can:read instansi']);

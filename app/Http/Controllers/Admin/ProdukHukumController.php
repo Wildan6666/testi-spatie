@@ -122,24 +122,6 @@ class ProdukHukumController extends Controller
         return redirect()->route('produk-hukum.index')->with('success', 'Produk hukum berhasil ditambahkan.');
     }
 
-    public function edit($id)
-    {
-        $produk = ProdukHukum::findOrFail($id);
-
-        return Inertia::render('Admin/produk-hukum/Edit', [
-            'produk' => $produk,
-            'instansis' => Instansi::all(),
-            'statusPeraturans' => StatusPeraturan::all(),
-            'tipeDokumens' => TipeDokumen::all(),
-            'jenisHukums' => JenisHukum::all(),
-            'kategoriAkses' => KategoriAkses::all(),
-            'produkIndukList' => ProdukHukum::select('id', 'judul')
-                ->where('id', '!=', $id) // Jangan tampilkan diri sendiri
-                ->orderBy('judul')
-                ->get(),
-        ]);
-    }
-
     public function update(Request $request, $id)
     {
         $produk = ProdukHukum::findOrFail($id);

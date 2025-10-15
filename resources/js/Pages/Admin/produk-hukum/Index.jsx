@@ -1,4 +1,3 @@
-// resources/js/Pages/Admin/ProdukHukum/Index.jsx
 import React, { useState } from "react";
 import { usePage, Link } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
@@ -7,6 +6,7 @@ import { Plus } from "lucide-react";
 
 import ProdukHukumTable from "./Table/ProdukHukumTable";
 import DetailModal from "./Modal/DetailModal";
+import EditModal from "./Modal/EditModal"; // ✅ sudah benar
 import FilterModal from "./Modal/FilterModal";
 
 export default function ProdukHukumPage() {
@@ -15,7 +15,22 @@ export default function ProdukHukumPage() {
   const instansis = props.instansis || [];
   const tipes = props.tipes || [];
 
+  // State modal
   const [selected, setSelected] = useState(null);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [openDetail, setOpenDetail] = useState(false);
+
+  // Saat klik edit
+  const handleEdit = (row) => {
+    setSelected(row);
+    setOpenEdit(true);
+  };
+
+  // Saat klik detail
+  const handleDetail = (row) => {
+    setSelected(row);
+    setOpenDetail(true);
+  };
 
   return (
     <AdminLayout>
@@ -38,12 +53,27 @@ export default function ProdukHukumPage() {
           data={data}
           instansis={instansis}
           tipes={tipes}
-          onDetail={setSelected}
+          onDetail={handleDetail}
+          onEdit={handleEdit} // ✅ tambahkan handler edit
         />
 
         {/* Modal Detail */}
-        {selected && (
-          <DetailModal selected={selected} onClose={() => setSelected(null)} />
+        {openDetail && selected && (
+          <DetailModal
+            selected={selected}
+            onClose={() => setOpenDetail(false)}
+          />
+        )}
+
+        {/* Modal Edit */}
+        {openEdit && selected && (
+          <EditModal
+            isOpen={openEdit}
+            onClose={() => setOpenEdit(false)}
+            produk={selected}
+            instansis={instansis}
+            tipes={tipes}
+          />
         )}
       </div>
     </AdminLayout>
