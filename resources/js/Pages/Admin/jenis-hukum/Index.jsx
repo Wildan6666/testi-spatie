@@ -4,7 +4,7 @@ import { Inertia } from "@inertiajs/inertia";
 import { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/Components/ui/Dialog";
 import { Input } from "@/components/ui/input";
 import { Pencil, Trash2, Plus } from "lucide-react";
 

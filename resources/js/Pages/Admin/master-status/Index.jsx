@@ -17,7 +17,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog";
+} from "@/Components/ui/Dialog";
 import { Pencil, Trash2, Plus } from "lucide-react";
 
 export default function StatusVerifikasiPage() {
