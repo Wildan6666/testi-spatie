@@ -77,7 +77,7 @@ export default function Navbar() {
               alt="Logo JDIH"
               className="logo"
             />
-            <Link href="/dashboard">
+            <Link href="/Welcome">
               <img
                 src="https://agribisnis.unja.ac.id/wp-content/uploads/2019/11/cropped-Logo-UNJA.png"
                 alt="Logo UNJA"
@@ -88,7 +88,7 @@ export default function Navbar() {
 
           {/* Navigation */}
           <nav className={`navigation ${menuOpen ? "mobile-active" : ""}`}>
-            <Link href="/dashboard" className="nav-link">
+            <Link href="/Welcome" className="nav-link">
               Beranda
             </Link>
 

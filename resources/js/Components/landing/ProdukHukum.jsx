@@ -28,6 +28,7 @@ const displayedData = activeTab === "terbaru" ? terbaruData : populerData;
 
         {/* Tabs */}
         <div className="tabs-container" data-aos="fade-up" data-aos-delay="100">
+          {/* tombol */}
           <button
             type="button"
             onClick={() => setActiveTab("terbaru")}
@@ -35,6 +36,7 @@ const displayedData = activeTab === "terbaru" ? terbaruData : populerData;
           >
             Peraturan Terbaru
           </button>
+
           <button
             type="button"
             onClick={() => setActiveTab("populer")}
@@ -50,7 +52,8 @@ const displayedData = activeTab === "terbaru" ? terbaruData : populerData;
             <Link
               key={doc.id}
               href={route("produkhukum.show", doc.id)} // pakai route Laravel
-              className="product-card block bg-white rounded-xl border border-orange-400 shadow-sm hover:shadow-lg transition overflow-hidden"
+              className="product-card block bg-white rounded-xl border border-orange-400 
+                        shadow-sm hover:shadow-lg transition overflow-hidden"
               data-aos="fade-up"
               data-aos-delay={i * 100}
             >
