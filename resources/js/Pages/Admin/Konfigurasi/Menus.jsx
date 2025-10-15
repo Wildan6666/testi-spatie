@@ -1,299 +1,431 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useForm, usePage, router } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import DataTable from "react-data-table-component";
 import { Button } from "@/components/ui/button";
 import * as Icons from "lucide-react";
+import { Plus, Edit3, Trash2, Search } from "lucide-react";
+
+// ---------- helper kecil ----------
+const IconPreview = ({ name, size = 18, className = "" }) => {
+  if (!name || !Icons[name]) return <span className="text-gray-400">-</span>;
+  const I = Icons[name];
+  return <I size={size} className={className} />;
+};
+
+// ---------- panel form (slide-over kanan) ----------
+function MenuFormPanel({
+  open,
+  onClose,
+  isEdit,
+  parentOptions,
+  availableIcons,
+  form,
+  setData,
+  onSubmit,
+  processing,
+  errors,
+}) {
+  return (
+    <div
+      className={`fixed inset-0 z-40 ${open ? "pointer-events-auto" : "pointer-events-none"}`}
+      aria-hidden={!open}
+    >
+      {/* backdrop */}
+      <div
+        className={`absolute inset-0 bg-black/30 transition-opacity ${open ? "opacity-100" : "opacity-0"}`}
+        onClick={onClose}
+      />
+      {/* panel */}
+      <div
+        className={`absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-xl border-l transition-transform duration-200 ${
+          open ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        <div className="p-5 border-b bg-orange-50/50 flex justify-between items-center">
+          <h3 className="text-lg font-semibold text-orange-700">
+            {isEdit ? "Edit Menu" : "Tambah Menu"}
+          </h3>
+        </div>
+
+        <form
+          onSubmit={onSubmit}
+          className="p-5 space-y-4 overflow-y-auto h-[calc(100%-65px)]"
+        >
+          {/* Nama */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Nama</label>
+            <input
+              type="text"
+              className="w-full border rounded px-3 py-2"
+              value={form.name}
+              onChange={(e) => setData("name", e.target.value)}
+            />
+            {errors?.name && (
+              <p className="text-red-500 text-xs mt-1">{errors.name}</p>
+            )}
+          </div>
+
+          {/* URL */}
+          <div>
+            <label className="block text-sm font-medium mb-1">URL</label>
+            <input
+              type="text"
+              className="w-full border rounded px-3 py-2"
+              value={form.url}
+              onChange={(e) => setData("url", e.target.value)}
+            />
+            {errors?.url && (
+              <p className="text-red-500 text-xs mt-1">{errors.url}</p>
+            )}
+          </div>
+
+          {/* Parent */}
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Parent (opsional)
+            </label>
+            <select
+              className="w-full border rounded px-3 py-2"
+              value={form.parent_id ?? ""}
+              onChange={(e) =>
+                setData(
+                  "parent_id",
+                  e.target.value ? parseInt(e.target.value) : null
+                )
+              }
+            >
+              <option value="">— Menu Utama —</option>
+              {parentOptions.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Icon */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Icon</label>
+            <select
+              className="w-full border rounded px-3 py-2"
+              value={form.icon || ""}
+              onChange={(e) => setData("icon", e.target.value)}
+            >
+              <option value="">— Pilih Icon —</option>
+              {availableIcons.map((ic) => (
+                <option key={ic} value={ic}>
+                  {ic}
+                </option>
+              ))}
+            </select>
+
+            {/* preview */}
+            {form.icon && (
+              <div className="mt-2 inline-flex items-center gap-2 text-sm">
+                <IconPreview name={form.icon} />
+                <span>{form.icon}</span>
+              </div>
+            )}
+          </div>
+
+          <div className="pt-2 flex gap-2 justify-end">
+            <Button
+              type="button"
+              variant="secondary"
+              className="bg-gray-100 text-gray-700 hover:bg-gray-200"
+              onClick={onClose}
+            >
+              Batal
+            </Button>
+            <Button disabled={processing} type="submit">
+              {processing ? "Menyimpan..." : isEdit ? "Update" : "Simpan"}
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
 
 export default function Menus() {
-  const { menus } = usePage().props;
+  const { menus = [] } = usePage().props;
+
+  // daftar icon yang kamu ijinkan
+  const availableIcons = useMemo(
+    () => [
+      "Home",
+      "Folder",
+      "Archive",
+      "FileText",
+      "ScrollText",
+      "Scale",
+      "Search",
+      "Newspaper",
+      "Calendar",
+      "BarChart",
+      "Info",
+      "Phone",
+      "User",
+      "Settings",
+      "Tag",
+      "Star",
+      "Globe",
+      "Circle",
+      "Download",
+    ],
+    []
+  );
+
+  // flatten menu + child agar rapi di DataTable
+  const rows = useMemo(() => {
+    const out = [];
+    menus.forEach((m) => {
+      out.push({
+        id: m.id,
+        name: m.name,
+        url: m.url,
+        parent_id: null,
+        parent_name: "-",
+        icon: m.icon,
+        isChild: false,
+      });
+      (m.children || []).forEach((c) => {
+        out.push({
+          id: c.id,
+          name: c.name,
+          url: c.url,
+          parent_id: m.id,
+          parent_name: m.name,
+          icon: c.icon,
+          isChild: true,
+        });
+      });
+    });
+    return out;
+  }, [menus]);
+
+  // search
   const [search, setSearch] = useState("");
+  const filteredRows = useMemo(() => {
+    if (!search) return rows;
+    const s = search.toLowerCase();
+    return rows.filter(
+      (r) =>
+        r.name.toLowerCase().includes(s) ||
+        (r.url || "").toLowerCase().includes(s) ||
+        (r.parent_name || "").toLowerCase().includes(s)
+    );
+  }, [rows, search]);
 
-  // state untuk tambah/edit
-  const [open, setOpen] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
-  const [editId, setEditId] = useState(null);
-  const availableIcons = [ "Home",
-  "Folder",
-  "Archive",
-  "FileText",
-  "ScrollText",
-  "Scale",
-  "Search",
-  "Newspaper",
-  "Calendar",
-  "BarChart",
-  "Info",
-  "Phone",
-  "User",
-  "Settings",
-  "Tag",
-  "Star",
-  "Globe",
-  "Circle",
-  "Download",];
-
-const filteredMenus = menus.filter(menu =>
-  menu.name.toLowerCase().includes(search.toLowerCase()) ||
-  (menu.url && menu.url.toLowerCase().includes(search.toLowerCase()))
-);
-
+  // form state
   const { data, setData, post, put, processing, errors, reset } = useForm({
     name: "",
     url: "",
-    parent_id: "",
+    parent_id: null,
     icon: "",
   });
 
-  // buka modal tambah
-  const openAddModal = () => {
+  const [panelOpen, setPanelOpen] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [editId, setEditId] = useState(null);
+
+  const openAdd = () => {
     reset();
     setIsEdit(false);
     setEditId(null);
-    setOpen(true);
+    setPanelOpen(true);
   };
 
-  // buka modal edit
-  const openEditModal = (menu) => {
+  const openEdit = (row) => {
     setData({
-      name: menu.name || "",
-      url: menu.url || "",
-      parent_id: menu.parent_id || "",
-      icon: menu.icon || "",
+      name: row.name || "",
+      url: row.url || "",
+      parent_id: row.parent_id ?? null,
+      icon: row.icon || "",
     });
     setIsEdit(true);
-    setEditId(menu.id);
-    setOpen(true);
+    setEditId(row.id);
+    setPanelOpen(true);
   };
 
-  const handleSubmit = (e) => {
+  const onSubmit = (e) => {
     e.preventDefault();
-
     if (isEdit) {
-      // update data
-      router.put(route("admin.menus.update", editId), data, {
+      put(route("menus.update", editId), {
         onSuccess: () => {
-          reset();
-          setOpen(false);
+          setPanelOpen(false);
           setIsEdit(false);
+          reset();
         },
       });
     } else {
-      // tambah data baru
       post(route("admin.menus.store"), {
         onSuccess: () => {
+          setPanelOpen(false);
           reset();
-          setOpen(false);
         },
       });
     }
   };
 
-  const handleDelete = (id) => {
-    if (confirm("Yakin ingin menghapus menu ini?")) {
-      router.delete(route("admin.menus.destroy", id), {
-        onSuccess: () => {
-          console.log("Menu berhasil dihapus");
-        },
-        onError: (errors) => {
-          console.error(errors);
-        },
-      });
-    }
+  const onDelete = (id) => {
+    if (!confirm("Yakin ingin menghapus menu ini?")) return;
+    router.delete(route("admin.menus.destroy", id));
   };
-  
+
+  // kolom datatable
+  const columns = [
+    {
+      name: "Nama",
+      selector: (row) => row.name,
+      sortable: true,
+      wrap: true,
+      cell: (row) => (
+        <div className="flex items-center gap-2">
+          {row.isChild && <span className="text-gray-300">↳</span>}
+          <span className={row.isChild ? "text-gray-700" : "font-medium"}>
+            {row.name}
+          </span>
+        </div>
+      ),
+      grow: 2,
+    },
+    {
+      name: "URL",
+      selector: (row) => row.url || "-",
+      sortable: true,
+      wrap: true,
+    },
+    {
+      name: "Parent",
+      selector: (row) => row.parent_name || "-",
+      sortable: true,
+      width: "180px",
+    },
+    {
+      name: "Icon",
+      width: "140px",
+      cell: (row) => (
+        <div className="flex items-center gap-2">
+          <IconPreview name={row.icon} />
+          <span className="text-xs text-gray-500">{row.icon || "-"}</span>
+        </div>
+      ),
+    },
+    {
+      name: "Aksi",
+      width: "150px",
+      center: true,
+      cell: (row) => (
+        <div className="flex items-center gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            className="px-2 h-8 border-orange-300 text-orange-600 hover:bg-orange-50 hover:border-orange-400"
+            onClick={() => openEdit(row)}
+          >
+            <Edit3 className="w-4 h-4" />
+          </Button>
+          <Button
+            size="sm"
+            variant="destructive"
+            className="px-2 h-8 bg-red-50 text-red-500 hover:bg-red-100 border border-red-200"
+            onClick={() => onDelete(row.id)}
+          >
+            <Trash2 className="w-4 h-4" />
+          </Button>
+
+        </div>
+      ),
+    },
+  ];
 
   return (
     <AdminLayout>
-      <div className="p-6 bg-white rounded shadow">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold">Manajemen Menu</h2>
-    
+      <div className="max-w-6xl mx-auto space-y-4">
+        {/* header+actions */}
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-bold text-gray-800">Manajemen Menu</h2>
 
-          {/* Tombol Tambah Menu */}
-          <Button onClick={openAddModal}>Tambah Menu</Button>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center bg-gray-50 rounded-full px-4 py-1.5 border border-gray-200">
+              <Search className="w-4 h-4 text-gray-400 mr-2" />
+              <input
+                className="bg-transparent border-none outline-none text-sm"
+                placeholder="Cari nama / url / parent…"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+            <Button onClick={openAdd} className="flex items-center gap-2">
+              <Plus className="w-4 h-4" /> Tambah Menu
+            </Button>
+          </div>
         </div>
 
-        {/* Modal Tambah/Edit Menu */}
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogContent className="max-w-lg">
-            <DialogHeader>
-              <DialogTitle>
-                {isEdit ? "Edit Menu" : "Tambah Menu"}
-              </DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-              {/* Nama Menu */}
-              <div>
-                <label className="block text-sm font-medium">Nama Menu</label>
-                <input
-                  type="text"
-                  className="w-full border rounded px-3 py-2"
-                  value={data.name}
-                  onChange={(e) => setData("name", e.target.value)}
-                />
-                {errors.name && (
-                  <p className="text-red-500 text-sm">{errors.name}</p>
-                )}
-              </div>
+        {/* DataTable */}
+          <div className="bg-white rounded-xl shadow-md border border-orange-100">
+  <DataTable
+    columns={columns}
+    data={filteredRows}
+    pagination
+    highlightOnHover
+    responsive
+    striped
+    dense={false} // biar baris lebih renggang
+    customStyles={{
+      headCells: {
+        style: {
+          backgroundColor: "#fff7ed",
+          color: "#ea580c",
+          fontWeight: "700",
+          fontSize: "15px",   // 🔸 lebih besar
+          paddingTop: "12px",
+          paddingBottom: "12px",
+        },
+      },
+      cells: {
+        style: {
+          fontSize: "15px",   // 🔸 isi tabel lebih besar
+          color: "#374151",
+          paddingTop: "12px",
+          paddingBottom: "12px",
+        },
+      },
+      rows: {
+        style: {
+          minHeight: "56px",  // 🔸 baris sedikit lebih tinggi
+        },
+      },
+      pagination: {
+        style: {
+          color: "#ea580c",
+          fontWeight: "600",
+          fontSize: "14px",
+          paddingTop: "10px",
+          paddingBottom: "10px",
+        },
+      },
+    }}
+  />
+</div>
+</div>
 
-              {/* URL */}
-              <div>
-                <label className="block text-sm font-medium">URL</label>
-                <input
-                  type="text"
-                  className="w-full border rounded px-3 py-2"
-                  value={data.url}
-                  onChange={(e) => setData("url", e.target.value)}
-                />
-                {errors.url && (
-                  <p className="text-red-500 text-sm">{errors.url}</p>
-                )}
-              </div>
 
-              {/* Parent */}
-              <div>
-                <label className="block text-sm font-medium">
-                  Main Menu (Optional)
-                </label>
-                <select
-                  className="w-full border rounded px-3 py-2"
-                  value={data.parent_id}
-                  onChange={(e) =>
-                    setData(
-                      "parent_id",
-                      e.target.value ? parseInt(e.target.value) : ""
-                    )
-                  }
-                >
-                  <option value="">-- Tidak Ada (Menu Utama) --</option>
-                  {menus.map((menu) => (
-                    <option key={menu.id} value={menu.id}>
-                      {menu.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Icon */}
-              <select
-                className="w-full border rounded px-3 py-2"
-                value={data.icon}
-                onChange={(e) => setData("icon", e.target.value)}
-              >
-                  <option value="">Pilih Icon</option>
-                  {availableIcons.map((icon) => (
-                    <option key={icon} value={icon}>{icon}</option>
-                  ))}
-                </select>
-
-                {/* // Render icon */}
-                {data.icon && (
-                  <div className="mt-2 flex items-center gap-2">
-                    {React.createElement(Icons[data.icon], { size: 20 })}
-                    <span className="text-sm">{data.icon}</span>
-                  </div>
-                )}
-
-              <div className="flex justify-end">
-                <Button type="submit" disabled={processing}>
-                  {processing
-                    ? "Menyimpan..."
-                    : isEdit
-                    ? "Update Menu"
-                    : "Simpan Menu"}
-                </Button>
-              </div>
-            </form>
-          </DialogContent>
-        </Dialog>
-
-        {/* Tabel Daftar Menu */}
-        <table className="w-full border-collapse border text-sm">
-          <thead>
-            <tr className="bg-gray-100 text-left">
-              <th className="border p-2">Nama</th>
-              <th className="border p-2">URL</th>
-              <th className="border p-2">Parent</th>
-              <th className="border p-2">Icon</th>
-              <th className="border p-2 text-center">Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            {menus.length > 0 ? (
-              menus.map((menu) => (
-                <React.Fragment key={menu.id}>
-                  {/* Row Menu Utama */}
-                  <tr className="bg-white">
-                    <td className="border p-2 font-semibold">{menu.name}</td>
-                    <td className="border p-2">{menu.url}</td>
-                    <td className="border p-2">-</td>
-                    <td className="border p-2">{menu.icon}</td>
-                    <td className="border p-2 text-center space-x-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => openEditModal(menu)}
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => handleDelete(menu.id)}
-                      >
-                        Hapus
-                      </Button>
-                    </td>
-                  </tr>
-
-                  {/* Row Sub Menu */}
-                  {menu.children &&
-                    menu.children.map((child) => (
-                      <tr key={child.id} className="bg-gray-50">
-                        <td className="border p-2 pl-8">↳ {child.name}</td>
-                        <td className="border p-2">{child.url}</td>
-                        <td className="border p-2">{menu.name}</td>
-                        <td className="border p-2">{child.icon}</td>
-                        <td className="border p-2 text-center space-x-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => openEditModal(child)}
-                          >
-                            Edit
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => handleDelete(child.id)}
-                          >
-                            Hapus
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
-                </React.Fragment>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan="5"
-                  className="text-center text-gray-500 py-4 border"
-                >
-                  Belum ada menu.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+      {/* Slide-over Panel Form */}
+      <MenuFormPanel
+        open={panelOpen}
+        onClose={() => setPanelOpen(false)}
+        isEdit={isEdit}
+        parentOptions={menus} // parent hanya dari menu utama (opsional: filter yang parent_id null)
+        availableIcons={availableIcons}
+        form={data}
+        setData={setData}
+        onSubmit={onSubmit}
+        processing={processing}
+        errors={errors}
+      />
     </AdminLayout>
   );
 }

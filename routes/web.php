@@ -43,6 +43,7 @@ Route::get('/admin', [AdminDashboardController::class, 'index'])
 
 
 Route::post('konfigurasi/permissions/store', [PermissionController::class, 'store'])->name('permissions.store');
+Route::resource('menus', MenuController::class);
 Route::prefix('konfigurasi')->middleware(['auth'])->name('admin.')->group(function () {
     // Users
     Route::get('users', [UserController::class, 'index'])->name('users.index')
@@ -165,3 +166,5 @@ Route::get('/Tentang/SekilasSejarah', function () {
     return Inertia::render('Tentang/SekilasSejarah');
 })->middleware(['auth', 'verified'])->name('kilas.sejarah');
 
+
+Route::resource('asdasdasd', App\Http\Controllers\Admin\AsdasdasdController::class)->middleware('can:read asdasd');
