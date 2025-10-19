@@ -29,6 +29,7 @@ class ProdukHukum extends Model
         'views',
         'downloads',
         'parent_id',
+         'user_id',
     ];
 
     // Relasi ke instansi
@@ -100,6 +101,11 @@ public function childrenRecursive()
         'childrenRecursive', // ← inilah yang membuatnya benar-benar rekursif
     ]);
 }
+public function user()
+{
+    return $this->belongsTo(User::class);
+}
+
 
 
 }

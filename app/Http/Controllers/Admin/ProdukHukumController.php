@@ -34,8 +34,15 @@ class ProdukHukumController extends Controller
             'childrenRecursive.instansi',
         ]);
 
+            if ($user->hasRole('superadmin')) {
+                    // Superadmin bisa lihat semua dokumen
+                } else {
+                    // User biasa hanya bisa lihat dokumen yang dia upload
+                    $query->where('user_id', $user->id);
+                }
+
         // 🔍 Filter instansi untuk verifikator
-        if ($user->hasRole('Verifikator')) {
+        if ($user->hasRole('verifikator')) {
             $query->where('instansi_id', $user->instansi_id);
         }
 
@@ -72,7 +79,7 @@ class ProdukHukumController extends Controller
 
     public function create()
     {
-        return Inertia::render('Admin/produk-hukum/Create', [
+        return Inertia::render('Admin/produk-hukum/create', [
             'instansis' => Instansi::all(),
             'statusPeraturans' => StatusPeraturan::all(),
             'tipeDokumens' => TipeDokumen::all(),
@@ -86,6 +93,7 @@ class ProdukHukumController extends Controller
 
     public function store(Request $request)
     {
+        
         $validated = $request->validate([
             'judul' => 'required|string|max:255',
             'nomor' => 'nullable|string|max:100',
@@ -102,6 +110,8 @@ class ProdukHukumController extends Controller
             'kategori_akses_id' => 'nullable|exists:kategori_akses,id',
             'parent_id' => 'nullable|exists:produk_hukum,id',
         ]);
+
+        $validated['user_id'] = auth()->id();
 
         // Status default "Pending"
         $pendingStatus = StatusVerifikasi::where('nama_status', 'Pending')->first();
@@ -197,10 +207,68 @@ public function show($id)
     ]);
 }
 
+public function resend(Request $request, $id)
+{
+    $produk = ProdukHukum::findOrFail($id);
+    $user = auth()->user();
 
-    /**
-     * Helper rekursif untuk mendapatkan semua induk dokumen (parent chain)
-     */
+    // Pastikan hanya pengunggah asli yang bisa kirim ulang
+    if (
+    $produk->user_id !== $user->id &&
+    !$user->hasAnyRole(['Admin', 'Superadmin'])
+) {
+    abort(403, 'Anda tidak memiliki izin untuk mengirim ulang dokumen ini.');
+}
+
+    // Validasi input revisi
+    $validated = $request->validate([
+        'judul' => 'required|string|max:255',
+        'nomor' => 'nullable|string|max:100',
+        'tahun' => 'nullable|digits:4|integer',
+        'ringkasan' => 'nullable|string',
+        'subjek' => 'nullable|string|max:150',
+        'tanggal_penetapan' => 'nullable|date',
+        'kata_kunci' => 'nullable|string',
+        'berkas' => 'required|file|mimes:pdf,png|max:2048',
+    ]);
+
+    // Hapus file lama
+    if ($produk->berkas && Storage::disk('public')->exists($produk->berkas)) {
+        Storage::disk('public')->delete($produk->berkas);
+    }
+
+    // Upload file baru
+    $file = $request->file('berkas');
+    $folder = 'produk_hukum/revisi';
+    $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9_\.-]/', '_', $file->getClientOriginalName());
+    $validated['berkas'] = $file->storeAs($folder, $filename, 'public');
+
+    // Reset status jadi Pending
+    $statusPending = StatusVerifikasi::where('nama_status', 'Pending')->first();
+
+    $produk->update([
+        ...$validated,
+        'status_id' => $statusPending->id,
+    ]);
+
+    return redirect()->route('produk-hukum.index')->with('success', 'Dokumen revisi berhasil dikirim ulang untuk verifikasi.');
+}
+    public function resendView($id)
+{
+    $produk = ProdukHukum::with([
+        'instansi', 'statusPeraturan', 'tipeDokumen', 'jenisHukum', 'kategoriAkses'
+    ])->findOrFail($id);
+
+    return Inertia::render('Admin/produk-hukum/Resend', [
+        'produk' => $produk,
+        'instansis' => Instansi::all(),
+        'tipes' => TipeDokumen::all(),
+        'kategoriAkses' => KategoriAkses::all(),
+        'statusPeraturans' => StatusPeraturan::all(),
+        'jenisHukums' => JenisHukum::all(),
+    ]);
+}
+
     private function getParentChain($produk)
     {
         $chain = [];

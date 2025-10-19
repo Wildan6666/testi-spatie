@@ -103,6 +103,13 @@ Route::resource('status-peraturan', App\Http\Controllers\Admin\StatusPeraturanCo
 Route::resource('produk-hukum', App\Http\Controllers\Admin\ProdukHukumController::class)->middleware('can:read produk hukum');
 Route::put('produk-hukum/{id}', [App\Http\Controllers\Admin\ProdukHukumController::class, 'update'])
     ->name('produk-hukum.update');
+Route::get('/produk-hukum/{id}/resend', [App\Http\Controllers\Admin\ProdukHukumController::class, 'resendView'])
+    ->middleware('can:read produk hukum')
+    ->name('produk-hukum.resend.view');
+Route::post('/produk-hukum/{id}/resend', [App\Http\Controllers\Admin\ProdukHukumController::class, 'resend'])
+    ->middleware('can:read produk hukum')
+    ->name('produk-hukum.resend');
+
 
 
 

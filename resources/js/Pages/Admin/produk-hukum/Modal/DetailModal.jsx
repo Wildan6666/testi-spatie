@@ -1,8 +1,11 @@
 import { X, Book, FileText, ChevronRight, GitBranch } from "lucide-react";
 import { Link } from "@inertiajs/react";
 import TreeList from "@/Components/Dokumen/TreeList";
+import React, { useState } from "react";
+import { router } from "@inertiajs/react";
 
 export default function DetailModal({ selected, onClose }) {
+  const [showResendForm, setShowResendForm] = useState(false);
   if (!selected) return null;
 
   return (
@@ -65,6 +68,19 @@ export default function DetailModal({ selected, onClose }) {
             <p className="text-gray-500 text-sm">Tidak ada berkas.</p>
           )}
         </section>
+
+        {/* === AKSI KIRIM ULANG (Hanya jika status verifikasi = Ditolak) === */}
+          {selected.status_verifikasi?.nama_status === "Rejected" && (
+            <div className="mt-6 flex justify-end">
+              <Link
+                  href={route("produk-hukum.resend.view", selected.id)}
+                  className="bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-md transition-all"
+                >
+                  Kirim Ulang Dokumen
+                </Link>
+            </div>
+          )}
+
 
         {/* === STRUKTUR DOKUMEN === */}
         {(selected.parent_chain?.length > 0 || selected.children?.length > 0) && (

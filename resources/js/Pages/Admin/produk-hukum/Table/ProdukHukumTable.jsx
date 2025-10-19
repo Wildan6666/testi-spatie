@@ -57,6 +57,27 @@ export default function ProdukHukumTable({ data, instansis, tipes, onDetail , on
     { name: "Judul", selector: (row) => row.judul, grow: 2, wrap: true, sortable: true },
     { name: "Nomor", selector: (row) => row.nomor, center: true, sortable: true },
     { name: "Tahun", selector: (row) => row.tahun, center: true, sortable: true },
+
+    // ✅ Tambahan kolom Status Verifikasi
+  {
+    name: "Status Verifikasi",
+    cell: (row) => {
+      const status = row.status_verifikasi?.nama_status || "Belum Ditentukan";
+      switch (status.toLowerCase()) {
+        case "pending":
+          return badge("Pending", "bg-yellow-100 text-yellow-700");
+        case "approved":
+          return badge("Diterima", "bg-green-100 text-green-700");
+        case "rejected":
+          return badge("Ditolak", "bg-red-100 text-red-700");
+        default:
+          return badge(status, "bg-gray-100 text-gray-700");
+      }
+    },
+    center: true,
+    sortable: true,
+  },
+
     {
       name: "Status",
       cell: (row) =>
