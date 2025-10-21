@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use App\Models\ProdukHukum;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Crypt;
 use App\Models\KategoriAkses;
 
 class UserProdukHukumController extends Controller
@@ -49,11 +50,7 @@ class UserProdukHukumController extends Controller
             $q->whereIn('nama', $allowedAkses);
         });
 
-        /*
-        |--------------------------------------------------------------------------
-        | 🔍 Filter tambahan
-        |--------------------------------------------------------------------------
-        */
+   
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('judul', 'like', "%{$search}%")
@@ -77,17 +74,12 @@ class UserProdukHukumController extends Controller
             });
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | 📦 Pagination
-        |--------------------------------------------------------------------------
-        */
         $dokumen = $query->orderByDesc('created_at')
             ->paginate(5)
             ->withQueryString()
             ->through(function ($row) {
                 return [
-                    'id'        => $row->id,
+                    'id'        => Crypt::encryptString($row->id),
                     'title'     => $row->judul,
                     'nomor'     => $row->nomor,
                     'tahun'     => $row->tahun,
@@ -118,12 +110,19 @@ class UserProdukHukumController extends Controller
      */
    public function show($id)
 {
+
+     try {
+        $decryptedId = Crypt::decryptString($id); // ✅ Dekripsi ID dari URL
+    } catch (\Exception $e) {
+        abort(404, 'Link tidak valid atau rusak');
+    }
+
     $row = ProdukHukum::with([
         'tipeDokumen', 'jenisHukum', 'instansi',
         'statusVerifikasi', 'kategoriAkses',
         'parentRecursive:id,judul,nomor,tahun,parent_id',
         'childrenRecursive:id,judul,nomor,tahun,parent_id'
-    ])->findOrFail($id);
+    ])->findOrFail($decryptedId);
 
     $row->increment('views');
 
@@ -179,6 +178,12 @@ class UserProdukHukumController extends Controller
      */
     public function download($id)
     {
+          try {
+        $decryptedId = Crypt::decryptString($id); // ✅ Dekripsi ID
+    } catch (\Exception $e) {
+        abort(404, 'Link tidak valid');
+    }
+
         $produk = ProdukHukum::findOrFail($id);
 
         if (!$produk->berkas) {
@@ -195,4 +200,7 @@ class UserProdukHukumController extends Controller
 
         return response()->download($absPath, $safeName);
     }
+    
+
+    
 }
