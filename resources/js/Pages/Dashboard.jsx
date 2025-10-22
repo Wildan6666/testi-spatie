@@ -120,7 +120,6 @@ export default function DashboardUser() {
                   <option value="2021">2021</option>
                   <option value="2020">2020</option>
                 </select>
-                <ChevronDown className="icon-dropdown" />
               </div>
 
               <div className="filter-input">

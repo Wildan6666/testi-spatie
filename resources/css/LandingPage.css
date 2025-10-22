@@ -24,6 +24,7 @@ html, body {
               center/cover no-repeat;
   text-align: center;
   padding: 80px 0;
+
 }
 
 .hero-overlay {
@@ -50,8 +51,6 @@ html, body {
 }
 
 
-
-
 .hero-description {
   font-family: 'Inter', sans-serif;
   margin-top: 16px;
@@ -61,9 +60,11 @@ html, body {
   font-weight: 550;
 }
 
+
+
 /* ============================
-  Search Section
-   ============================ */
+  Search Section (Desktop)
+============================ */
 .search-container {
   max-width: 1280px;
   margin: 32px auto 0;
@@ -77,6 +78,7 @@ html, body {
   border-radius: 6px;
   color: #374151;
   margin-bottom: 16px;
+  font-size: 1rem;
 }
 
 .main-search:focus {
@@ -106,6 +108,7 @@ html, body {
   border-radius: 6px;
   color: #374151;
   background-color: white;
+  font-size: 0.95rem;
 }
 
 .filter-input input:focus,
@@ -115,8 +118,69 @@ html, body {
 }
 
 /* ============================
+   Responsive Adjustments
+============================ */
+
+/* Tablet (max 768px) */
+@media (max-width: 768px) {
+  .search-container {
+    padding: 16px 8px;
+    margin: 16px auto 0;
+  }
+
+  .filters-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .filter-input {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .main-search {
+    font-size: 0.95rem;
+    padding: 10px 14px;
+  }
+
+  .filter-input input,
+  .filter-input select {
+    font-size: 0.9rem;
+    padding: 8px 10px;
+  }
+}
+
+/* Mobile (max 480px) */
+@media (max-width: 480px) {
+  .search-container {
+    padding: 12px;
+  }
+
+  .main-search {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+  }
+
+  .filters-container {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .filter-input {
+    width: 100%;
+  }
+
+  .filter-input input,
+  .filter-input select {
+    font-size: 0.85rem;
+    padding: 8px 10px;
+  }
+}
+
+
+/* ============================
    Filter / Select Custom
-   ============================ */
+============================ */
 .custom-select {
   width: 100%;
   padding: 8px 12px;
@@ -129,6 +193,7 @@ html, body {
   outline: none;
   transition: all 0.2s ease;
   font-family: 'Inter', sans-serif;
+  font-size: 1rem;
 }
 
 .custom-select:focus {
@@ -157,11 +222,57 @@ html, body {
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  font-size: 1rem;
 }
 
 .search-button:hover {
   background-color: #c2410c;
 }
+
+/* ============================
+   Responsive Adjustments
+============================ */
+
+/* Tablet (≤768px) */
+@media (max-width: 768px) {
+  .custom-select {
+    font-size: 0.95rem;
+    padding: 8px 10px;
+  }
+
+  .icon-dropdown {
+    right: 0.5rem;
+    width: 18px;
+    height: 18px;
+  }
+
+  .search-button {
+    font-size: 0.95rem;
+    padding: 10px 0;
+  }
+}
+
+/* Mobile (≤480px) */
+@media (max-width: 480px) {
+  .custom-select {
+    font-size: 0.9rem;
+    padding: 8px 8px;
+    padding-right: 1.8rem;
+  }
+
+  .icon-dropdown {
+    right: 0.5rem;
+    width: 16px;
+    height: 16px;
+  }
+
+  .search-button {
+    font-size: 0.9rem;
+    padding: 10px 0;
+    border-radius: 5px;
+  }
+}
+
 
 /* ============================
 Sections
@@ -1085,3 +1196,4 @@ padding-bottom: 15px;
 .dark *::after {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
+

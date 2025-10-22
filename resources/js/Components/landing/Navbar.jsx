@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "@inertiajs/react";
-import { LogOut, Languages } from "lucide-react";
+import { LogOut, Languages, ChevronDown, ChevronUp } from "lucide-react";
 import "../../../css/Navbar.css";
 import "flag-icons/css/flag-icons.min.css";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   const languages = [
@@ -18,14 +20,14 @@ export default function Navbar() {
     { code: "su", name: "Basa Sunda", flag: "fi fi-id" },
   ];
 
-  // 🔸 Efek scroll
+  // 🔹 Scroll effect
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // 🔸 Load Google Translate
+  // 🔹 Load Google Translate
   useEffect(() => {
     if (document.getElementById("google-translate-script")) return;
     const script = document.createElement("script");
@@ -56,47 +58,53 @@ export default function Navbar() {
 
   return (
     <>
-      {/* 🧭 Navbar */}
       <header className={`navbar ${scrolled ? "scrolled" : ""}`}>
         <div className="navbar-content">
-          {/* Mobile Toggle */}
-          <button
-            className="mobile-menu-toggle"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Toggle Menu"
-          >
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
+          {/* 🔸 Hamburger + Judul */}
+          <div className="mobile-header">
+            <button
+              className={`mobile-menu-toggle ${menuOpen ? "active" : ""}`}
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label="Toggle Menu"
+            >
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+          </div>
 
-          {/* Logo */}
+          {/* 🔸 Logo */}
           <div className="logo-container">
             <img
-              src="https://jdih.perpusnas.go.id/public/style/img/LOGO-JDIHN-PHN.png"
-              alt="Logo JDIH"
+              src="/assets/LOGO-JDIHN.png"
+              alt="Logo JDIHN"
               className="logo"
             />
             <Link href="/dashboard">
               <img
-                src="https://agribisnis.unja.ac.id/wp-content/uploads/2019/11/cropped-Logo-UNJA.png"
+                src="/assets/LOGO-UNJA.png"
                 alt="Logo UNJA"
-                className="logo cursor-pointer"
+                className="logo"
               />
             </Link>
           </div>
 
-          {/* Navigation */}
+          {/* 🔸 Navigasi Utama */}
           <nav className={`navigation ${menuOpen ? "mobile-active" : ""}`}>
+            {/* 🔹 Judul di dalam sidebar */}
+            {menuOpen && (
+              <div className="mobile-title">
+                <h2>JDIH UNJA</h2>
+              </div>
+            )}
+
             <Link href="/dashboard" className="nav-link">
               Beranda
             </Link>
 
-            {/* Tentang Kami */}
-            <div className="relative inline-block group">
-              <button className="nav-link px-4 py-2 w-full text-left">
-                Tentang Kami
-              </button>
+            {/* 🔹 Tentang Kami - Desktop Hover */}
+            <div className="relative inline-block group desktop-only">
+              <button className="nav-link">Tentang Kami</button>
               <div className="absolute left-0 mt-0 w-56 bg-white shadow-xl rounded-xl text-gray-800 z-50 hidden group-hover:block">
                 <a
                   href="/Tentang/SekilasSejarah"
@@ -118,18 +126,45 @@ export default function Navbar() {
                 </a>
                 <a
                   href="/Tentang/Organisasi"
-                  className="block px-4 py-2 hover:bg-gray-100"
+                  className="block px-4 py-2 hover:bg-gray-100 rounded-b-xl"
                 >
                   Struktur Organisasi
                 </a>
               </div>
             </div>
 
+            {/* 🔹 Tentang Kami - Mobile Dropdown */}
+            <div className="mobile-only">
+              <button
+                onClick={() => setAboutOpen(!aboutOpen)}
+                className="nav-link flex justify-between items-center"
+              >
+                Tentang Kami
+                {aboutOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+              </button>
+              {aboutOpen && (
+                <div className="dropdown-content-mobile open">
+                  <a href="/Tentang/SekilasSejarah" className="nav-link sub-link">
+                    Sekilas Sejarah
+                  </a>
+                  <a href="/Tentang/DasarHukum" className="nav-link sub-link">
+                    Dasar Hukum
+                  </a>
+                  <a href="/Tentang/VisiMisi" className="nav-link sub-link">
+                    Visi & Misi
+                  </a>
+                  <a href="/Tentang/Organisasi" className="nav-link sub-link">
+                    Struktur Organisasi
+                  </a>
+                </div>
+              )}
+            </div>
+
             <Link href="/produkhukum" className="nav-link">
               Dokumen Hukum
             </Link>
 
-            {/* Logout */}
+            {/* 🔹 Logout */}
             <Link
               href="/logout"
               method="post"
@@ -140,11 +175,8 @@ export default function Navbar() {
               <span>Logout</span>
             </Link>
 
-            {/* Google Translate (hidden widget) */}
-            <div id="google_translate_element" style={{ display: "none" }}></div>
-
-            {/* Dropdown Bahasa */}
-            <div className="relative inline-block group">
+            {/* 🔹 Translate - Desktop Hover */}
+            <div className="relative inline-block group desktop-only">
               <button className="nav-link px-4 py-2 flex items-center gap-2">
                 <Languages size={20} />
               </button>
@@ -155,7 +187,9 @@ export default function Navbar() {
                     onClick={() => handleLanguageChange(lang.code)}
                     className={`flex items-center gap-3 px-4 py-2 hover:bg-gray-100 cursor-pointer
                       ${index === 0 ? "rounded-t-xl" : ""}
-                      ${index === languages.length - 1 ? "rounded-b-xl" : ""}`}
+                      ${
+                        index === languages.length - 1 ? "rounded-b-xl" : ""
+                      }`}
                   >
                     <span className={`${lang.flag} fis text-lg`}></span>
                     <span>{lang.name}</span>
@@ -163,11 +197,38 @@ export default function Navbar() {
                 ))}
               </div>
             </div>
+
+            {/* 🔹 Translate - Mobile Dropdown */}
+            <div className="mobile-only">
+              <button
+                onClick={() => setLangOpen(!langOpen)}
+                className="nav-link flex justify-between items-center"
+              >
+                <span className="flex items-center gap-2">
+                  <Languages size={20} /> Translate
+                </span>
+                {langOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+              </button>
+
+              {langOpen && (
+                <div className="dropdown-content-mobile open">
+                  {languages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => handleLanguageChange(lang.code)}
+                      className="flex items-center gap-3 sub-link"
+                    >
+                      <span className={`${lang.flag} fis text-lg`}></span>
+                      <span>{lang.name}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </nav>
         </div>
       </header>
 
-      {/* 🧱 Spacer agar konten tidak tertutup navbar */}
       <div style={{ height: "80px" }}></div>
     </>
   );
