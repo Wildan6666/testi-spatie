@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\VerifikasiDataController;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\BerandaController;
 use App\Http\Controllers\Auth\PasswordController;
+use App\Http\Controllers\NotificationController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -117,7 +118,7 @@ Route::resource('instansi', App\Http\Controllers\Admin\InstansiController::class
 
 Route::resource('tipe-dokumen', App\Http\Controllers\Admin\TipeDokumenController::class)->middleware(['can:read tipe dokumen']);
 
-Route::resource('verifikasi-data', App\Http\Controllers\Admin\VerifikasiDataController::class)->middleware('can:read verifikasi data');
+Route::resource('verifikasi-data', App\Http\Controllers\Admin\VerifikasiDataController::class)->middleware('can:read verifikasi dokumen');
 Route::get('/verifikasi-data/{id}', [VerifikasiDataController::class, 'show'])
     ->name('verifikasi-data.show');
 
@@ -133,7 +134,7 @@ Route::get('/riwayat-verifikasi', [\App\Http\Controllers\Admin\RiwayatVerifikasi
 Route::resource('verifikator-instansi', App\Http\Controllers\Admin\VerifikatorInstansiController::class)->middleware(['can:read verifikator instansi']);
 
 Route::resource('kelola-berita', KelolaBeritaController::class)
-    ->parameters(['kelola-berita' => 'berita'])   // ✅ parameter jadi {berita}
+    ->parameters(['kelola-berita' => 'berita'])  
     ->middleware('can:read kelola berita');
 Route::get('/berita/create', [KelolaBeritaController::class, 'create'])->name('berita.create');
 Route::post('/berita', [KelolaBeritaController::class, 'store'])->name('berita.store');
@@ -177,4 +178,5 @@ Route::get('/Tentang/SekilasSejarah', function () {
 })->middleware(['auth', 'verified'])->name('kilas.sejarah');
 
 
-Route::resource('asdasdasd', App\Http\Controllers\Admin\AsdasdasdController::class)->middleware('can:read asdasd');
+Route::middleware(['auth'])->get('/notifications', [NotificationController::class, 'index'])
+    ->name('notifications.index');

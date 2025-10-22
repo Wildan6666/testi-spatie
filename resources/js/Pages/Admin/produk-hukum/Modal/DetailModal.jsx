@@ -69,6 +69,19 @@ export default function DetailModal({ selected, onClose }) {
           )}
         </section>
 
+        {/* === CATATAN VERIFIKATOR === */}
+        <section className="mt-6">
+          <h3 className="font-semibold mb-1 text-gray-800 flex items-center gap-2">
+            <FileText size={16} className="text-orange-500" />
+            Catatan Verifikator
+          </h3>
+          <div className="bg-gray-50 p-3 rounded-lg text-sm border border-gray-100">
+            {selected.catatan_verifikasi
+              ? selected.catatan_verifikasi
+              : "Belum ada catatan dari verifikator."}
+          </div>
+        </section>
+
         {/* === AKSI KIRIM ULANG (Hanya jika status verifikasi = Ditolak) === */}
           {selected.status_verifikasi?.nama_status === "Rejected" && (
             <div className="mt-6 flex justify-end">
@@ -151,6 +164,8 @@ export default function DetailModal({ selected, onClose }) {
                 </p>
               )}
             </div>
+
+            
           </section>
         )}
       </div>

@@ -14,15 +14,6 @@ import {
 } from "recharts";
 
 export default function Dashboard({ auth, stats }) {
-  // stats contoh struktur dari backend:
-  // {
-  //   total: 40,
-  //   approved: 25,
-  //   pending: 10,
-  //   rejected: 5,
-  //   perTahun: [{ tahun: 2023, jumlah: 12 }, { tahun: 2024, jumlah: 28 }],
-  // }
-
   const COLORS = ["#facc15", "#22c55e", "#ef4444"];
 
   const pieData = [
@@ -45,15 +36,15 @@ export default function Dashboard({ auth, stats }) {
           <h2 className="text-2xl font-bold text-gray-800">{stats.total}</h2>
         </div>
         <div className="p-4 bg-white rounded-xl shadow border">
-          <p className="text-gray-500 text-sm">Approved</p>
+          <p className="text-gray-500 text-sm">Diterima</p>
           <h2 className="text-2xl font-bold text-green-600">{stats.approved}</h2>
         </div>
         <div className="p-4 bg-white rounded-xl shadow border">
-          <p className="text-gray-500 text-sm">Pending</p>
+          <p className="text-gray-500 text-sm">Belum Diverifikasi</p>
           <h2 className="text-2xl font-bold text-yellow-600">{stats.pending}</h2>
         </div>
         <div className="p-4 bg-white rounded-xl shadow border">
-          <p className="text-gray-500 text-sm">Rejected</p>
+          <p className="text-gray-500 text-sm">Ditolak</p>
           <h2 className="text-2xl font-bold text-red-600">{stats.rejected}</h2>
         </div>
       </div>
