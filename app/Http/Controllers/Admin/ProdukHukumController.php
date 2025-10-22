@@ -193,6 +193,7 @@ public function show($id)
         'jenisHukum',
         'children.statusPeraturan',
         'children.instansi',
+        'catatan_verifikasi',
     ])->findOrFail($id);
 
     $parentChain = $this->getParentChain($produk);
