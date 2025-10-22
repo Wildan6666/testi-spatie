@@ -147,62 +147,62 @@ export default function AdminLayout({ children }) {
 
             {/* 🔔 Notifikasi */}
            <div className="relative" ref={notifRef}>
-  <button
-    onClick={() => {
-      setNotifOpen(!notifOpen);
-      if (hasUnread) setHasUnread(false); // ✅ hilangkan badge merah setelah dibuka
-    }}
-    className="relative p-2 bg-gray-50 hover:bg-orange-50 rounded-full border border-gray-100 transition"
-  >
-    <Bell className="w-5 h-5 text-orange-400" />
-    {hasUnread && (
-      <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full"></span>
-    )}
-  </button>
-
-  {notifOpen && (
-    <div className="absolute right-0 mt-2 w-80 bg-white shadow-lg rounded-lg border border-gray-100 z-50">
-      <div className="p-3 font-semibold text-sm border-b text-gray-700">
-        Notifikasi
-      </div>
-
-      {notifications.length > 0 ? (
-        notifications.map((notif) => (
-          <Link
-            key={notif.id}
-            href={notif.link}
-            className="flex items-start gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 transition"
+          <button
+            onClick={() => {
+              setNotifOpen(!notifOpen);
+              if (hasUnread) setHasUnread(false); // ✅ hilangkan badge merah setelah dibuka
+            }}
+            className="relative p-2 bg-gray-50 hover:bg-orange-50 rounded-full border border-gray-100 transition"
           >
-            {/* Ikon status */}
-            {notif.status === "approved" && (
-              <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+            <Bell className="w-5 h-5 text-orange-400" />
+            {hasUnread && (
+              <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full"></span>
             )}
-            {notif.status === "rejected" && (
-              <XCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
-            )}
-            {notif.status === "pending" && (
-              <Clock className="w-5 h-5 text-yellow-500 flex-shrink-0 mt-0.5" />
-            )}
+          </button>
 
-            <div className="flex-1">
-              <div className="font-medium text-orange-600 truncate">
-                {notif.judul}
+            {notifOpen && (
+              <div className="absolute right-0 mt-2 w-80 bg-white shadow-lg rounded-lg border border-gray-100 z-50">
+                <div className="p-3 font-semibold text-sm border-b text-gray-700">
+                  Notifikasi
+                </div>
+
+                {notifications.length > 0 ? (
+                  notifications.map((notif) => (
+                    <Link
+                      key={notif.id}
+                      href={notif.link}
+                      className="flex items-start gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 transition"
+                    >
+                      {/* Ikon status */}
+                      {notif.status === "approved" && (
+                        <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      )}
+                      {notif.status === "rejected" && (
+                        <XCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                      )}
+                      {notif.status === "pending" && (
+                        <Clock className="w-5 h-5 text-yellow-500 flex-shrink-0 mt-0.5" />
+                      )}
+
+                      <div className="flex-1">
+                        <div className="font-medium text-orange-600 truncate">
+                          {notif.judul}
+                        </div>
+                        <div className="text-xs text-gray-500">{notif.pesan}</div>
+                        <div className="text-[11px] text-gray-400 italic mt-0.5">
+                          {notif.updated_at}
+                        </div>
+                      </div>
+                    </Link>
+                  ))
+                ) : (
+                  <div className="p-3 text-gray-500 text-sm text-center">
+                    Tidak ada notifikasi
+                  </div>
+                )}
               </div>
-              <div className="text-xs text-gray-500">{notif.pesan}</div>
-              <div className="text-[11px] text-gray-400 italic mt-0.5">
-                {notif.updated_at}
-              </div>
-            </div>
-          </Link>
-        ))
-      ) : (
-        <div className="p-3 text-gray-500 text-sm text-center">
-          Tidak ada notifikasi
-        </div>
-      )}
-    </div>
-  )}
-</div>
+            )}
+          </div>
 
             {/* 👤 Avatar User */}
             {currentUser && (
@@ -235,12 +235,6 @@ export default function AdminLayout({ children }) {
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                     >
                       Profil
-                    </Link>
-                    <Link
-                      href="/admin/settings"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                    >
-                      Pengaturan
                     </Link>
                   </div>
                 )}

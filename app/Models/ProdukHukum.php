@@ -31,6 +31,7 @@ class ProdukHukum extends Model
         'parent_id',
          'user_id',
     ];
+    
 
     // Relasi ke instansi
     public function instansi()
@@ -106,8 +107,7 @@ public function user()
     return $this->belongsTo(User::class);
 }
 
-
-
+   
 }
 
 

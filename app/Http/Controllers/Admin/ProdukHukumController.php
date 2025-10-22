@@ -193,7 +193,6 @@ public function show($id)
         'jenisHukum',
         'children.statusPeraturan',
         'children.instansi',
-        'catatan_verifikasi',
     ])->findOrFail($id);
 
     $parentChain = $this->getParentChain($produk);
@@ -205,6 +204,7 @@ public function show($id)
     return Inertia::render('Admin/produk-hukum/Index', [
         'produk' => $produk,
         'parentChain' => $parentChain,
+        'catatan_verifikasi' => $produk->catatan_verifikasi, 
     ]);
 }
 

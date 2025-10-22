@@ -12,9 +12,6 @@ class NotificationController extends Controller
     {
         $user = auth()->user();
 
-        // =============================
-        // 🔸 CASE 1: VERIFIKATOR
-        // =============================
         if ($user->hasRole('verifikator')) {
 
             // Ambil semua instansi yang menjadi tanggung jawab verifikator ini
@@ -40,16 +37,12 @@ class NotificationController extends Controller
                     'judul'      => $item->judul,
                     'pesan'      => "Dokumen \"{$item->judul}\" dari instansi {$item->instansi?->nama} menunggu verifikasi.",
                     'status'     => 'pending',
-                    'link'       => route('produk-hukum.show', $item->id),
+                    'link'       => route('produk-hukum.index'),
                     'updated_at' => $item->updated_at?->diffForHumans(),
                 ]);
 
             return response()->json($notifications);
         }
-
-        // =============================
-        // 🔸 CASE 2: USER BIASA
-        // =============================
         else {
             $notifications = ProdukHukum::where('user_id', $user->id)
                 ->whereIn('status_id', [2, 3]) // 2 = disetujui, 3 = ditolak
@@ -66,7 +59,7 @@ class NotificationController extends Controller
                         'judul'      => $item->judul,
                         'pesan'      => "Dokumen \"{$item->judul}\" telah {$statusText}.",
                         'status'     => $statusType,
-                        'link'       => route('produk-hukum.show', $item->id),
+                        'link'       => route('produk-hukum.index'),
                         'updated_at' => $item->updated_at?->diffForHumans(),
                     ];
                 });
