@@ -62,5 +62,5 @@ export default function UserDataTable({ users, onEdit, onDelete, onSetUser, onVi
   },
 ];
 
-  return <DataTableWrapper columns={columns} data={users} noDataMessage="😔 Tidak ada user ditemukan" />;
+  return <DataTableWrapper columns={columns} data={users} noDataMessage="Tidak ada user ditemukan" />;
 }

@@ -6,8 +6,8 @@ import { Plus } from "lucide-react";
 
 import ProdukHukumTable from "./Table/ProdukHukumTable";
 import DetailModal from "./Modal/DetailModal";
-import EditModal from "./Modal/EditModal"; // ✅ sudah benar
-import FilterModal from "./Modal/FilterModal";
+import EditModal from "./Modal/EditModal"; 
+
 
 export default function ProdukHukumPage() {
   const { props } = usePage();

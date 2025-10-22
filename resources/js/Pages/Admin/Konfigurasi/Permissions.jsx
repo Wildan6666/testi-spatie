@@ -41,11 +41,11 @@ export default function PermissionsPage({ auth, users, permissions }) {
 
   return (
     <AdminLayout user={auth.user}>
-      <h1 className="text-2xl font-bold mb-6">⚙️ Pengaturan Permissions</h1>
+      <h1 className="text-2xl font-bold mb-6">Manajemen Hak Akses</h1>
 
       <Card className="shadow-lg border rounded-2xl">
         <CardHeader>
-          <h2 className="text-lg font-semibold">Daftar Permissions</h2>
+          <h2 className="text-lg font-semibold">Daftar Hak Akses</h2>
           <p className="text-sm text-gray-500">
             Kelola daftar permissions. Centang untuk mengaktifkan ke user
             tertentu.

@@ -70,10 +70,10 @@ class AdminDashboardController extends Controller
             })
             ->values();
 
-        return Inertia::render('Admin/Dashboard', [
+        return Inertia::render('Admin/AdminDashboard', [
             'auth' => [
                 'user' => $user,
-                'permissions' => $user->getAllPermissions()->pluck('name'), // untuk filter frontend
+                'permissions' => $user->getAllPermissions()->pluck('name'), 
             ],
             'menus' => $menus,
             'stats' => [

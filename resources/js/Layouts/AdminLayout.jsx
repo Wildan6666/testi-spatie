@@ -4,6 +4,7 @@ import Sidebar from "@/Components/Sidebar";
 import { Search, Bell, Settings,CheckCircle, XCircle, Clock} from "lucide-react";
 import { Toaster, toast } from "react-hot-toast";
 import axios from "axios";
+import FontProvider from "@/Components/Font";
 
 export default function AdminLayout({ children }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -101,6 +102,7 @@ export default function AdminLayout({ children }) {
   }, []);
 
   return (
+   <FontProvider>
     <div className="flex h-screen overflow-hidden bg-gray-50">
       {/* === TOASTER (tema UNJA) === */}
       <Toaster
@@ -247,5 +249,6 @@ export default function AdminLayout({ children }) {
         <main className="flex-1 overflow-y-auto p-6">{children}</main>
       </div>
     </div>
+    </FontProvider>  
   );
 }

@@ -1,31 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { usePage, router } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
 import DataTable from "react-data-table-component";
-import { Trash2, Plus, X } from "lucide-react";
+import { Trash2, Plus, X, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import SearchBar from "@/Components/ui/SearchBar";
 
 export default function VerifikatorInstansiIndex() {
   const { props } = usePage();
   const data = props.data || [];
   const users = props.users || [];
   const instansis = props.instansis || [];
-  const verifikatorRoleId = props.verifikatorRoleId; // otomatis id role verifikator
+  const verifikatorRoleId = props.verifikatorRoleId;
 
   const [showModal, setShowModal] = useState(false);
-  const [form, setForm] = useState({
-    user_id: "",
-    instansi_id: "",
-  });
+  const [form, setForm] = useState({ user_id: "", instansi_id: "" });
+  const [search, setSearch] = useState(""); // 🔍 search state
 
   const handleSubmit = (e) => {
     e.preventDefault();
     router.post(
       route("verifikator-instansi.store"),
-      {
-        ...form,
-        role_id: verifikatorRoleId, // kirim role_id = verifikator
-      },
+      { ...form, role_id: verifikatorRoleId },
       {
         onSuccess: () => {
           setForm({ user_id: "", instansi_id: "" });
@@ -40,6 +36,18 @@ export default function VerifikatorInstansiIndex() {
       router.delete(route("verifikator-instansi.destroy", id));
     }
   };
+
+  // 🔍 Filter hasil pencarian
+  const filteredData = useMemo(() => {
+    return data.filter((item) => {
+      const searchTerm = search.toLowerCase();
+      return (
+        item.user?.toLowerCase().includes(searchTerm) ||
+        item.instansi?.toLowerCase().includes(searchTerm) ||
+        item.role?.toLowerCase().includes(searchTerm)
+      );
+    });
+  }, [data, search]);
 
   const columns = [
     {
@@ -83,26 +91,42 @@ export default function VerifikatorInstansiIndex() {
   return (
     <AdminLayout>
       <div className="p-6 bg-white rounded-xl shadow space-y-4">
-        <div className="flex justify-between items-center">
-          <h1 className="text-xl font-bold">👤 Verifikator Instansi</h1>
-          <Button
-            onClick={() => setShowModal(true)}
-            className="flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700"
-          >
-            <Plus size={16} /> Tambah
-          </Button>
+        {/* === HEADER === */}
+        <div className="flex flex-col md:flex-row justify-between md:items-center gap-3">
+          <h1 className="text-xl font-bold text-gray-800">
+            Manajemen Verifikator Instansi
+          </h1>
+          
+          <div className="flex items-center gap-2">
+            {/* 🔎 Search & Filter */}
+              <div className="flex items-center gap-3 w-full">
+                  <SearchBar
+                    placeholder="Cari user"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="w-[380px] max-w-full"
+                  />
+                    <Button
+                    onClick={() => setShowModal(true)}
+                    className="flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700"
+                  >
+                    <Plus size={16} /> Tambah
+                  </Button>
+            </div>
+          </div>
         </div>
 
+        {/* === DATA TABLE === */}
         <DataTable
           columns={columns}
-          data={data}
+          data={filteredData}
           pagination
           highlightOnHover
           striped
-          noDataComponent=" Belum ada data verifikator instansi"
+          noDataComponent="Belum ada data verifikator instansi"
         />
 
-        {/* Modal Tambah */}
+        {/* === MODAL TAMBAH === */}
         {showModal && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
             <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6 relative">

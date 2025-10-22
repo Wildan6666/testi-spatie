@@ -52,7 +52,7 @@ export default function Users({ users, roles, permissions, instansi }) {
 
   return (
     <AdminLayout>
-      <h1 className="text-2xl font-bold mb-6">👤 User Management</h1>
+      <h1 className="text-2xl font-bold mb-6">Manajemen Pengguna</h1>
 
       {/* 🔎 Search & Filter */}
       <div className="flex items-center justify-between gap-3 mb-4">

@@ -26,7 +26,7 @@ export default function RolesPage({ roles = [], permissions = [] }) {
         {/* Header */}
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-gray-800">
-            Kelola Permission Role
+            Hak Akses Pengguna
           </h1>
           <span className="text-sm text-gray-500">
             Total Role: {roles.length}

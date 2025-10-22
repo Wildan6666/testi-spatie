@@ -34,17 +34,16 @@ class ProdukHukumController extends Controller
             'childrenRecursive.instansi',
         ]);
 
-            if ($user->hasRole('superadmin')) {
-                    // Superadmin bisa lihat semua dokumen
-                } else {
-                    // User biasa hanya bisa lihat dokumen yang dia upload
-                    $query->where('user_id', $user->id);
-                }
+            // 🔒 Role-based filtering
+            if (!$user->hasAnyRole(['superadmin'])) {
+                // User biasa hanya bisa lihat dokumen yang dia upload
+                $query->where('user_id', $user->id);
+            }
 
-        // 🔍 Filter instansi untuk verifikator
-        if ($user->hasRole('verifikator')) {
-            $query->where('instansi_id', $user->instansi_id);
-        }
+            // 🔍 Filter instansi untuk verifikator (kecuali superadmin)
+            if ($user->hasRole('verifikator') && !$user->hasAnyRole(['superadmin', 'admin'])) {
+                $query->where('instansi_id', $user->instansi_id);
+            }
 
         // 🔍 Search query
         if ($request->filled('search')) {
@@ -71,9 +70,15 @@ class ProdukHukumController extends Controller
             return $item;
         });
 
+        // ✅ Tambahkan data dropdown untuk filter
+    $instansis = Instansi::select('id', 'nama')->orderBy('nama')->get();
+    $tipes = TipeDokumen::select('id', 'nama')->orderBy('nama')->get();
+
         return Inertia::render('Admin/produk-hukum/Index', [
             'produkHukums' => $produkHukums,
             'filters' => $request->only('search'),
+             'instansis' => $instansis, // ✅ kirim ke React
+          'tipes' => $tipes,         // ✅ kirim ke React
         ]);
     }
 
