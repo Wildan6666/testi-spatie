@@ -1,36 +1,39 @@
 /* ============================
-   Landing Page Styles
+  Landing Page Styles
    ============================ */
 
-/* Container Utama */
+/* ============================
+   Struktur Umum
+   ============================ */
+html, body {
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
 .landing-container {
   font-family: 'Inter', sans-serif;
   min-height: 100%;
   display: flex;
   flex-direction: column;
-
+  background-color: #ffffff;
 }
 
-html, body {
-  overflow-x: hidden;
-}
 /* ============================
    Hero Section
    ============================ */
 .hero-section {
   position: relative;
   flex: 1;
-  background: url('/assets/gerbang.jpg')
-              center/cover no-repeat;
+  background: url('/assets/gerbang.jpg') center/cover no-repeat;
   text-align: center;
   padding: 80px 0;
-
 }
 
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background-color: rgba(235, 235, 235, 0.562);
+  background-color: rgba(235, 235, 235, 0.55);
 }
 
 .hero-content {
@@ -38,37 +41,99 @@ html, body {
   z-index: 10;
   max-width: 1024px;
   margin: 0 auto;
-  padding: 0 4px;
+  padding: 0 16px;
 }
 
-.hero-title { 
+/* ============================
+   Teks Hero
+   ============================ */
+.hero-title {
   font-family: 'Inter', sans-serif;
-  font-size: 32px;       
-  font-weight: 700;      
-  color: #ff4500;         
-  text-align: center;  
-  font-weight: 800;  
+  font-size: 32px;
+  font-weight: 800;
+  color: #ea580c; /* oranye UNJA */
+  text-align: center;
+  margin-bottom: 12px;
 }
-
 
 .hero-description {
   font-family: 'Inter', sans-serif;
   margin-top: 16px;
   font-size: 20px;
-  color: rgb(10, 13, 18, 1);
-  line-height: 24px;
+  color: rgba(10, 13, 18, 1);
+  line-height: 28px;
   font-weight: 550;
+  text-align: center;
+  max-width: 850px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ============================
+   Responsif - Tablet
+   ============================ */
+@media (max-width: 1024px) {
+  .hero-section {
+    padding: 70px 0;
+  }
+
+  .hero-title {
+    font-size: 28px;
+  }
+
+  .hero-description {
+    font-size: 18px;
+    line-height: 26px;
+    max-width: 700px;
+  }
+}
+
+/* ============================
+   Responsif - Mobile
+   ============================ */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 60px 20px;
+    background-position: center;
+  }
+
+  .hero-title {
+    font-size: 24px;
+    line-height: 1.3;
+  }
+
+  .hero-description {
+  display:none;
+  }
+}
+
+/* ============================
+  Responsif - Small Mobile (≤480px)
+   ============================ */
+@media (max-width: 480px) {
+  .hero-section {
+    padding: 50px 14px;
+  }
+
+  .hero-title {
+    font-size: 20px;
+    font-weight: 800;
+  }
+
+  .hero-description {
+  display:none;
+  }
 }
 
 
 
 /* ============================
-  Search Section (Desktop)
-============================ */
+   Search Section (Desktop)
+   ============================ */
 .search-container {
   max-width: 1280px;
   margin: 32px auto 0;
-  padding: 24px 4px;
+  padding: 24px 16px;
 }
 
 .main-search {
@@ -79,6 +144,7 @@ html, body {
   color: #374151;
   margin-bottom: 16px;
   font-size: 1rem;
+  transition: border-color 0.2s ease;
 }
 
 .main-search:focus {
@@ -109,6 +175,7 @@ html, body {
   color: #374151;
   background-color: white;
   font-size: 0.95rem;
+  transition: border-color 0.2s ease;
 }
 
 .filter-input input:focus,
@@ -118,29 +185,46 @@ html, body {
 }
 
 /* ============================
-   Responsive Adjustments
-============================ */
-
-/* Tablet (max 768px) */
-@media (max-width: 768px) {
+   Responsif - Tablet (≤1024px)
+   ============================ */
+@media (max-width: 1024px) {
   .search-container {
-    padding: 16px 8px;
-    margin: 16px auto 0;
+    padding: 20px 12px;
+    margin-top: 24px;
   }
 
   .filters-container {
-    flex-direction: column;
     gap: 10px;
   }
 
   .filter-input {
-    width: 100%;
-    min-width: unset;
+    min-width: 140px;
+  }
+}
+
+/* ============================
+   Responsif - Mobile (≤768px)
+   ============================ */
+@media (max-width: 768px) {
+  .search-container {
+    margin: 20px auto 0;
+    padding: 16px 10px;
   }
 
   .main-search {
     font-size: 0.95rem;
-    padding: 10px 14px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+  }
+
+  .filters-container {
+    flex-direction: column; /* 🟢 Stack ke bawah */
+    gap: 10px;
+  }
+
+  .filter-input {
+    width: 100%; /* 🟢 Full width di mobile */
+    min-width: auto;
   }
 
   .filter-input input,
@@ -150,30 +234,23 @@ html, body {
   }
 }
 
-/* Mobile (max 480px) */
+/* ============================
+   Responsif - Small Mobile (≤480px)
+   ============================ */
 @media (max-width: 480px) {
   .search-container {
-    padding: 12px;
+    padding: 14px 8px;
   }
 
   .main-search {
     font-size: 0.9rem;
-    padding: 8px 12px;
-  }
-
-  .filters-container {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .filter-input {
-    width: 100%;
+    padding: 8px 10px;
   }
 
   .filter-input input,
   .filter-input select {
     font-size: 0.85rem;
-    padding: 8px 10px;
+    padding: 7px 9px;
   }
 }
 
@@ -262,13 +339,13 @@ html, body {
 
   .icon-dropdown {
     right: 0.5rem;
-    width: 16px;
+    width: 10px;
     height: 16px;
   }
 
   .search-button {
     font-size: 0.9rem;
-    padding: 10px 0;
+    padding: 5px 0;
     border-radius: 5px;
   }
 }
@@ -311,22 +388,27 @@ Sections
 }
 
 /* ============================
-   Tabs
+   Tabs (Default Desktop)
    ============================ */
 .tabs-container {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap; /* biar bisa turun kalau kepanjangan */
   gap: 16px;
   margin-bottom: 24px;
 }
 
 .tab-active,
 .tab-inactive {
-  padding: 8px 16px;
+  padding: 10px 20px;
   border-radius: 9999px;
   border: none;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  white-space: nowrap;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
@@ -347,6 +429,59 @@ Sections
 .tab-inactive:hover {
   background-color: #fdba74;
 }
+
+/* ============================
+   Responsif - Tablet (≤1024px)
+   ============================ */
+@media (max-width: 1024px) {
+  .tabs-container {
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .tab-active,
+  .tab-inactive {
+    font-size: 0.95rem;
+    padding: 9px 18px;
+  }
+}
+
+/* ============================
+   Responsif - Mobile (≤768px)
+   ============================ */
+@media (max-width: 768px) {
+  .tabs-container {
+    flex-direction: column; /* 🟢 jadi vertikal */
+    align-items: center;
+    gap: 10px;
+  }
+
+  .tab-active,
+  .tab-inactive {
+    width: 80%; /* 🟢 lebar menyesuaikan layar */
+    text-align: center;
+    font-size: 0.9rem;
+    padding: 10px 0;
+  }
+}
+
+/* ============================
+   Responsif - Small Mobile (≤480px)
+   ============================ */
+@media (max-width: 480px) {
+  .tabs-container {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .tab-active,
+  .tab-inactive {
+    width: 100%;
+    font-size: 0.85rem;
+    padding: 9px 0;
+  }
+}
+
 
 /* ============================
   Grid Layouts

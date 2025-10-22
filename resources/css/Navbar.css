@@ -381,7 +381,7 @@
   }
 }
 
-/* Mobile tidak berubah saat scroll */
+/* Mobile  */
 @media (max-width: 768px) {
   .navbar.scrolled {
     box-shadow: none !important;
@@ -696,6 +696,16 @@
     color: #ea580c;
     transform: translateX(4px);
   }
+
+
+  .logo {
+    height: 36px; 
+  }
+
+  .logo-container {
+    gap: 6px; 
+  }
+
 
   /* ====== LOGIN BUTTON ====== */
   .login-button {
