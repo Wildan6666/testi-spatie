@@ -83,18 +83,27 @@ class ProdukHukumController extends Controller
     }
 
     public function create()
-    {
-        return Inertia::render('Admin/produk-hukum/create', [
-            'instansis' => Instansi::all(),
-            'statusPeraturans' => StatusPeraturan::all(),
-            'tipeDokumens' => TipeDokumen::all(),
-            'jenisHukums' => JenisHukum::all(),
-            'kategoriAkses' => KategoriAkses::all(),
-            'produkIndukList' => ProdukHukum::select('id', 'judul')
-                ->orderBy('judul')
-                ->get(),
-        ]);
-    }
+{
+    return Inertia::render('Admin/produk-hukum/create', [
+        'instansis' => Instansi::select('id', 'nama')->orderBy('nama')->get(),
+        'statusPeraturans' => StatusPeraturan::select('id', 'nama')->orderBy('nama')->get(),
+        'tipeDokumens' => TipeDokumen::select('id', 'nama')->orderBy('nama')->get(),
+        'jenisHukums' => JenisHukum::select('id', 'nama')->orderBy('nama')->get(),
+        'kategoriAkses' => KategoriAkses::select('id', 'nama')->orderBy('nama')->get(),
+        'produkIndukList' => ProdukHukum::select(
+            'id',
+            'judul',
+            'instansi_id',
+            'status_peraturan_id',
+            'tipe_dokumen_id',
+            'jenis_hukum_id',
+            'kategori_akses_id'
+        )
+        ->orderBy('judul')
+        ->get(),
+    ]);
+}
+
 
     public function store(Request $request)
     {
@@ -229,14 +238,22 @@ public function resend(Request $request, $id)
     // Validasi input revisi
     $validated = $request->validate([
         'judul' => 'required|string|max:255',
-        'nomor' => 'nullable|string|max:100',
-        'tahun' => 'nullable|digits:4|integer',
+        'nomor' => 'nullable|string|max:50',
+        'tahun' => 'nullable|integer',
         'ringkasan' => 'nullable|string',
-        'subjek' => 'nullable|string|max:150',
+        'subjek' => 'nullable|string|max:255',
         'tanggal_penetapan' => 'nullable|date',
-        'kata_kunci' => 'nullable|string',
-        'berkas' => 'required|file|mimes:pdf,png|max:2048',
+        'kata_kunci' => 'nullable|string|max:255',
+        'instansi_id' => 'required|exists:instansi,id',
+        'status_peraturan_id' => 'required|exists:status_peraturan,id',
+        'tipe_dokumen_id' => 'required|exists:tipe_dokumen,id',
+        'jenis_hukum_id' => 'required|exists:jenis_hukum,id',
+        'kategori_akses_id' => 'required|exists:kategori_akses,id',
+        'parent_id' => 'nullable|exists:produk_hukum,id',
+        'berkas' => 'required|file|max:2048|mimes:pdf,png',
     ]);
+
+    
 
     // Hapus file lama
     if ($produk->berkas && Storage::disk('public')->exists($produk->berkas)) {
@@ -272,6 +289,11 @@ public function resend(Request $request, $id)
         'kategoriAkses' => KategoriAkses::all(),
         'statusPeraturans' => StatusPeraturan::all(),
         'jenisHukums' => JenisHukum::all(),
+
+        'produkIndukList' => ProdukHukum::select('id', 'judul')
+            ->where('id', '!=', $id) // agar tidak bisa memilih dirinya sendiri
+            ->orderBy('judul')
+            ->get(),
     ]);
 }
 

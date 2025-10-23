@@ -112,15 +112,16 @@ export default function ProdukHukumTable({
             </Button>
           </Tooltip>
 
-          <Tooltip content="Edit">
+          <Tooltip content="Kirim Ulang (Resend)">
             <Button
               size="icon"
               className="bg-yellow-500 hover:bg-yellow-600 text-white"
-              onClick={() => onEdit(row)}
+              onClick={() => router.visit(route("produk-hukum.resend.view", row.id))}
             >
               <Pencil className="w-4 h-4" />
             </Button>
           </Tooltip>
+
 
           <Tooltip content="Hapus">
             <Button

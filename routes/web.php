@@ -124,7 +124,7 @@ Route::get('/verifikasi-data/{id}', [VerifikasiDataController::class, 'show'])
 
 Route::resource('validasi-dokumen', App\Http\Controllers\Admin\ValidasiDokumenController::class)->middleware(['can:read validasi dokumen']);
 
-Route::resource('master-status', App\Http\Controllers\Admin\MasterStatusController::class)->middleware(['can:read master status']);
+Route::resource('master-status', App\Http\Controllers\Admin\MasterStatusController::class)->middleware(['can:read status verifikasi']);
 
 Route::resource('riwayat-verifikasi', App\Http\Controllers\Admin\RiwayatVerifikasiController::class,)->middleware(['can:read riwayat verifikasi']);
 Route::get('/riwayat-verifikasi', [\App\Http\Controllers\Admin\RiwayatVerifikasiController::class, 'index'])

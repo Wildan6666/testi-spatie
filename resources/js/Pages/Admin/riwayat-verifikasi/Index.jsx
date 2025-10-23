@@ -3,7 +3,7 @@ import { usePage, router } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
 import DataTable from "react-data-table-component";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, XCircle, Clock, Search, X, Filter,Eye } from "lucide-react";
+import { CheckCircle, XCircle, Clock, Search, X, Filter, Eye, FileText, Frown } from "lucide-react";
 
 export default function RiwayatVerifikasiIndex() {
   const { props } = usePage();
@@ -157,7 +157,10 @@ export default function RiwayatVerifikasiIndex() {
   return (
     <AdminLayout>
       <div className="p-6 bg-white rounded-xl shadow space-y-6">
-        <h1 className="text-2xl font-bold text-gray-800">📝 Riwayat Verifikasi</h1>
+        <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+          <FileText className="w-6 h-6 text-blue-600" />
+          Riwayat Verifikasi 
+        </h1>
 
         {/* DataTable */}
         <DataTable
@@ -167,7 +170,13 @@ export default function RiwayatVerifikasiIndex() {
           highlightOnHover
           striped
           responsive
-          noDataComponent="😔 Tidak ada riwayat verifikasi."
+          noDataComponent={
+            <div className="flex items-center justify-center gap-2 text-gray-500 py-4">
+              <Frown className="w-5 h-5" />
+              <span>Belum ada data dokumen</span>
+            </div>
+          }
+
           subHeader
           subHeaderComponent={
             <div className="flex flex-col w-full gap-2">

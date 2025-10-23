@@ -2,7 +2,8 @@ import React, { useState, useMemo } from "react";
 import { usePage, router } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
 import DataTable from "react-data-table-component";
-import { Search, Filter, X, CheckCircle, XCircle, Clock } from "lucide-react";
+import { Search, Filter, X, CheckCircle, XCircle, Clock,FileText,     
+  Frown, } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function VerifikasiIndex() {
@@ -184,9 +185,11 @@ export default function VerifikasiIndex() {
   return (
     <AdminLayout>
       <div className="p-6 bg-white rounded-2xl shadow space-y-6">
-        <h1 className="text-2xl font-bold text-gray-800">
-          📄 Verifikasi Dokumen
+        <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+          <FileText className="w-6 h-6 text-blue-600" />
+          Verifikasi Dokumen
         </h1>
+
 
         <DataTable
           columns={columns}
@@ -195,7 +198,11 @@ export default function VerifikasiIndex() {
           highlightOnHover
           striped
           responsive
-          noDataComponent="😔 Belum ada data dokumen"
+          noDataComponent={
+          <div className="flex items-center justify-center gap-2 text-gray-500 py-4">
+            <Frown className="w-5 h-5" />
+            <span>Belum ada data dokumen</span>
+          </div>}
           subHeader
           subHeaderComponent={
             <div className="flex flex-col w-full gap-2">

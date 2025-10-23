@@ -20,7 +20,8 @@ import {
   Image as ImageIcon,
   GitBranch,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Toaster, toast } from "react-hot-toast";
 
 export default function Create() {
   const { props } = usePage();
@@ -41,10 +42,37 @@ export default function Create() {
     tipe_dokumen_id: "",
     jenis_hukum_id: "",
     berkas: null,
-
-    // ✅ Tambahan field parent_id
     parent_id: "",
   });
+
+  useEffect(() => {
+  if (data.parent_id) {
+    const parent = props.produkIndukList.find((p) => p.id == data.parent_id);
+    if (parent) {
+      setData({ ...data, ...parent });
+      toast.success("Field otomatis diisi sesuai produk induk!");
+    }
+  }
+}, [data.parent_id]);
+
+  // ⚡ Auto-fill: jika memilih parent, maka field lain mengikuti parent-nya
+  useEffect(() => {
+    if (data.parent_id) {
+      const selectedParent = props.produkIndukList.find(
+        (p) => p.id == data.parent_id
+      );
+      if (selectedParent) {
+        setData((prev) => ({
+          ...prev,
+          instansi_id: selectedParent.instansi_id || "",
+          status_peraturan_id: selectedParent.status_peraturan_id || "",
+          tipe_dokumen_id: selectedParent.tipe_dokumen_id || "",
+          jenis_hukum_id: selectedParent.jenis_hukum_id || "",
+          kategori_akses_id: selectedParent.kategori_akses_id || "",
+        }));
+      }
+    }
+  }, [data.parent_id]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];

@@ -143,9 +143,12 @@ export default function AdminLayout({ children }) {
           {/* 🔧 Icon Section */}
           <div className="flex items-center gap-4 ml-6">
             {/* ⚙️ Settings */}
-            <button className="p-2 bg-gray-50 hover:bg-orange-50 rounded-full border border-gray-100 transition">
-              <Settings className="w-5 h-5 text-orange-400" />
-            </button>
+              <Link
+                href="/konfigurasi/users"
+                className="p-2 bg-gray-50 hover:bg-orange-50 rounded-full border border-gray-100 transition"
+              >
+                <Settings className="w-5 h-5 text-orange-400" />
+              </Link>
 
             {/* 🔔 Notifikasi */}
            <div className="relative" ref={notifRef}>

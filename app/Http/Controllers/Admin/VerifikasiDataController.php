@@ -13,10 +13,12 @@ use Spatie\Permission\Models\Role;
 class VerifikasiDataController extends Controller
 {
     public function index(Request $request)
-    {
-        $user = auth()->user();
-        $query = ProdukHukum::with(['instansi', 'statusVerifikasi', 'verifikator']);
+{
+    $user = auth()->user();
+    $query = ProdukHukum::with(['instansi', 'statusVerifikasi', 'verifikator']);
 
+    // Jika user adalah superadmin → lihat semua data tanpa filter
+    if (!$user->hasRole('superadmin')) {
         // cari role_id verifikator dari tabel roles
         $verifikatorRoleId = Role::where('name', 'verifikator')->value('id');
 
@@ -33,24 +35,25 @@ class VerifikasiDataController extends Controller
             // kalau user tidak punya instansi sebagai verifikator → kosong
             $query->whereRaw('0=1');
         }
-
-        // filter status (opsional dari request)
-        if ($request->filled('status_id')) {
-            $query->where('status_id', $request->status_id);
-        }
-
-        // ambil data dengan pagination
-        $produkHukums = $query->orderBy('created_at', 'desc')->paginate(20);
-
-        // ambil instansi untuk dropdown filter di frontend
-        $instansis = Instansi::select('id', 'nama')->get();
-
-        return Inertia::render("Admin/verifikasi-data/Index", [
-            "produkHukums" => $produkHukums,
-            "filters" => $request->only(['status_id']),
-            "instansis" => $instansis,
-        ]);
     }
+
+    // filter status (opsional dari request)
+    if ($request->filled('status_id')) {
+        $query->where('status_id', $request->status_id);
+    }
+
+    // ambil data dengan pagination
+    $produkHukums = $query->orderBy('created_at', 'desc')->paginate(20);
+
+    // ambil instansi untuk dropdown filter di frontend
+    $instansis = Instansi::select('id', 'nama')->get();
+
+    return Inertia::render("Admin/verifikasi-data/Index", [
+        "produkHukums" => $produkHukums,
+        "filters" => $request->only(['status_id']),
+        "instansis" => $instansis,
+    ]);
+}
 
     public function update(Request $request, $id)
     {
