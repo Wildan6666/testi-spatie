@@ -13,8 +13,6 @@
   -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08),
               0 1px 3px rgba(0, 0, 0, 0.1);
-
-  /* 🔥 fixed supaya tetap di atas */
   position: fixed;
   top: 0;
   left: 0;
@@ -32,12 +30,12 @@
 }
 
 .navbar-content {
-  max-width: 1280px;
+  max-width: 100%;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 24px;
+  padding: 10px 24px;
   position: relative;
 }
 
@@ -54,7 +52,7 @@
 }
 
 .logo {
-  height: 48px;
+  height: 58px;
   width: auto;
   max-width: 100%;
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
@@ -328,69 +326,7 @@
   }
 }
 
-/* ==========================
-   Scroll Effect
-   ========================== */
-.navbar.scrolled {
-  background: rgba(255, 255, 255, 0.98);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-}
 
-/* Spacer agar konten tidak tertutup */
-.main-content {
-  padding-top: 80px;
-}
-
-/* Floating Indicator */
-.navbar-floating-indicator {
-  position: absolute;
-  bottom: -8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 40px;
-  height: 4px;
-  background: linear-gradient(90deg, #ea580c, #f97316);
-  border-radius: 2px;
-  opacity: 0;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.navbar:hover .navbar-floating-indicator {
-  opacity: 1;
-  transform: translateX(-50%) translateY(2px);
-}
-
-/* ==========================
-   Scroll & Tooltip Fix
-   ========================== */
-@media (min-width: 769px) {
-  .navbar.scrolled {
-    background: linear-gradient(135deg,
-      rgba(255, 255, 255, 0.98) 0%,
-      rgba(240, 240, 240, 0.98) 100%
-    );
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12),
-                0 2px 6px rgba(0, 0, 0, 0.08);
-  }
-
-  .navbar.scrolled .navbar-content {
-    padding: 12px 24px;
-  }
-
-  .navbar.scrolled .logo {
-    height: 48px;
-  }
-}
-
-/* Mobile  */
-@media (max-width: 768px) {
-  .navbar.scrolled {
-    box-shadow: none !important;
-    transform: none !important;
-  }
-  .navbar-content {
-    padding: 5px 10px !important;
-  }
-}
 
 /* Tooltip animasi */
 .nav-link-tooltip {
