@@ -20,8 +20,8 @@ class AdminDashboardController extends Controller
         $total = ProdukHukum::count();
 
         // Hitung status approved (status_peraturan = "Berlaku")
-        $approved = ProdukHukum::whereHas('statusperaturan', function ($q) {
-            $q->where('nama', 'Berlaku');
+        $approved = ProdukHukum::whereHas('statusverifikasi', function ($q) {
+            $q->where('nama_status', 'Approved');
         })->count();
 
         // Hitung status pending (status_verifikasi = "Pending")
