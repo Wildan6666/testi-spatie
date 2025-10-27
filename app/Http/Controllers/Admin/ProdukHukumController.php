@@ -227,10 +227,9 @@ public function resend(Request $request, $id)
     $produk = ProdukHukum::findOrFail($id);
     $user = auth()->user();
 
-    // Pastikan hanya pengunggah asli yang bisa kirim ulang
     if (
     $produk->user_id !== $user->id &&
-    !$user->hasAnyRole(['Admin', 'Superadmin'])
+    !$user->hasAnyRole(['admin', 'superadmin'])
 ) {
     abort(403, 'Anda tidak memiliki izin untuk mengirim ulang dokumen ini.');
 }
@@ -274,6 +273,9 @@ public function resend(Request $request, $id)
         'status_id' => $statusPending->id,
     ]);
 
+
+
+
     return redirect()->route('produk-hukum.index')->with('success', 'Dokumen revisi berhasil dikirim ulang untuk verifikasi.');
 }
     public function resendView($id)
@@ -291,7 +293,7 @@ public function resend(Request $request, $id)
         'jenisHukums' => JenisHukum::all(),
 
         'produkIndukList' => ProdukHukum::select('id', 'judul')
-            ->where('id', '!=', $id) // agar tidak bisa memilih dirinya sendiri
+            ->where('id', '!=', $id)
             ->orderBy('judul')
             ->get(),
     ]);

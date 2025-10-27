@@ -65,17 +65,24 @@ export default function ResendProdukHukum() {
     }
 
     // Hanya kirim field yang memang diproses oleh controller resend
-    const payload = new FormData();
-    [
-      "judul",
-      "nomor",
-      "tahun",
-      "ringkasan",
-      "subjek",
-      "tanggal_penetapan",
-      "kata_kunci",
-    ].forEach((k) => payload.append(k, formData[k] ?? ""));
-    payload.append("berkas", formData.berkas);
+const payload = new FormData();
+[
+  "judul",
+  "nomor",
+  "tahun",
+  "ringkasan",
+  "subjek",
+  "tanggal_penetapan",
+  "kata_kunci",
+  "instansi_id",
+  "status_peraturan_id",
+  "tipe_dokumen_id",
+  "jenis_hukum_id",
+  "kategori_akses_id",
+  "parent_id",
+].forEach((k) => payload.append(k, formData[k] ?? ""));
+
+payload.append("berkas", formData.berkas);
 
     toast.loading("Mengirim ulang dokumen...");
     router.post(route("produk-hukum.resend", produk.id), payload, {
