@@ -23,7 +23,7 @@ export default function Statistik() {
         {/* Charts Grid */}
         <div className="charts-grid">
           {/* Pie Chart */}
-          <div className="chart-card" data-aos="fade-right">
+          <div className="chart-card" data-aos="fade-up">
             <h3 className="chart-title">Distribusi Jenis Dokumen</h3>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
@@ -70,7 +70,7 @@ export default function Statistik() {
           </div>
 
           {/* Bar Chart */}
-          <div className="chart-card" data-aos="fade-left" data-aos-delay="200">
+          <div className="chart-card" data-aos="fade-up" data-aos-delay="200">
             <h3 className="chart-title">Dokumen per Tahun</h3>
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={yearlyData}>

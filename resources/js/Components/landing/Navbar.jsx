@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "@inertiajs/react";
-import { LogOut, Languages, ChevronDown, ChevronUp } from "lucide-react";
+import {
+  LogOut,
+  Languages,
+  ChevronDown,
+  ChevronUp,
+  Megaphone,
+  FileText,
+  Info,
+  Home,
+} from "lucide-react";
 import "../../../css/Navbar.css";
 import "flag-icons/css/flag-icons.min.css";
 
@@ -20,14 +29,14 @@ export default function Navbar() {
     { code: "su", name: "Basa Sunda", flag: "fi fi-id" },
   ];
 
-  // 🔹 Scroll effect
+  // Scroll effect
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // 🔹 Load Google Translate
+  // Load Google Translate
   useEffect(() => {
     if (document.getElementById("google-translate-script")) return;
     const script = document.createElement("script");
@@ -60,7 +69,7 @@ export default function Navbar() {
     <>
       <header className={`navbar ${scrolled ? "scrolled" : ""}`}>
         <div className="navbar-content">
-          {/* 🔸 Hamburger + Judul */}
+          {/* Hamburger */}
           <div className="mobile-header">
             <button
               className={`mobile-menu-toggle ${menuOpen ? "active" : ""}`}
@@ -73,7 +82,7 @@ export default function Navbar() {
             </button>
           </div>
 
-          {/* 🔸 Logo */}
+          {/* Logo */}
           <div className="logo-container">
             <img
               src="/assets/LOGO-JDIHN.png"
@@ -89,7 +98,7 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* 🔸 Navigasi Utama */}
+          {/* Navigasi Utama */}
           <nav className={`navigation ${menuOpen ? "mobile-active" : ""}`}>
             {/* 🔹 Judul di dalam sidebar */}
             {menuOpen && (
@@ -98,11 +107,20 @@ export default function Navbar() {
               </div>
             )}
 
-            <Link href="/dashboard" className="nav-link">
-              Beranda
-            </Link>
+              <Link
+                href="/dashboard"
+                className="nav-link flex items-center gap-2"
+                title="Beranda"
+              >
+                {/* Ikon hanya muncul di mobile & tablet */}
+                <Home
+                  size={20}
+                  className="text-grey-200 block lg:hidden hover:text-orange-600 transition-colors"
+                />
+                <span className="text-gray-800 dark:text-gray-200">Beranda</span>
+              </Link>
 
-            {/* 🔹 Tentang Kami - Desktop Hover */}
+            {/* Tentang Kami - Desktop Hover */}
             <div className="relative inline-block group desktop-only">
               <button className="nav-link">Tentang Kami</button>
               <div className="absolute left-0 mt-0 w-56 bg-white shadow-xl rounded-xl text-gray-800 z-50 hidden group-hover:block">
@@ -133,38 +151,62 @@ export default function Navbar() {
               </div>
             </div>
 
-            {/* 🔹 Tentang Kami - Mobile Dropdown */}
+            {/* Tentang Kami - Mobile Dropdown */}
             <div className="mobile-only">
-              <button
-                onClick={() => setAboutOpen(!aboutOpen)}
-                className="nav-link flex justify-between items-center"
-              >
-                Tentang Kami
-                {aboutOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-              </button>
-              {aboutOpen && (
-                <div className="dropdown-content-mobile open">
-                  <a href="/Tentang/SekilasSejarah" className="nav-link sub-link">
-                    Sekilas Sejarah
-                  </a>
-                  <a href="/Tentang/DasarHukum" className="nav-link sub-link">
-                    Dasar Hukum
-                  </a>
-                  <a href="/Tentang/VisiMisi" className="nav-link sub-link">
-                    Visi & Misi
-                  </a>
-                  <a href="/Tentang/Organisasi" className="nav-link sub-link">
-                    Struktur Organisasi
-                  </a>
-                </div>
-              )}
-            </div>
+            <button
+              onClick={() => setAboutOpen(!aboutOpen)}
+              className="nav-link flex justify-between items-center gap-2"
+            >
+              <div className="flex items-center gap-2">
+                <Info size={20} className="hover:bg-gray-100 cursor-pointer" />
+                <span className="text-gray-800 dark:text-gray-200">Tentang Kami</span>
+              </div>
+              {aboutOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            </button>
 
-            <Link href="/produkhukum" className="nav-link">
-              Dokumen Hukum
-            </Link>
+            {aboutOpen && (
+              <div className="dropdown-content-mobile open">
+                <a href="/Tentang/SekilasSejarah" className="nav-link sub-link">
+                  Sekilas Sejarah
+                </a>
+                <a href="/Tentang/DasarHukum" className="nav-link sub-link">
+                  Dasar Hukum
+                </a>
+                <a href="/Tentang/VisiMisi" className="nav-link sub-link">
+                  Visi & Misi
+                </a>
+                <a href="/Tentang/Organisasi" className="nav-link sub-link">
+                  Struktur Organisasi
+                </a>
+              </div>
+            )}
+          </div>
 
-            {/* 🔹 Logout */}
+            {/* Dokumen Hukum */}
+          <Link
+            href="/produkhukum"
+            className="nav-link flex items-center gap-2"
+            title="Dokumen Hukum"
+          >
+            {/* Ikon hanya tampil di mobile & tablet */}
+            <FileText size={20} className="text-grey-200 block lg:hidden hover:text-orange-600 transition-colors" />
+            <span className="text-gray-800 dark:text-gray-200">Dokumen Hukum</span>
+          </Link>
+
+            {/* Tombol Pengumuman */}
+          <Link
+            href="/Pengumuman"
+            className="nav-link flex items-center gap-2"
+            title="Pengumuman"
+          >
+            <Megaphone size={20} className=" hover:bg-gray-100 cursor-pointer" />
+            <span className="text-sm text-gray-800 dark:text-gray-200 block lg:hidden">
+              Pengumuman
+            </span>
+          </Link>
+
+
+            {/* Logout */}
             <Link
               href="/logout"
               method="post"
@@ -175,7 +217,7 @@ export default function Navbar() {
               <span>Logout</span>
             </Link>
 
-            {/* 🔹 Translate - Desktop Hover */}
+            {/* Translate - Desktop Hover */}
             <div className="relative inline-block group desktop-only">
               <button className="nav-link px-4 py-2 flex items-center gap-2">
                 <Languages size={20} />
@@ -198,7 +240,7 @@ export default function Navbar() {
               </div>
             </div>
 
-            {/* 🔹 Translate - Mobile Dropdown */}
+            {/* Translate - Mobile Dropdown */}
             <div className="mobile-only">
               <button
                 onClick={() => setLangOpen(!langOpen)}
@@ -229,7 +271,8 @@ export default function Navbar() {
         </div>
       </header>
 
-      <div style={{ height: "80px" }}></div>
+    <div className="navbar-spacer"></div>
+
     </>
   );
 }

@@ -222,6 +222,7 @@
   transform: rotate(-45deg) translateY(-8px);
 }
 
+
 /* ==========================
    NAVIGATION untuk mobile
    ========================== */
@@ -284,6 +285,7 @@
     transform: translateX(4px);
   }
 
+  
   /* === Tombol Logout / Login di bawah === */
   .login-button {
     width: 100%;
@@ -464,13 +466,6 @@
   font-size: 16px;
 }
 
-/* ============================  
-   Konten utama biar tidak ketiban navbar 
-   ============================ */
-.main-content {
-  padding-top: 80px; /* ✅ tinggi navbar */
-}
-
 
 /* Saat dark mode aktif */
 .dark .navbar {
@@ -519,10 +514,11 @@
 
 
 /* ==========================
-      MOBILE SIDEBAR (FINAL + ANIMASI + TOGGLE X)
+      MOBILE 
    ========================== */
 @media (max-width: 768px) {
   /* ====== SIDEBAR UTAMA ====== */
+
   .navigation {
     display: flex;
     flex-direction: column;
@@ -750,5 +746,31 @@
       opacity: 1;
       transform: translateX(0);
     }
+  }
+}
+
+/* spacer */
+.navbar-spacer {
+  height: 80px;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .navbar-spacer {
+    height: 50px; /* lebih kecil di tablet */
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .navbar-spacer {
+    height: 50px; /* lebih kecil lagi di HP */
+  }
+}
+
+/* Extra small (HP kecil) */
+@media (max-width: 480px) {
+  .navbar-spacer {
+    height: 40px; /* jarak minimal tapi tetap ada */
   }
 }

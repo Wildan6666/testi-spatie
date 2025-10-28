@@ -61,7 +61,7 @@ export default function Login({ status, canResetPassword }) {
         </h2>
       </header>
 
-      {/* --- Card Login --- */}
+      {/* Card Login */}
       <main className="w-full max-w-sm sm:max-w-md bg-white/80 backdrop-blur-md rounded-2xl shadow-2xl p-6 sm:p-8 z-10">
         {status && (
           <div className="mb-4 text-sm font-medium text-green-600 text-center bg-green-50 p-3 rounded-lg">
@@ -148,7 +148,7 @@ export default function Login({ status, canResetPassword }) {
 
       {/* --- Footer --- */}
       <footer className="text-center text-gray-300 text-xs mt-8 z-10">
-        © {new Date().getFullYear()} JDIH Universitas Jambi. All rights reserved.
+        © {new Date().getFullYear()} JDIH Universitas Jambi.
       </footer>
     </div>
   );

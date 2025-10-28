@@ -178,5 +178,10 @@ Route::get('/Tentang/SekilasSejarah', function () {
 })->middleware(['auth', 'verified'])->name('kilas.sejarah');
 
 
+Route::get('/Pengumuman', function () {
+    return Inertia::render('User/Pengumuman');
+})->middleware(['auth', 'verified'])->name('Pengumuman');
+
+
 Route::middleware(['auth'])->get('/notifications', [NotificationController::class, 'index'])
     ->name('notifications.index');
