@@ -7,52 +7,63 @@ use App\Models\StatusVerifikasi;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-
 class MasterStatusController extends Controller
 {
+    /**
+     * Menampilkan daftar status verifikasi.
+     */
     public function index()
     {
         $statuses = StatusVerifikasi::all();
 
-        return Inertia::render("Admin/master-status/Index", [
+        return Inertia::render('Admin/master-status/Index', [
             'statuses' => $statuses,
         ]);
     }
 
+    /**
+     * Menyimpan data status verifikasi baru.
+     */
     public function store(Request $request)
-{
-    $validated = $request->validate([
-        'nama_status' => 'required|string|max:255',
-        'kode' => 'nullable|string|max:50',
-        'deskripsi' => 'nullable|string',
-    ]);
+    {
+        $validated = $request->validate([
+            'nama_status' => 'required|string|max:255',
+            'kode' => 'nullable|string|max:50',
+            'deskripsi' => 'nullable|string',
+        ]);
 
-    StatusVerifikasi::create($validated);
+        StatusVerifikasi::create($validated);
 
-    return redirect()->route('status-peraturan.index')
-        ->with('success', 'Status berhasil ditambahkan.');
-}
+        // Tetap di halaman ini (tidak redirect ke status-peraturan)
+        return back()->with('success', 'Status berhasil ditambahkan.');
+    }
 
-public function update(Request $request, $id)
-{
-    $validated = $request->validate([
-        'nama_status' => 'required|string|max:255',
-        'kode' => 'nullable|string|max:50',
-        'deskripsi' => 'nullable|string',
-    ]);
+    /**
+     * Memperbarui data status verifikasi.
+     */
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'nama_status' => 'required|string|max:255',
+            'kode' => 'nullable|string|max:50',
+            'deskripsi' => 'nullable|string',
+        ]);
 
-    $status = StatusVerifikasi::findOrFail($id);
-    $status->update($validated);
+        $status = StatusVerifikasi::findOrFail($id);
+        $status->update($validated);
 
-    return redirect()->route('status-peraturan.index')
-        ->with('success', 'Status berhasil diperbarui.');
-}
+        // Tetap di halaman ini juga
+        return back()->with('success', 'Status berhasil diperbarui.');
+    }
 
+    /**
+     * Menghapus data status verifikasi.
+     */
     public function destroy($id)
     {
         $status = StatusVerifikasi::findOrFail($id);
         $status->delete();
 
-        return redirect()->back()->with('success', 'Status berhasil dihapus.');
+        return back()->with('success', 'Status berhasil dihapus.');
     }
 }

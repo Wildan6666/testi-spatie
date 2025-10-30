@@ -110,25 +110,24 @@ export default function StatusVerifikasiPage() {
                       <td className="p-3">{item.nama_status}</td>
                       <td className="p-3">{item.kode}</td>
                       <td className="p-3">{item.deskripsi}</td>
-                      <td className="p-3 text-center flex justify-center gap-2">
-                       {/* Edit */}
-                          <button
-                            onClick={() => openModal(item)}
-                            className="p-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition"
-                            title="Edit"
-                          >
-                            <Pencil className="w-4 h-4" />
-                          </button>
-                          {/* Delete */}
-                          <button
-                            onClick={() => handleDelete(item.id)}
-                            className="p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition"
-                            title="Hapus"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                      </td>
-                    </tr>
+<td className="p-3 text-center flex justify-center gap-2">
+  {/* Edit */}
+  <button
+    onClick={() => handleEdit(item)}
+    className="p-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition"
+    title="Edit"
+  >
+    <Pencil className="w-4 h-4" />
+  </button>
+  {/* Delete */}
+  <button
+    onClick={() => handleDelete(item.id)}
+    className="p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition"
+    title="Hapus"
+  >
+    <Trash2 className="w-4 h-4" />
+  </button>
+</td>                    </tr>
                   ))}
                 </tbody>
               </table>
