@@ -13,6 +13,7 @@ use App\Models\TipeDokumen;
 use App\Models\JenisHukum;
 use App\Models\KategoriAkses;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Pengumuman;
 
 class ProdukHukumController extends Controller
 {
@@ -272,10 +273,6 @@ public function resend(Request $request, $id)
         ...$validated,
         'status_id' => $statusPending->id,
     ]);
-
-
-
-
     return redirect()->route('produk-hukum.index')->with('success', 'Dokumen revisi berhasil dikirim ulang untuk verifikasi.');
 }
     public function resendView($id)
@@ -297,6 +294,38 @@ public function resend(Request $request, $id)
             ->orderBy('judul')
             ->get(),
     ]);
+}
+
+public function updateStatus(Request $request, $id)
+{
+    $dokumen = ProdukHukum::findOrFail($id);
+    $statusBaru = $request->input('status_id');
+
+    $dokumen->update(['status_id' => $statusBaru]);
+
+    // Jika status diverifikasi (misal 2)
+    if ($statusBaru == 2) {
+        // Cek apakah pengumuman sudah pernah dibuat
+        $cek = pengumuman::where('related_id', $dokumen->id)
+            ->where('type', 'dokumen')
+            ->first();
+
+        if (!$cek) {
+            pengumuman::create([
+                'title' => 'Dokumen Terverifikasi: ' . $dokumen->judul,
+                'type' => 'dokumen',
+                'related_id' => $dokumen->id,
+                'published_at' => now(),
+            ]);
+        }
+    } else {
+        // Nonaktifkan pengumuman jika status berubah bukan terverifikasi
+        pengumuman::where('related_id', $dokumen->id)
+            ->where('type', 'dokumen')
+            ->update(['is_active' => false]);
+    }
+
+    return redirect()->back()->with('message', 'Status dokumen diperbarui.');
 }
 
     private function getParentChain($produk)

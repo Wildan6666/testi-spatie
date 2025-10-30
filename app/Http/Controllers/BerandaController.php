@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\ProdukHukum;
 use App\Models\Berita;
-use App\Models\KategoriAkses;
 use Illuminate\Support\Str;
+use App\Models\Pengumuman;
 
 class BerandaController extends Controller
 {
@@ -124,6 +124,12 @@ class BerandaController extends Controller
     public function index()
     {
         $data = $this->getProdukData();
+       
+    $pengumuman = Pengumuman::where('is_active', true)
+        ->orderByDesc('published_at')
+        ->take(6)
+        ->get();
+
 
         return Inertia::render('Welcome', [
             'terbaruData'   => $data['latest'],
@@ -134,7 +140,9 @@ class BerandaController extends Controller
             'beritaTerkini' => $data['berita'],
             'summary'       => $data['summary'],
             'allowedAkses'  => $data['allowedAkses'], 
+             'pengumuman'   => $pengumuman,
         ]);
+
     }
 
     public function dashboard()
@@ -154,4 +162,6 @@ class BerandaController extends Controller
             'allowedAkses'  => $data['allowedAkses'], 
         ]);
     }
+
+    
 }
