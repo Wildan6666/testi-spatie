@@ -45,6 +45,7 @@ export default function StatusPeraturanPage() {
     }
   };
 
+  
   return (
     <AdminLayout>
       <Head title="Status Peraturan" />
