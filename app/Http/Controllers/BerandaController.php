@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\ProdukHukum;
 use App\Models\Berita;
 use Illuminate\Support\Str;
-use App\Models\Pengumuman;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Crypt;
 
 class BerandaController extends Controller
 {
@@ -121,29 +121,48 @@ class BerandaController extends Controller
         ];
     }
 
-    public function index()
-    {
-        $data = $this->getProdukData();
-       
-    $pengumuman = Pengumuman::where('is_active', true)
-        ->orderByDesc('published_at')
-        ->take(6)
-        ->get();
+ public function index()
+{
+    $data = $this->getProdukData();
+
+    // 🔐 Enkripsi ID
+    $latest = collect($data['latest'])->map(function ($row) {
+        return [
+            'id'          => $row['id'],
+            'judul'       => $row['judul'],
+            'kategori'    => $row['kategori'],
+            'deskripsi'   => $row['deskripsi'],
+            'views'       => $row['views'],
+            'downloads'   => $row['downloads'],
+            'encrypted_id'=> Crypt::encryptString($row['id']),
+        ];
+    });
+
+    $popular = collect($data['popular'])->map(function ($row) {
+        return [
+            'id'          => $row['id'],
+            'judul'       => $row['judul'],
+            'kategori'    => $row['kategori'],
+            'deskripsi'   => $row['deskripsi'],
+            'views'       => $row['views'],
+            'downloads'   => $row['downloads'],
+            'encrypted_id'=> Crypt::encryptString($row['id']),
+        ];
+    });
+
+    return Inertia::render('Welcome', [
+        'terbaruData'   => $latest,
+        'populerData'   => $popular,
+        'pieData'       => $data['pieData'],
+        'yearlyData'    => $data['yearlyData'],
+        'monthlyData'   => $data['monthlyData'],
+        'beritaTerkini' => $data['berita'],
+        'summary'       => $data['summary'],
+        'allowedAkses'  => $data['allowedAkses'],
+    ]);
+}
 
 
-        return Inertia::render('Welcome', [
-            'terbaruData'   => $data['latest'],
-            'populerData'   => $data['popular'],
-            'pieData'       => $data['pieData'],
-            'yearlyData'    => $data['yearlyData'],
-            'monthlyData'   => $data['monthlyData'],
-            'beritaTerkini' => $data['berita'],
-            'summary'       => $data['summary'],
-            'allowedAkses'  => $data['allowedAkses'], 
-             'pengumuman'   => $pengumuman,
-        ]);
-
-    }
 
     public function dashboard()
     {
@@ -161,6 +180,47 @@ class BerandaController extends Controller
             'beritaTerkini' => $data['berita'],
             'allowedAkses'  => $data['allowedAkses'], 
         ]);
+    }
+
+    public function pengumuman()
+    {
+$data = $this->getProdukData();
+
+    $dokumenTerverifikasi = DB::table('produk_hukum')
+        ->where('status_id', 2)
+        ->orderByDesc('updated_at')
+        ->take(5)
+        ->get(['id', 'judul', 'updated_at']);
+
+    // 🔹 Ambil berita yang status = published (tanpa ubah model)
+    $beritaPublished = DB::table('beritas')
+        ->where('status', 'published')
+        ->orderByDesc('created_at') // karena published_at belum pasti diisi
+        ->take(5)
+        ->get(['id', 'title', 'created_at']);
+
+    // 🔹 Gabungkan keduanya
+    $pengumuman = collect()
+        ->merge($dokumenTerverifikasi->map(fn($d) => [
+            'id' => $d->id,
+            'title' => 'Dokumen Terverifikasi: ' . $d->judul,
+            'type' => 'dokumen',
+            'published_at' => $d->updated_at,
+             'link' => url('/produkhukum/' . Crypt::encryptString($d->id)),
+        ]))
+        ->merge($beritaPublished->map(fn($b) => [
+            'id' => $b->id, 
+            'title' => 'Berita Baru: ' . $b->title,
+            'type' => 'berita',
+            'published_at' => $b->created_at,
+            'link' => url('/berita/' . $b->id), // ✅ aman juga
+        ]))
+        ->sortByDesc('published_at')
+        ->values();
+
+         return Inertia::render('User/Pengumuman', [
+        'pengumuman'    => $pengumuman,
+    ]);
     }
 
     

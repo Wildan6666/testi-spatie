@@ -51,7 +51,7 @@ const displayedData = activeTab === "terbaru" ? terbaruData : populerData;
           {displayedData.slice(0, 6).map((doc, i) => (
             <Link
               key={doc.id}
-              href={route("produkhukum.show", doc.id)} // pakai route Laravel
+              href={route("produkhukum.show", doc.encrypted_id)} // pakai route Laravel
               className="product-card block bg-white rounded-xl border border-orange-400 
                         shadow-sm hover:shadow-lg transition overflow-hidden"
               data-aos="fade-up"

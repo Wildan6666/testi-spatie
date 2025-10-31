@@ -39,13 +39,16 @@ export default function StatusPeraturanPage() {
     if (modalType === "create") {
       Inertia.post("/status-peraturan", { nama }, { onSuccess: closeModal });
     } else if (modalType === "edit") {
-      Inertia.put(`/status-peraturan/${selected.id}`, { nama }, { onSuccess: closeModal });
+  Inertia.put(`/status-peraturan/${selected.id}`, { nama }, {
+    onSuccess: () => {
+      Inertia.reload({ only: ['status'] }); // Refresh data status
+      closeModal();}
+});
     } else if (modalType === "delete") {
       Inertia.delete(`/status-peraturan/${selected.id}`, { onSuccess: closeModal });
     }
   };
 
-  
   return (
     <AdminLayout>
       <Head title="Status Peraturan" />
